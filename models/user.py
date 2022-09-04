@@ -12,7 +12,7 @@ class User(Base):
 
     def __init__(self, username, password):
         self.username = username
-        self.password = hash(password)
+        self.password = str(hash(password, username))
 
     def __str__(self):
         return self.username
@@ -32,12 +32,16 @@ class User(Base):
             cls.__table__.create(engine)
 
     @classmethod
+    @atomic
     def delete_table(cls):
         cls.__table__.drop(engine)
 
     @classmethod
     def select_by_id(cls, id):
         return session.query(cls).filter(cls.id == id).one()
+
+    def select(self):
+        return User.select_by_id(self.id)
 
     @classmethod
     def select_by_username(cls, username):
@@ -46,7 +50,6 @@ class User(Base):
     @atomic
     def insert(self):
         session.add(self)
-        session.commit()
 
     @atomic
     def delete(self):
