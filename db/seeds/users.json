@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "username": "user1",
+        "password": "ad73521df68ea3c37ee8890f09bc662c04484a4758c95f75781dacb012e71ded"
+    },
+    {
+        "id": 2,
+        "username": "user2",
+        "password": "dc621d77d6388f03a5306ed61dbb7c53c8d83eb07743fd8603eeb5b714c8d1e7"
+    },
+    {
+        "id": 3,
+        "username": "user3",
+        "password": "c7dc41370077e4a272ab9729c948032dd8d4f52c1ccaf12b1fd417a0c79d00e6"
+    }
+]
