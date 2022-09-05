@@ -6,3 +6,10 @@ def hash(data, salt):
         salt.encode(),
         10000
     ).hex()
+
+
+def read_user_data():
+    import getpass
+    username = input('Username: ')
+    password = getpass.getpass('Password: ')
+    return username, password

@@ -1,9 +1,10 @@
-import models.user
+from models.user import User
 import db.db_setup
+from app import user_login
 
-models.user.User.create_table()
-u = models.user.User("fjhf", "fjhfhf")
-u.insert()
 
-# db.db_setup.drop_database()
-# db.migrations.asdf()
+x = int(input("Hello! please choose a direction:\n1. register a new user\n2. login\n> "))
+if x == 1:
+    user_login.register_new_user()
+elif x == 2:
+    user_login.login()

@@ -1,6 +1,6 @@
 from db.db_connection import Base, session, engine
 from sqlalchemy import Column, Integer, String, inspect
-from utils.helpers import hash
+from utils.helpers import hash, read_user_data
 from utils.decorators import atomic
 
 
@@ -23,6 +23,11 @@ class User(Base):
     def __eq__(self, other):
         return self.username == other.username and\
             self.password == other.password
+
+    @classmethod
+    def read_user(cls):
+        username, password = read_user_data()
+        return User(username, password)
 
     # Database methods
     @classmethod
@@ -50,6 +55,7 @@ class User(Base):
     @atomic
     def insert(self):
         session.add(self)
+        session.commit()
 
     @atomic
     def delete(self):

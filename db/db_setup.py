@@ -3,6 +3,7 @@ from models.user import User
 
 models = [User]
 
+
 def setup(classname):
     classname.create_table()
 
@@ -28,7 +29,4 @@ def reset_database():
     setup_database()
 
 
-
 setup_database()
-
-
