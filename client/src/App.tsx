@@ -1,13 +1,15 @@
 import './css/App.css'
-import Header from './header';
-import SignUp from './registerForm';
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import EntryPage from './entryPage';
 
 const theme = createTheme({
   palette: {
     primary: {
       main: "#FFC40F",
       contrastText: "#FFFFFF",
+    },
+    secondary: {
+      main: "#e146aa",
     }
   }
 });
@@ -15,8 +17,7 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <Header />
-      <SignUp />
+      <EntryPage />
     </ThemeProvider>
   );
 }

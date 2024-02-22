@@ -1,17 +1,15 @@
 // import * as React from 'react';
-import { create_user } from './utils';
+import { login_user } from './utils';
 import { useState } from 'react';
 import { CredentialsForm } from './credentialsForm';
 
 
-
-export default function SignUp() {
+export default function LogIn() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    create_user(data.get('username'), data.get('password'), data.get('email')).then(_ => 
+    login_user(data.get('username'), data.get('password')).then(_ => 
       console.log({
-        email: data.get('email'),
         password: data.get('password'),
       })
     ).catch(err => 
@@ -21,7 +19,6 @@ export default function SignUp() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
 
   const params = [
     {
@@ -37,15 +34,8 @@ export default function SignUp() {
       state: setPassword,
       label: 'Парола',
       type: 'password'
-    },
-    {
-      name: 'email',
-      value: email,
-      state: setEmail,
-      label: 'Имейл',
-      type: 'email'
     }
   ];
 
-  return <CredentialsForm params={params} buttonText='Регистрация' handleSubmit={handleSubmit} />;
+  return <CredentialsForm params={params} buttonText='Вход' handleSubmit={handleSubmit} />;
 }
