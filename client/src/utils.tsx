@@ -34,10 +34,10 @@ export const create_user = async (username: FormDataEntryValue | null, password:
 
 export const login_user = async (username: FormDataEntryValue | null, password: FormDataEntryValue | null) => {
   const user_data = {
-    user: {
+
       username: username,
       password: password,
-    }
+
   };
 
   return await request(user_data, 'login', 'POST');
