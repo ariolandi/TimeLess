@@ -26,23 +26,23 @@ export default function Header() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <FormGroup></FormGroup>
-      <AppBar position="static">
+      <AppBar position='static'>
         <Toolbar>
           <IconButton
-            size="large"
-            className="IconButton"
-            aria-controls="menu-app"
-            aria-haspopup="true"
+            size='large'
+            className='IconButton'
+            aria-controls='menu-app'
+            aria-haspopup='true'
             onClick={handleMenu}
-            edge="start"
-            color="inherit"
-            aria-label="menu"
+            edge='start'
+            color='inherit'
+            aria-label='menu'
             sx={{ mr: 2 }}
           >
             <MenuIcon />
           </IconButton>
           <Menu
-                id="menu-app"
+                id='menu-app'
                 anchorEl={anchorEl}
                 anchorOrigin={{
                   vertical: 'top',
@@ -60,25 +60,25 @@ export default function Header() {
                 <MenuItem onClick={handleClose}>New Event</MenuItem>
               </Menu>
           <Box
-            component="img"
+            component='img'
             sx={{ height: 64 }}
-            alt="TimeLess"
+            alt='TimeLess'
             src={logo}
           />
           {auth && (
             <div>
               <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-account"
-                aria-haspopup="true"
+                size='large'
+                aria-label='account of current user'
+                aria-controls='menu-account'
+                aria-haspopup='true'
                 onClick={handleMenu}
-                color="inherit"
+                color='inherit'
               >
                 <AccountCircle />
               </IconButton>
               <Menu
-                id="menu-account"
+                id='menu-account'
                 anchorEl={anchorEl}
                 anchorOrigin={{
                   vertical: 'top',

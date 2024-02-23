@@ -22,7 +22,7 @@ export interface InputParams {
 export function CredentialsForm({ params, buttonText, handleSubmit }: CredentialsFormProps) {
 
   return (
-    <Container component="main">
+    <Container component='main'>
       <Box
         sx={{
           border: 1,
@@ -35,7 +35,7 @@ export function CredentialsForm({ params, buttonText, handleSubmit }: Credential
           alignItems: 'center',
         }}
       >
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box component='form' noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             {params.map(field => {     
               return (
@@ -47,7 +47,7 @@ export function CredentialsForm({ params, buttonText, handleSubmit }: Credential
                     label={field.label} 
                     name={field.name}
                     type={field.type}
-                    variant="standard" 
+                    variant='standard' 
                     value={field.value}
                     onChange={(e) => field.state(e.target.value)}
                   />
@@ -57,8 +57,8 @@ export function CredentialsForm({ params, buttonText, handleSubmit }: Credential
 
             <Grid item xs={12}>
               <Button
-                variant="contained"
-                type="submit" 
+                variant='contained'
+                type='submit' 
                 sx={{
                   width: 1,
                   padding: '16px 0px'

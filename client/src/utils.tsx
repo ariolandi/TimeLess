@@ -1,24 +1,22 @@
-const server_url = "http://localhost:3001";
+const server_url = 'http://127.0.0.1:3000';
 
 const request = async (params: object, endpoint: string, method: string) => {
-  try {
-    const response = await fetch(`${server_url}/${endpoint}`, {
-      method: method,
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'      
-      },
-      body: JSON.stringify(params),
-    });
+  const response = await fetch(`${server_url}/${endpoint}`, {
+    method: method,
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Credentials': 'true'
+    },
+    body: JSON.stringify(params),
+  });
+  console.log(response);
 
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    return await response.json();
-  } catch (error) {
-    throw error;
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
   }
+
+  return await response.json();
 };
 
 export const create_user = async (username: FormDataEntryValue | null, password: FormDataEntryValue | null, email: FormDataEntryValue | null) => {
@@ -30,11 +28,7 @@ export const create_user = async (username: FormDataEntryValue | null, password:
     }
   };
 
-  try {
-    return await request(user_data, 'signup', 'POST');
-  } catch (error) {
-    throw error;
-  }
+  return await request(user_data, 'signup', 'POST');
 };
   
 
@@ -46,10 +40,6 @@ export const login_user = async (username: FormDataEntryValue | null, password: 
     }
   };
 
-  try {
-    return await request(user_data, 'login', 'POST');
-  } catch (error) {
-    throw error;
-  }
+  return await request(user_data, 'login', 'POST');
 };
   

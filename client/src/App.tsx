@@ -1,15 +1,15 @@
 import './css/App.css'
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import EntryPage from './entryPage';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#FFC40F",
-      contrastText: "#FFFFFF",
+      main: '#FFC40F',
+      contrastText: '#FFFFFF',
     },
     secondary: {
-      main: "#e146aa",
+      main: '#e146aa',
     }
   }
 });

@@ -11,7 +11,7 @@ export default function EntryPage() {
   console.log(small_screen);
 
   const big_screen_style = (
-    <Grid container
+    <Grid component='main'
       sx={{           
         display: 'flex',
         height: '98.5vh'
@@ -24,8 +24,8 @@ export default function EntryPage() {
           width: 1/2,
         }}>
         <Box
-          component="img"
-          alt="TimeLess"
+          component='img'
+          alt='TimeLess'
           src={logo}
           sx={{ width: 9/10 }}
         />
@@ -38,7 +38,7 @@ export default function EntryPage() {
   );
 
   const small_screen_style = (
-    <Grid container
+    <Grid
       sx={{           
         display: 'flex',
         flexDirection: 'column',
@@ -52,8 +52,8 @@ export default function EntryPage() {
           padding: '2%',
         }}>
         <Box
-          component="img"
-          alt="TimeLess"
+          component='img'
+          alt='TimeLess'
           src={logo}
           sx={{ height: 1, minWidth: 2/3 }}
         />
