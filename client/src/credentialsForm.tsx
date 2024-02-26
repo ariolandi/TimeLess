@@ -1,9 +1,10 @@
 // import * asReact from 'react';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import { styles } from './styles';
+import { SubmitButton } from './components';
 
 export interface CredentialsFormProps {
   params: InputParams[],
@@ -25,18 +26,25 @@ export function CredentialsForm({ params, buttonText, handleSubmit }: Credential
     <Container component='main'>
       <Box
         sx={{
-          border: 1,
-          borderRadius: 8,
-          padding: '10%',
-          margin: '5%',
-          color: 'primary.main',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
+          ...styles.formBorder, 
+          ...{
+            color: 'primary.main', 
+            padding: '10%'
+          }}}
       >
-        <Box component='form' noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <Grid container spacing={2}>
+        <Box 
+          component='form' 
+          noValidate 
+          onSubmit={handleSubmit} 
+          width='100%'
+          sx={{
+            ...{ mt: 3 }, 
+            ...styles.column
+          }}>
+          <Grid 
+            container 
+            spacing={2}
+          >
             {params.map(field => {     
               return (
                 <Grid item xs={12} key={field.name}>
@@ -56,16 +64,7 @@ export function CredentialsForm({ params, buttonText, handleSubmit }: Credential
             })}
 
             <Grid item xs={12}>
-              <Button
-                variant='contained'
-                type='submit' 
-                sx={{
-                  width: 1,
-                  padding: '16px 0px'
-                }}
-              >
-                <b>{buttonText}</b>
-              </Button>
+              <SubmitButton buttonText={buttonText} />
             </Grid>
           </Grid>
         </Box>

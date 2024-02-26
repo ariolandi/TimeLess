@@ -5,20 +5,15 @@ import { CredentialsForm } from './credentialsForm';
 
 
 export default function LogIn() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    login_user(data.get('username'), data.get('password')).then(_ => 
-      console.log({
-        password: data.get('password'),
-      })
-    ).catch(err => 
-      console.log(err.message)
-    );
-  };
-
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await login_user(username, password);
+    // navigate(`/information/42`);
+  };
 
   const params = [
     {

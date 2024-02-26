@@ -14,7 +14,7 @@ export default function EntryPage() {
     <Grid component='main'
       sx={{           
         display: 'flex',
-        height: '98.5vh'
+        height: '100vh'
       }}>
       <Grid item
         sx={{
