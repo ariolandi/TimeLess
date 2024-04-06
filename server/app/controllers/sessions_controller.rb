@@ -1,14 +1,15 @@
 class SessionsController < ApplicationController
-  def new
+  def check
   end
 
   def create
     user = User.find_by_username(params[:username])
     if user&.authenticate(params[:password])
       session[:user_id] = user.id
+      onboarded = user.first_name.present?
       render json: {
         status: { code: 200, message: 'Signed in successfully.' },
-        data: {}
+        data: { id: session[:user_id], onboarded: onboarded }
       }
     else
       render json: {

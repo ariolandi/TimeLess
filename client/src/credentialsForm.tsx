@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import { styles } from './styles';
+import { styles, standardMarginPercent } from './styles';
 import { SubmitButton } from './components';
 
 export interface CredentialsFormProps {
@@ -29,7 +29,7 @@ export function CredentialsForm({ params, buttonText, handleSubmit }: Credential
           ...styles.formBorder, 
           ...{
             color: 'primary.main', 
-            padding: '10%'
+            padding: standardMarginPercent
           }}}
       >
         <Box 

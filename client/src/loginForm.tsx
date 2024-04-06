@@ -2,17 +2,20 @@
 import { login_user } from './utils';
 import { useState } from 'react';
 import { CredentialsForm } from './credentialsForm';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function LogIn() {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await login_user(username, password);
-    // navigate(`/information/42`);
+    const result = await login_user(username, password);
+    console.log(result);
+    if (!result.onboarded) navigate(`/information/${result.id}`);
   };
 
   const params = [

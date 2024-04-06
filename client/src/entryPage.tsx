@@ -1,14 +1,14 @@
 import './css/App.css'
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { Grid } from '@mui/material';
+import { Logo } from './components';
+import { styles, small_screen_size } from './styles';
 import SignUp from './registerForm';
 import LogIn from './loginForm';
-import { Box, Grid } from '@mui/material';
-import logo from './assets/timeless_logo_white.svg';
-import useMediaQuery from '@mui/material/useMediaQuery';
 
 
 export default function EntryPage() {
-  const small_screen = useMediaQuery('(max-width:1000px)');
-  console.log(small_screen);
+  const small_screen = useMediaQuery(small_screen_size);
 
   const big_screen_style = (
     <Grid component='main'
@@ -17,18 +17,8 @@ export default function EntryPage() {
         height: '100vh'
       }}>
       <Grid item
-        sx={{
-          backgroundColor: 'primary.main',
-          display: 'flex',
-          justifyContent: 'center',
-          width: 1/2,
-        }}>
-        <Box
-          component='img'
-          alt='TimeLess'
-          src={logo}
-          sx={{ width: 9/10 }}
-        />
+        sx={styles.halfPageHeaderBlock}>
+        <Logo width={9/10} />
       </Grid>
       <Grid item sx={{ width: 1/2 }}>
         <LogIn />
@@ -44,19 +34,8 @@ export default function EntryPage() {
         flexDirection: 'column',
       }}>
       <Grid item
-        sx={{
-          backgroundColor: 'primary.main',
-          display: 'flex',
-          justifyContent: 'center',
-          width: 1,
-          padding: '2%',
-        }}>
-        <Box
-          component='img'
-          alt='TimeLess'
-          src={logo}
-          sx={{ height: 1, minWidth: 2/3 }}
-        />
+        sx={styles.headerBlock}>
+        <Logo maxWidth={2/3} height={1}/>
       </Grid>
       <Grid item sx={{ width: 1 }}>
         <LogIn />
