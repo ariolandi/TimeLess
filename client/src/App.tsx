@@ -1,38 +1,42 @@
-import './css/App.css'
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import EntryPage from './entryPage';
-import Information from './information';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import "./css/App.css";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import EntryPage from "./pages/entryPage";
+import Information from "./pages/information";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#FFC40F',
-      contrastText: '#FFFFFF',
+      main: "#FFC40F",
+      contrastText: "#FFFFFF",
     },
     secondary: {
-      main: '#CC3366',
-    }
-  }
+      main: "#CC3366",
+    },
+  },
 });
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <EntryPage />
+    element: <EntryPage />,
   },
   {
     path: "/information/:userId",
-    element: <Information />
-  }
+    element: <Information />,
+  },
 ]);
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <RouterProvider router={router} />
+      </LocalizationProvider>
     </ThemeProvider>
   );
 }
 
-export default App
+export default App;
