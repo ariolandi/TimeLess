@@ -1,13 +1,11 @@
 const server_url = "http://127.0.0.1:3000";
 
-const request = async (params: object, endpoint: string, method: string) => {
+const exec_request = async (params: object, headers: HeadersInit, endpoint: string, method: string) => {
   const response = await fetch(`${server_url}/${endpoint}`, {
     method: method,
     mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Credentials": "true",
-    },
+    credentials: "include",
+    headers: headers,
     body: JSON.stringify(params),
   });
   console.log(response);
@@ -17,32 +15,27 @@ const request = async (params: object, endpoint: string, method: string) => {
   }
 
   return await response.json();
-};
+}
 
-export const create_user = async (
-  username: FormDataEntryValue | null,
-  password: FormDataEntryValue | null,
-  email: FormDataEntryValue | null
-) => {
-  const user_data = {
-    user: {
-      username: username,
-      password: password,
-      email: email,
-    },
+export const request = async (params: object, endpoint: string, method: string) => {
+  const headers = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Credentials": "true",
   };
 
-  return await request(user_data, "signup", "POST");
+  return await exec_request(params, headers, endpoint, method);
 };
 
-export const login_user = async (
-  username: FormDataEntryValue | null,
-  password: FormDataEntryValue | null
+export const authorized_request = async (
+  params: object,
+  endpoint: string,
+  method: string
 ) => {
-  const user_data = {
-    username: username,
-    password: password,
+  const headers = {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Credentials": "true",
+    "Authorization": `Bearer ${localStorage.getItem("current_user")}`,
   };
 
-  return await request(user_data, "login", "POST");
+  return await exec_request(params, headers, endpoint, method);
 };

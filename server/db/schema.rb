@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_11_165252) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_14_174724) do
   create_table "users", force: :cascade do |t|
     t.string "username", null: false
     t.string "password_digest", null: false
@@ -23,6 +23,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_11_165252) do
     t.time "end_time"
     t.time "weekend_start_time"
     t.time "weekend_end_time"
+    t.string "token"
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 

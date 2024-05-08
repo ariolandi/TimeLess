@@ -5,6 +5,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import EntryPage from "./pages/entryPage";
 import Information from "./pages/information";
+import DashBoard from "./pages/dashboard";
 
 const theme = createTheme({
   palette: {
@@ -24,9 +25,13 @@ const router = createBrowserRouter([
     element: <EntryPage />,
   },
   {
-    path: "/information/:userId",
+    path: "/information",
     element: <Information />,
   },
+  {
+    path: "/dashboard",
+    element: <DashBoard />,
+  }
 ]);
 
 function App() {

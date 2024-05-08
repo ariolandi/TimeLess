@@ -1,5 +1,5 @@
 // import * as React from 'react';
-import { create_user } from "../../components/utils";
+import { create_user } from "../../components/user_requests";
 import { useState } from "react";
 import { CredentialsForm } from "../../components/credentialsForm";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,9 @@ export default function SignUp() {
     event.preventDefault();
 
     const result = await create_user(username, password, email);
-    if (!result.onboarded) navigate(`/information/${result.id}`);
+    localStorage.setItem("current_user", result.data.token);
+  
+    navigate(`/information`);
   };
 
   const params = [

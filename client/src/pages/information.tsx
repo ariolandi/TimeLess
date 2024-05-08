@@ -3,10 +3,11 @@ import { Box, Grid, Typography, TextField, Checkbox, Divider, FormControlLabel }
 import { TimeField } from "@mui/x-date-pickers";
 import dayjs, { Dayjs } from "dayjs";
 import { useState, Dispatch, SetStateAction } from "react";
-import { useParams } from "react-router-dom";
 import { Logo } from "../components/components";
 import { styles, smallMarginPercent } from "../components/styles";
 import { SubmitButton } from "../components/components";
+import { user_information } from "../components/user_requests";
+import { useNavigate } from "react-router-dom";
 
 interface TimeParams {
   name: string;
@@ -19,49 +20,11 @@ interface TimeFieldParams {
   time_params: TimeParams[];
   text: string;
   can_disable: boolean;
-}
-
-function TimeFields(params: TimeFieldParams) {
-  const [disable, setCheck] = useState(false);
-
-  return (
-    <Grid item margin={smallMarginPercent}>
-      <Typography color="primary.main">{params.text}</Typography>
-      {params.time_params.map((field) => {
-        return (
-          <Grid item key={field.name} marginTop={smallMarginPercent}>
-            <TimeField
-              disabled={disable}
-              format="HH:mm"
-              id={field.name}
-              label={field.label}
-              name={field.name}
-              value={field.value}
-              onChange={(e) => field.state(e)}
-            />
-          </Grid>
-        );
-      })}
-      {params.can_disable && (
-        <FormControlLabel
-          control={
-            <Checkbox
-              value={disable}
-              onChange={(e) => setCheck(e.target.checked)}
-            />
-          }
-          label={
-            <Typography color="primary.main"> Същите като в делничен ден </Typography>
-          }
-        />
-      )}
-  </Grid>
-  );
+  fallback?: TimeParams[];
 }
 
 export default function Information() {
-  const { userId } = useParams<{ userId: string }>();
-  console.log(userId);
+  const navigate = useNavigate();
 
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
@@ -125,6 +88,22 @@ export default function Information() {
     },
   ];
 
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const weekday_time = { start: start_time, end: end_time, };
+    const weekend_time = { start: weekend_start_time, end: weekend_end_time, };
+
+    await user_information(
+      first_name,
+      last_name,
+      weekday_time,
+      weekend_time,
+    );
+
+    navigate(`/dashboard`);
+  };
+
+
   return (
     <Grid
       sx={{
@@ -160,6 +139,7 @@ export default function Information() {
         <Box
           component="form"
           noValidate
+          onSubmit={onSubmit}
           sx={{
             ...styles.formBorder,
             ...styles.column,
@@ -172,6 +152,7 @@ export default function Information() {
                 <Grid item xs={12} sm={6} key={field.name}>
                   <TextField
                     fullWidth
+                    required
                     id={field.name}
                     label={field.label}
                     name={field.name}
@@ -197,6 +178,7 @@ export default function Information() {
                 time_params={weekend_time_params}
                 text="Начален и краен час в почивни дни"
                 can_disable={true}
+                fallback={weekday_time_params}
               />
             </Grid>
           </Grid>
@@ -211,5 +193,44 @@ export default function Information() {
         </Box>
       </Grid>
     </Grid>
+  );
+}
+
+function TimeFields(params: TimeFieldParams) {
+  const [disable, setCheck] = useState(false);
+
+
+  return (
+    <Grid item margin={smallMarginPercent}>
+      <Typography color="primary.main">{params.text}</Typography>
+      {params.time_params.map((field) => {
+        return (
+          <Grid item key={field.name} marginTop={smallMarginPercent}>
+            <TimeField
+              disabled={disable}
+              format="HH:mm"
+              id={field.name}
+              label={field.label}
+              name={field.name}
+              value={field.value}
+              onChange={(e) => field.state(e)}
+            />
+          </Grid>
+        );
+      })}
+      {params.can_disable && (
+        <FormControlLabel
+          control={
+            <Checkbox
+              value={disable}
+              onChange={(e) => setCheck(e.target.checked)}
+            />
+          }
+          label={
+            <Typography color="primary.main"> Същите като в делничен ден </Typography>
+          }
+        />
+      )}
+  </Grid>
   );
 }
