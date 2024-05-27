@@ -19,8 +19,7 @@ interface TimeParams {
 interface TimeFieldParams {
   time_params: TimeParams[];
   text: string;
-  can_disable: boolean;
-  fallback?: TimeParams[];
+  disabled: boolean;
 }
 
 export default function Information() {
@@ -40,6 +39,8 @@ export default function Information() {
   const [weekend_end_time, setWeekendEndTime] = useState<Dayjs | null>(
     dayjs("2000-01-01T18:00")
   );
+  const [sameTime, setSameTime] = useState(false);
+
 
   const text_params = [
     {
@@ -170,15 +171,29 @@ export default function Information() {
               <TimeFields
                 time_params={weekday_time_params}
                 text="Начален и краен час в делнични дни"
-                can_disable={false}
+                disabled={false}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TimeFields
                 time_params={weekend_time_params}
                 text="Начален и краен час в почивни дни"
-                can_disable={true}
-                fallback={weekday_time_params}
+                disabled={sameTime}
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    value={sameTime}
+                    onChange={(e) => {
+                      setWeekendStartTime(start_time);
+                      setWeekendEndTime(end_time);
+                      setSameTime(e.target.checked)
+                    }}
+                  />
+                }
+                label={
+                  <Typography color="primary.main"> Същите като в делничен ден </Typography>
+                }
               />
             </Grid>
           </Grid>
@@ -197,8 +212,6 @@ export default function Information() {
 }
 
 function TimeFields(params: TimeFieldParams) {
-  const [disable, setCheck] = useState(false);
-
 
   return (
     <Grid item margin={smallMarginPercent}>
@@ -207,7 +220,7 @@ function TimeFields(params: TimeFieldParams) {
         return (
           <Grid item key={field.name} marginTop={smallMarginPercent}>
             <TimeField
-              disabled={disable}
+              disabled={params.disabled}
               format="HH:mm"
               id={field.name}
               label={field.label}
@@ -218,19 +231,6 @@ function TimeFields(params: TimeFieldParams) {
           </Grid>
         );
       })}
-      {params.can_disable && (
-        <FormControlLabel
-          control={
-            <Checkbox
-              value={disable}
-              onChange={(e) => setCheck(e.target.checked)}
-            />
-          }
-          label={
-            <Typography color="primary.main"> Същите като в делничен ден </Typography>
-          }
-        />
-      )}
   </Grid>
   );
 }
