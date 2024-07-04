@@ -1,6 +1,6 @@
 const server_url = "http://127.0.0.1:3000";
 
-const exec_request = async (params: object, headers: HeadersInit, endpoint: string, method: string) => {
+const execRequest = async (params: object, headers: HeadersInit, endpoint: string, method: string) => {
   const response = await fetch(`${server_url}/${endpoint}`, {
     method: method,
     mode: "cors",
@@ -23,10 +23,10 @@ export const request = async (params: object, endpoint: string, method: string) 
     "Access-Control-Allow-Credentials": "true",
   };
 
-  return await exec_request(params, headers, endpoint, method);
+  return await execRequest(params, headers, endpoint, method);
 };
 
-export const authorized_request = async (
+export const authorizedRequest = async (
   params: object,
   endpoint: string,
   method: string
@@ -37,5 +37,5 @@ export const authorized_request = async (
     "Authorization": `Bearer ${localStorage.getItem("current_user")}`,
   };
 
-  return await exec_request(params, headers, endpoint, method);
+  return await execRequest(params, headers, endpoint, method);
 };

@@ -1,13 +1,13 @@
 import "../css/App.css";
-import { Box, Grid, Typography, TextField, Checkbox, Divider, FormControlLabel } from "@mui/material";
-import { TimeField } from "@mui/x-date-pickers";
+import { Box, Grid, Typography, Checkbox, Divider, FormControlLabel } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { useState, Dispatch, SetStateAction } from "react";
 import { Logo } from "../components/components";
 import { styles, smallMarginPercent } from "../components/styles";
 import { SubmitButton } from "../components/components";
-import { user_information } from "../components/user_requests";
+import { userInformation } from "../components/userRequests";
 import { useNavigate } from "react-router-dom";
+import { InputField, InputParams, TimeInput, TimeInputParams } from "../components/textField";
 
 interface TimeParams {
   name: string;
@@ -42,24 +42,22 @@ export default function Information() {
   const [sameTime, setSameTime] = useState(false);
 
 
-  const text_params = [
+  const text_params: InputParams[] = [
     {
       name: "first_name",
       value: first_name,
       state: setFirstName,
       label: "Име",
-      type: "",
     },
     {
       name: "last_name",
       value: last_name,
       state: setLastName,
       label: "Фамилия",
-      type: "",
     },
   ];
 
-  const weekday_time_params = [
+  const weekday_time_params: TimeInputParams[] = [
     {
       name: "start_time",
       value: start_time,
@@ -74,7 +72,7 @@ export default function Information() {
     },
   ];
 
-  const weekend_time_params = [
+  const weekend_time_params: TimeInputParams[] = [
     {
       name: "weekend_start_time",
       value: weekend_start_time,
@@ -94,7 +92,7 @@ export default function Information() {
     const weekday_time = { start: start_time, end: end_time, };
     const weekend_time = { start: weekend_start_time, end: weekend_end_time, };
 
-    await user_information(
+    await userInformation(
       first_name,
       last_name,
       weekday_time,
@@ -151,16 +149,10 @@ export default function Information() {
             {text_params.map((field) => {
               return (
                 <Grid item xs={12} sm={6} key={field.name}>
-                  <TextField
-                    fullWidth
-                    required
-                    id={field.name}
-                    label={field.label}
-                    name={field.name}
-                    type={field.type}
-                    variant="standard"
-                    value={field.value}
-                    onChange={(e) => field.state(e.target.value)}
+                   <InputField
+                    field={field}
+                    required={true}
+                    fullWidth={true}
                   />
                 </Grid>
               );
@@ -212,21 +204,16 @@ export default function Information() {
 }
 
 function TimeFields(params: TimeFieldParams) {
-
   return (
     <Grid item margin={smallMarginPercent}>
-      <Typography color="primary.main">{params.text}</Typography>
+      <Typography color="primary.main"> {params.text} </Typography>
       {params.time_params.map((field) => {
         return (
           <Grid item key={field.name} marginTop={smallMarginPercent}>
-            <TimeField
+            <TimeInput
+              field={field}
               disabled={params.disabled}
-              format="HH:mm"
-              id={field.name}
-              label={field.label}
-              name={field.name}
-              value={field.value}
-              onChange={(e) => field.state(e)}
+              variant={"outlined"}
             />
           </Grid>
         );

@@ -1,11 +1,11 @@
 import Header from '../components/header'
 import { Container, Button } from '@mui/material';
 import { styles } from "../components/styles";
-import * as React from 'react';
 import { SimpleDialog } from '../components/dialog';
+import { useState } from 'react';
 
 export default function DashBoard () {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -26,9 +26,7 @@ export default function DashBoard () {
       >
         <b>Създай дейност</b>
       </Button>
-      <SimpleDialog
-        isOpen={open}
-      />
+      <SimpleDialog isOpen={open}/>
     </Container>
   );
 }

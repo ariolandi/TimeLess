@@ -1,8 +1,9 @@
 // import * as React from 'react';
-import { create_user } from "../../components/user_requests";
+import { createUser } from "../../components/userRequests";
 import { useState } from "react";
 import { CredentialsForm } from "../../components/credentialsForm";
 import { useNavigate } from "react-router-dom";
+import { InputParams } from "../../components/textField";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -14,13 +15,13 @@ export default function SignUp() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const result = await create_user(username, password, email);
+    const result = await createUser(username, password, email);
     localStorage.setItem("current_user", result.data.token);
   
     navigate(`/information`);
   };
 
-  const params = [
+  const params: InputParams[] = [
     {
       name: "username",
       value: username,

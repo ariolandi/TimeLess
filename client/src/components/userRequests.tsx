@@ -1,6 +1,6 @@
-import { request, authorized_request  } from "./requests";
+import { request, authorizedRequest  } from "./requests";
 
-export const create_user = async (
+export const createUser = async (
     username: FormDataEntryValue | null,
     password: FormDataEntryValue | null,
     email: FormDataEntryValue | null
@@ -16,7 +16,7 @@ export const create_user = async (
     return await request(user_data, "signup", "POST");
 };
 
-export const login_user = async (
+export const loginUser = async (
     username: FormDataEntryValue | null,
     password: FormDataEntryValue | null
 ) => {
@@ -28,7 +28,7 @@ export const login_user = async (
     return await request(user_data, "login", "POST");
 };
 
-export const user_information = async (
+export const userInformation = async (
     first_name: FormDataEntryValue | null,
     last_name: FormDataEntryValue | null,
     weekday_time: object,
@@ -41,5 +41,5 @@ export const user_information = async (
         weekend_time: weekend_time
     };
 
-    return await authorized_request(user_data, "update", "POST");
+    return await authorizedRequest(user_data, "update", "POST");
 };

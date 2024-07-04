@@ -1,8 +1,9 @@
 // import * as React from 'react';
-import { login_user } from "../../components/user_requests";
+import { loginUser } from "../../components/userRequests";
 import { useState } from "react";
 import { CredentialsForm } from "../../components/credentialsForm";
 import { useNavigate } from "react-router-dom";
+import { InputParams } from "../../components/textField";
 
 export default function LogIn() {
   const navigate = useNavigate();
@@ -13,14 +14,14 @@ export default function LogIn() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const result = await login_user(username, password);
+    const result = await loginUser(username, password);
     localStorage.setItem("current_user", result.data.token);
 
     if (!result.data.onboarded) navigate(`/information`);
     else navigate(`/dashboard`);
   };
 
-  const params = [
+  const params: InputParams[] = [
     {
       name: "username",
       value: username,

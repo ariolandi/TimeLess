@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { styles, standardMarginPercent } from "./styles";
 import { SubmitButton } from "./components";
-import { InputParams, InputTextField } from "./textField";
+import { InputParams, InputField } from "./textField";
 
 export interface CredentialsFormProps {
   params: InputParams[];
@@ -42,12 +42,10 @@ export function CredentialsForm({
             {params.map((field) => {
               return (
                 <Grid item xs={12} key={field.name}>
-                  <InputTextField
-                    name={field.name}
-                    value={field.value}
-                    state={field.state}
-                    label={field.label}
-                    type={field.type}
+                  <InputField
+                    field={field}
+                    fullWidth={true}
+                    required={true}
                   />
                 </Grid>
               );
