@@ -26,7 +26,6 @@ export default function SignUp() {
       value: username,
       state: setUsername,
       label: "Потребителско име",
-      type: "",
     },
     {
       name: "password",

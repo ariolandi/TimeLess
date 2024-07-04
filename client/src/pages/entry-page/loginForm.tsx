@@ -26,7 +26,6 @@ export default function LogIn() {
       value: username,
       state: setUsername,
       label: "Потребителско име",
-      type: "",
     },
     {
       name: "password",

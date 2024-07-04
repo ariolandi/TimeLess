@@ -1,23 +1,15 @@
 // import * asReact from 'react';
-import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { styles, standardMarginPercent } from "./styles";
 import { SubmitButton } from "./components";
+import { InputParams, InputTextField } from "./textField";
 
 export interface CredentialsFormProps {
   params: InputParams[];
   buttonText: string;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-}
-
-export interface InputParams {
-  name: string;
-  value: string;
-  state: (value: string) => void;
-  label: string;
-  type: string;
 }
 
 export function CredentialsForm({
@@ -50,16 +42,12 @@ export function CredentialsForm({
             {params.map((field) => {
               return (
                 <Grid item xs={12} key={field.name}>
-                  <TextField
-                    required
-                    fullWidth
-                    id={field.name}
-                    label={field.label}
+                  <InputTextField
                     name={field.name}
-                    type={field.type}
-                    variant="standard"
                     value={field.value}
-                    onChange={(e) => field.state(e.target.value)}
+                    state={field.state}
+                    label={field.label}
+                    type={field.type}
                   />
                 </Grid>
               );
