@@ -16,12 +16,6 @@ class UserController < ApplicationController
     end
   end
 
-  def new
-  end
-
-  def index
-  end
-
   private
 
   def user_params

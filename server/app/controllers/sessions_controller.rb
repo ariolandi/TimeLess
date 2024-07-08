@@ -1,7 +1,4 @@
 class SessionsController < ApplicationController
-  def check
-  end
-
   def create
     user = User.find_by(username: params[:username])
     if user&.authenticate(params[:password])
@@ -34,8 +31,6 @@ class SessionsController < ApplicationController
       user.save
       place = Place.new(user_id: user.id, name: 'home')
       place.save
-      puts user.inspect
-      puts place.inspect
 
       render json: {
         status: { code: 200, message: 'Signed in successfully.' },

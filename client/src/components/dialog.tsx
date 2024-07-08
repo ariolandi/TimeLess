@@ -1,18 +1,18 @@
 import { Box, Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, Switch, Typography } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import { useState } from "react";
-import { InputParams, InputField, TimeInput, TimeInputParams } from "./textField";
-import dayjs, { Dayjs } from "dayjs";
+import { InputParams, InputField } from "./textField";
+import { TimeInput, TimeInputParams } from "./timeField";
 
-export function SimpleDialog(isOpen: boolean = true) {
+export function SimpleDialog({isOpen}: {isOpen: boolean}) {
   const [open, setOpen] = useState(isOpen);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [timeToggle, setTimeToggle] = useState(false);
   const [doRepeat, setDoRepeat] = useState(false);
   const [repeat, setRepeat] = useState("0");
-  const [duration, setDuration] = useState<Dayjs | null>(null);
-  const [startTime, setStartTime] = useState<Dayjs | null>(dayjs("2000-01-01T9:00"));
+  const [duration, setDuration] = useState<string | null>(null);
+  const [startTime, setStartTime] = useState<string | null>("9:00");
 
   const handleClose = () => {
     setOpen(false);
@@ -59,14 +59,6 @@ export function SimpleDialog(isOpen: boolean = true) {
     <Dialog
       open={open}
       fullWidth={true}
-      onClose={handleClose}
-      PaperProps={{
-        component: "form",
-        onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-          event.preventDefault();
-          // handleClose();
-        },
-      }}
     >
       <DialogTitle
         sx={{

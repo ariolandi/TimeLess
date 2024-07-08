@@ -14,12 +14,6 @@ class PlaceController < ApplicationController
     end
   end
 
-  def new
-  end
-
-  def index
-  end
-
   private
 
   def place_params

@@ -4,9 +4,10 @@ class CreateActivity < ActiveRecord::Migration[7.1]
       t.integer :user_id
       t.string :title, null: false
       t.string :description
-      t.time :duration, null: false
+      t.duration :duration, null: false
       t.integer :place
       t.integer :repeat, default: 0
+      t.integer :start_time
 
       t.timestamps
     end

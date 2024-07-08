@@ -1,4 +1,3 @@
-// import * as React from 'react';
 import { loginUser } from "../../components/userRequests";
 import { useState } from "react";
 import { CredentialsForm } from "../../components/credentialsForm";

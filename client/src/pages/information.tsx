@@ -1,23 +1,16 @@
 import "../css/App.css";
 import { Box, Grid, Typography, Checkbox, Divider, FormControlLabel } from "@mui/material";
-import dayjs, { Dayjs } from "dayjs";
-import { useState, Dispatch, SetStateAction } from "react";
+import { useState } from "react";
 import { Logo } from "../components/components";
 import { styles, smallMarginPercent } from "../components/styles";
 import { SubmitButton } from "../components/components";
 import { userInformation } from "../components/userRequests";
 import { useNavigate } from "react-router-dom";
-import { InputField, InputParams, TimeInput, TimeInputParams } from "../components/textField";
-
-interface TimeParams {
-  name: string;
-  value: Dayjs | null;
-  state: Dispatch<SetStateAction<Dayjs | null>>;
-  label: string;
-}
+import { InputField, InputParams } from "../components/textField";
+import { TimeInput, TimeInputParams } from "../components/timeField";
 
 interface TimeFieldParams {
-  time_params: TimeParams[];
+  time_params: TimeInputParams[];
   text: string;
   disabled: boolean;
 }
@@ -27,20 +20,11 @@ export default function Information() {
 
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
-  const [start_time, setStartTime] = useState<Dayjs | null>(
-    dayjs("2000-01-01T9:00")
-  );
-  const [end_time, setEndTime] = useState<Dayjs | null>(
-    dayjs("2000-01-01T18:00")
-  );
-  const [weekend_start_time, setWeekendStartTime] = useState<Dayjs | null>(
-    dayjs("2000-01-01T9:00")
-  );
-  const [weekend_end_time, setWeekendEndTime] = useState<Dayjs | null>(
-    dayjs("2000-01-01T18:00")
-  );
+  const [start_time, setStartTime] = useState<string | null>('9:00');
+  const [end_time, setEndTime] = useState<string | null>('18:00');
+  const [weekend_start_time, setWeekendStartTime] = useState<string | null>('9:00');
+  const [weekend_end_time, setWeekendEndTime] = useState<string | null>('18:00');
   const [sameTime, setSameTime] = useState(false);
-
 
   const text_params: InputParams[] = [
     {
