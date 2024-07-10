@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   post '/login' => 'sessions#create'
   get '/logout' => 'sessions#destroy'
-  post '/update' => 'sessions#update'
+  post '/update_user' => 'sessions#update'
 
   post '/activity' => 'activity#create'
 

@@ -1,7 +1,7 @@
 import "../css/App.css";
-import { Box, Grid, Typography, Checkbox, Divider, FormControlLabel } from "@mui/material";
+import { Box, Grid, Typography, Checkbox, Divider, FormControlLabel, Container } from "@mui/material";
 import { useState } from "react";
-import { Logo } from "../components/components";
+import { GridColumn, Logo } from "../components/components";
 import { styles, smallMarginPercent } from "../components/styles";
 import { SubmitButton } from "../components/components";
 import { userInformation } from "../components/userRequests";
@@ -132,25 +132,27 @@ export default function Information() {
           <Grid container spacing={4}>
             {text_params.map((field) => {
               return (
-                <Grid item xs={12} sm={6} key={field.name}>
-                   <InputField
-                    field={field}
-                    required={true}
-                    fullWidth={true}
-                  />
-                </Grid>
+                <GridColumn>
+                  <Container key={field.name}>
+                    <InputField
+                      field={field}
+                      required={true}
+                      fullWidth={true}
+                    />
+                  </Container>
+                </GridColumn>
               );
             })}
           </Grid>
           <Grid container>
-            <Grid item xs={12} sm={6}>
+            <GridColumn>
               <TimeFields
                 time_params={weekday_time_params}
                 text="Начален и краен час в делнични дни"
                 disabled={false}
               />
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            </GridColumn>
+            <GridColumn>
               <TimeFields
                 time_params={weekend_time_params}
                 text="Начален и краен час в почивни дни"
@@ -171,7 +173,7 @@ export default function Information() {
                   <Typography color="primary.main"> Същите като в делничен ден </Typography>
                 }
               />
-            </Grid>
+            </GridColumn>
           </Grid>
           <Grid
             item

@@ -3,9 +3,10 @@ import Dialog from "@mui/material/Dialog";
 import { useState } from "react";
 import { InputParams, InputField } from "./textField";
 import { TimeInput, TimeInputParams } from "./timeField";
+import { createActivity } from "./activityRequests";
+import { GridColumn } from "./components";
 
-export function SimpleDialog({isOpen}: {isOpen: boolean}) {
-  const [open, setOpen] = useState(isOpen);
+export function ActivityDialog({isOpen}: {isOpen: boolean}) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [timeToggle, setTimeToggle] = useState(false);
@@ -15,8 +16,14 @@ export function SimpleDialog({isOpen}: {isOpen: boolean}) {
   const [startTime, setStartTime] = useState<string | null>("9:00");
 
   const handleClose = () => {
-    setOpen(false);
+    isOpen = false;
   };
+
+  const handleSubmit = async () => {
+    const result = await createActivity(title, description, duration, repeat, startTime);
+    console.log(result);
+    handleClose();
+  }
 
   const titleInput: InputParams = {
     name: "title",
@@ -57,7 +64,7 @@ export function SimpleDialog({isOpen}: {isOpen: boolean}) {
 
   return (
     <Dialog
-      open={open}
+      open={isOpen}
       fullWidth={true}
     >
       <DialogTitle
@@ -72,18 +79,18 @@ export function SimpleDialog({isOpen}: {isOpen: boolean}) {
       </DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          <GridColumn>
             <InputField
               field={titleInput}
               required={true}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </GridColumn>
+          <GridColumn>
             <TimeInput
               field={durationInput}
               required={true}
             />
-          </Grid>
+          </GridColumn>
           <Grid item xs={12}>
             <InputField
               field={descriptionInput}
@@ -125,7 +132,7 @@ export function SimpleDialog({isOpen}: {isOpen: boolean}) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Затвори</Button>
-        <Button type="submit">Създай</Button>
+        <Button onClick={handleSubmit}>Създай</Button>
       </DialogActions>
     </Dialog>
   );

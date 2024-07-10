@@ -20,9 +20,9 @@ export function TimeInput({
   disabled?: boolean;
   variant?: "outlined" | "filled" | "standard";
 }) {
-  const toDaysjs = (time: string | null): Dayjs => {
+  const toDaysjs = (time: string | null): Dayjs | null => {
     const year = "2000-01-01";
-    return dayjs(`${year}T${time}`);
+    return time ? dayjs(`${year}T${time}`) : null;
   };
 
   const fromDaysjs = (datetime: Dayjs | null): string => {

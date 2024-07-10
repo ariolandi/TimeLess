@@ -2,6 +2,8 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import logo from "../assets/timeless_logo_white.svg";
 import { styles } from "./styles";
+import { Grid } from "@mui/material";
+import { ReactNode } from "react";
 
 export function SubmitButton({ buttonText }: { buttonText: string }) {
   return (
@@ -39,5 +41,17 @@ export function Logo({
         maxHeight: maxHeight,
       }}
     />
+  );
+}
+
+export interface GridColumnProps {
+  children: ReactNode
+}
+
+export function GridColumn({ children }: GridColumnProps) {
+  return (
+    <Grid item xs={12} sm={6}>
+      {children}
+    </Grid>
   );
 }

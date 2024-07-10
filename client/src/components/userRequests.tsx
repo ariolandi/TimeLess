@@ -41,5 +41,5 @@ export const userInformation = async (
         weekend_time: weekend_time
     };
 
-    return await authorizedRequest(user_data, "update", "POST");
+    return await authorizedRequest(user_data, "update_user", "POST");
 };
