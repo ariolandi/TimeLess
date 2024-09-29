@@ -3,8 +3,10 @@ import Dialog from "@mui/material/Dialog";
 import { useState } from "react";
 import { InputParams, InputField } from "./textField";
 import { TimeInput, TimeInputParams } from "./timeField";
-import { createActivity } from "./activityRequests";
+import { ActivityService } from "../services/activityService";
 import { GridColumn } from "./components";
+
+const activityService = new ActivityService();
 
 export function ActivityDialog({isOpen}: {isOpen: boolean}) {
   const [title, setTitle] = useState("");
@@ -20,7 +22,7 @@ export function ActivityDialog({isOpen}: {isOpen: boolean}) {
   };
 
   const handleSubmit = async () => {
-    const result = await createActivity(title, description, duration, repeat, startTime);
+    const result = await activityService.create({title, description, duration, repeat, startTime});
     console.log(result);
     handleClose();
   }

@@ -2,8 +2,8 @@ class CreateActivity < ActiveRecord::Migration[7.1]
   def change
     create_table :activities do |t|
       t.integer :user_id
-      t.string :title, null: false
-      t.string :description
+      t.text :title, null: false
+      t.text :description
       t.duration :duration, null: false
       t.integer :place
       t.integer :repeat, default: 0

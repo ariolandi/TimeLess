@@ -21,6 +21,6 @@ class ActivityController < ApplicationController
   private
 
   def activity_params
-    params.require(:activity).permit(:title)
+    params.require(:activity).permit(:title, :description, :duration, :repeat)
   end
 end

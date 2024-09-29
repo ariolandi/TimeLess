@@ -1,9 +1,11 @@
 // import * as React from 'react';
-import { createUser } from "../../components/userRequests";
+import { UserService } from "../../services/userService";
 import { useState } from "react";
 import { CredentialsForm } from "../../components/credentialsForm";
 import { useNavigate } from "react-router-dom";
 import { InputParams } from "../../components/textField";
+
+const userService = new UserService();
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -15,7 +17,7 @@ export default function SignUp() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const result = await createUser(username, password, email);
+    const result = await userService.create({username, password, email});
     localStorage.setItem("current_user", result.data.token);
   
     navigate(`/information`);

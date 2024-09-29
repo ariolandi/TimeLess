@@ -4,11 +4,12 @@ import { useState } from "react";
 import { GridColumn, Logo } from "../components/components";
 import { styles, smallMarginPercent } from "../components/styles";
 import { SubmitButton } from "../components/components";
-import { userInformation } from "../components/userRequests";
+import { UserService } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 import { InputField, InputParams } from "../components/textField";
 import { TimeInput, TimeInputParams } from "../components/timeField";
 
+const userService = new UserService();
 interface TimeFieldParams {
   time_params: TimeInputParams[];
   text: string;
@@ -20,10 +21,10 @@ export default function Information() {
 
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
-  const [start_time, setStartTime] = useState<string | null>('9:00');
-  const [end_time, setEndTime] = useState<string | null>('18:00');
-  const [weekend_start_time, setWeekendStartTime] = useState<string | null>('9:00');
-  const [weekend_end_time, setWeekendEndTime] = useState<string | null>('18:00');
+  const [start_time, setStartTime] = useState<string>('9:00');
+  const [end_time, setEndTime] = useState<string>('18:00');
+  const [weekend_start_time, setWeekendStartTime] = useState<string>('9:00');
+  const [weekend_end_time, setWeekendEndTime] = useState<string>('18:00');
   const [sameTime, setSameTime] = useState(false);
 
   const text_params: InputParams[] = [
@@ -75,13 +76,14 @@ export default function Information() {
     event.preventDefault();
     const weekday_time = { start: start_time, end: end_time, };
     const weekend_time = { start: weekend_start_time, end: weekend_end_time, };
-
-    await userInformation(
+    console.log(weekday_time);
+    console.log('on submit');
+    await userService.information({
       first_name,
       last_name,
       weekday_time,
       weekend_time,
-    );
+    });
 
     navigate(`/dashboard`);
   };

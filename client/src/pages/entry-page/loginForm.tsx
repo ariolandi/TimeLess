@@ -1,8 +1,10 @@
-import { loginUser } from "../../components/userRequests";
+import { UserService } from "../../services/userService";
 import { useState } from "react";
 import { CredentialsForm } from "../../components/credentialsForm";
 import { useNavigate } from "react-router-dom";
 import { InputParams } from "../../components/textField";
+
+const userService = new UserService();
 
 export default function LogIn() {
   const navigate = useNavigate();
@@ -13,7 +15,7 @@ export default function LogIn() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const result = await loginUser(username, password);
+    const result = await userService.login({username, password});
     localStorage.setItem("current_user", result.data.token);
 
     if (!result.data.onboarded) navigate(`/information`);

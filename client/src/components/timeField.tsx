@@ -25,11 +25,11 @@ export function TimeInput({
     return time ? dayjs(`${year}T${time}`) : null;
   };
 
-  const fromDaysjs = (datetime: Dayjs | null): string => {
-    const hours = datetime?.hour || "00";
-    const minutes = datetime?.minute || "00";
+  function fromDaysjs (datetime: Dayjs | null): string {
+    const hours = datetime?.hour() || "00";
+    const minutes = datetime?.minute() || "00";
     return `${hours}:${minutes}`;
-  };
+  }
 
   return (
     <TimeField
@@ -43,7 +43,10 @@ export function TimeInput({
       color="primary"
       variant={variant || "standard"}
       sx={{ marginTop: "15px" }}
-      onChange={(e) => field.state(fromDaysjs(e))}
+      onChange={(e) => {
+        const time = fromDaysjs(e);
+        field.state(time);
+      }}
     />
   );
 }

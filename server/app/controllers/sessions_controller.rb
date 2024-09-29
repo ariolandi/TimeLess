@@ -19,18 +19,22 @@ class SessionsController < ApplicationController
   def update
     user_token = request.headers['Authorization']&.gsub('Bearer ', '')
     user = User.find_by(token: user_token)
-    if user
-      user.update(
-        first_name: params[:first_name],
-        last_name: params[:last_name],
-        start_time: params[:weekday_time][:start],
-        end_time: params[:weekday_time][:end],
-        weekend_start_time: params[:weekend_time][:start],
-        weekend_end_time: params[:weekend_time][:end]
-      )
+    puts params
+    if user&.update(
+      first_name: params[:first_name],
+      last_name: params[:last_name],
+      start_time: params[:weekday_time][:start].to_time,
+      end_time: params[:weekday_time][:end].to_time,
+      weekend_start_time: Time.parse(params[:weekend_time][:start]),
+      weekend_end_time: Time.parse(params[:weekend_time][:end])
+    )
+      puts user.inspect
       user.save
-      place = Place.new(user_id: user.id, name: 'home')
-      place.save
+      place = Place.find_by(user_id: user.id)
+      unless place
+        place = Place.new(user_id: user.id, name: 'home')
+        place.save
+      end
 
       render json: {
         status: { code: 200, message: 'Signed in successfully.' },
