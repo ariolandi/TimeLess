@@ -12,6 +12,6 @@ export class ActivityService {
   private httpService = new HTTPService()
 
   async create (activity: ActivityInput) {
-    return await this.httpService.authorizedRequest(activity, "update_user", "POST");
+    return await this.httpService.authorizedRequest(activity, "activity", "POST");
   }
 }

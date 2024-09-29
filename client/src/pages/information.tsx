@@ -21,10 +21,10 @@ export default function Information() {
 
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
-  const [start_time, setStartTime] = useState<string>('9:00');
-  const [end_time, setEndTime] = useState<string>('18:00');
-  const [weekend_start_time, setWeekendStartTime] = useState<string>('9:00');
-  const [weekend_end_time, setWeekendEndTime] = useState<string>('18:00');
+  const [start_time, setStartTime] = useState<string | null>('9:00');
+  const [end_time, setEndTime] = useState<string | null>('18:00');
+  const [weekend_start_time, setWeekendStartTime] = useState<string | null>('9:00');
+  const [weekend_end_time, setWeekendEndTime] = useState<string | null>('18:00');
   const [sameTime, setSameTime] = useState(false);
 
   const text_params: InputParams[] = [

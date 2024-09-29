@@ -44,8 +44,7 @@ export function TimeInput({
       variant={variant || "standard"}
       sx={{ marginTop: "15px" }}
       onChange={(e) => {
-        const time = fromDaysjs(e);
-        field.state(time);
+        field.state(fromDaysjs(e));
       }}
     />
   );

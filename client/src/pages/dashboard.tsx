@@ -20,7 +20,7 @@ export default function DashBoard () {
       >
         <b>Създай дейност</b>
       </Button>
-      <ActivityDialog isOpen={open}/>
+      <ActivityDialog open={open} setOpen={setOpen}/>
     </Container>
   );
 }

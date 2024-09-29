@@ -8,7 +8,7 @@ import { GridColumn } from "./components";
 
 const activityService = new ActivityService();
 
-export function ActivityDialog({isOpen}: {isOpen: boolean}) {
+export function ActivityDialog({open, setOpen}: {open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>}) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [timeToggle, setTimeToggle] = useState(false);
@@ -18,7 +18,7 @@ export function ActivityDialog({isOpen}: {isOpen: boolean}) {
   const [startTime, setStartTime] = useState<string | null>("9:00");
 
   const handleClose = () => {
-    isOpen = false;
+    setOpen(false);
   };
 
   const handleSubmit = async () => {
@@ -66,7 +66,7 @@ export function ActivityDialog({isOpen}: {isOpen: boolean}) {
 
   return (
     <Dialog
-      open={isOpen}
+      open={open}
       fullWidth={true}
     >
       <DialogTitle
