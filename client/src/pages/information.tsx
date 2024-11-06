@@ -6,7 +6,7 @@ import { styles, smallMarginPercent } from "../components/styles";
 import { SubmitButton } from "../components/components";
 import { UserService } from "../services/userService";
 import { useNavigate } from "react-router-dom";
-import { InputField, InputParams } from "../components/textField";
+import { InputField, InputParams } from "../components/inputField";
 import { TimeInput, TimeInputParams } from "../components/timeField";
 
 const userService = new UserService();
@@ -138,7 +138,6 @@ export default function Information() {
                   <Container key={field.name}>
                     <InputField
                       field={field}
-                      required={true}
                       fullWidth={true}
                     />
                   </Container>

@@ -3,7 +3,7 @@ import { UserService } from "../../services/userService";
 import { useState } from "react";
 import { CredentialsForm } from "../../components/credentialsForm";
 import { useNavigate } from "react-router-dom";
-import { InputParams } from "../../components/textField";
+import { InputParams } from "../../components/inputField";
 
 const userService = new UserService();
 
@@ -13,14 +13,20 @@ export default function SignUp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [errorText, setErrorText] = useState("");
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const result = await userService.create({username, password, email});
-    localStorage.setItem("current_user", result.data.token);
-  
-    navigate(`/information`);
+
+    if (result) {
+      localStorage.setItem("current_user", result.data.token);
+      navigate('/information');
+    } else {
+      setErrorText("Невалидни потребителски данни")
+    }
   };
 
   const params: InputParams[] = [
@@ -29,6 +35,7 @@ export default function SignUp() {
       value: username,
       state: setUsername,
       label: "Потребителско име",
+      required: true,
     },
     {
       name: "password",
@@ -36,6 +43,7 @@ export default function SignUp() {
       state: setPassword,
       label: "Парола",
       type: "password",
+      required: true,
     },
     {
       name: "email",
@@ -43,6 +51,7 @@ export default function SignUp() {
       state: setEmail,
       label: "Имейл",
       type: "email",
+      required: true,
     },
   ];
 
@@ -50,6 +59,7 @@ export default function SignUp() {
     <CredentialsForm
       params={params}
       buttonText="Регистрация"
+      errorText={errorText}
       onSubmit={handleSubmit}
     />
   );

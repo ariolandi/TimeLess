@@ -4,7 +4,7 @@ function makeStyles<T extends Record<string, SxProps<Theme>>>(styles: T) {
   return styles;
 }
 
-const standartMargin = "16px";
+export const standardMargin = "15px";
 export const standardMarginPercent = "5%";
 export const smallMarginPercent = "2%";
 
@@ -20,14 +20,16 @@ function headerBlockConstructor(width: number) {
 
 export const styles = makeStyles({
   submitButton: {
-    padding: standartMargin,
-    marginTop: standartMargin,
+    padding: standardMargin,
+    marginTop: standardMargin,
   },
   formBorder: {
     border: 1,
     borderRadius: 8,
     padding: standardMarginPercent,
     margin: standardMarginPercent,
+    paddingTop: 0,
+    paddingBottom: smallMarginPercent,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

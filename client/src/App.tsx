@@ -11,12 +11,23 @@ const theme = createTheme({
   palette: {
     primary: {
       main: "#FFC40F",
-      contrastText: "#FFFFFF",
+      contrastText: "#FFFFFF"
     },
     secondary: {
       main: "#CC3366",
     },
+    error: {
+      main: "#CC3366",
+    },
   },
+  typography: {
+    body1: {
+      color: "#FFC40F"
+    },
+    body2: {
+      color: "#957100"
+    }
+  }
 });
 
 const router = createBrowserRouter([

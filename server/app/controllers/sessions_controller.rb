@@ -19,7 +19,6 @@ class SessionsController < ApplicationController
   def update
     user_token = request.headers['Authorization']&.gsub('Bearer ', '')
     user = User.find_by(token: user_token)
-    puts params
     if user&.update(
       first_name: params[:first_name],
       last_name: params[:last_name],
@@ -28,7 +27,6 @@ class SessionsController < ApplicationController
       weekend_start_time: Time.parse(params[:weekend_time][:start]),
       weekend_end_time: Time.parse(params[:weekend_time][:end])
     )
-      puts user.inspect
       user.save
       place = Place.find_by(user_id: user.id)
       unless place

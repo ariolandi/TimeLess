@@ -12,7 +12,7 @@ export class HTTPService {
     console.log(response);
 
     if (!response.ok) {
-      throw response.statusText;
+      return false;
     }
 
     return await response.json();

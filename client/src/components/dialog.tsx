@@ -1,7 +1,7 @@
 import { Box, Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, Switch, Typography } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import { useState } from "react";
-import { InputParams, InputField } from "./textField";
+import { InputParams, InputField } from "./inputField";
 import { TimeInput, TimeInputParams } from "./timeField";
 import { ActivityService } from "../services/activityService";
 import { GridColumn } from "./components";
@@ -84,7 +84,6 @@ export function ActivityDialog({open, setOpen}: {open: boolean, setOpen: React.D
           <GridColumn>
             <InputField
               field={titleInput}
-              required={true}
             />
           </GridColumn>
           <GridColumn>
