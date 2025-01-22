@@ -1,14 +1,35 @@
-import { Box, Button, Checkbox, DialogActions, DialogContent, DialogTitle, FormControlLabel, Grid, Switch, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  Grid,
+  Switch,
+  Typography,
+} from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import { useState } from "react";
 import { InputParams, InputField } from "./inputField";
 import { TimeInput, TimeInputParams } from "./timeField";
-import { ActivityService } from "../services/activityService";
+import { Activity, ActivityService } from "../services/activityService";
 import { GridColumn } from "./components";
 
 const activityService = new ActivityService();
 
-export function ActivityDialog({open, setOpen}: {open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>}) {
+export function ActivityDialog({
+  open,
+  setOpen,
+  activities,
+  setActivities,
+}: {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  activities: Activity[];
+  setActivities: React.Dispatch<React.SetStateAction<Activity[]>>
+}) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [timeToggle, setTimeToggle] = useState(false);
@@ -17,21 +38,33 @@ export function ActivityDialog({open, setOpen}: {open: boolean, setOpen: React.D
   const [duration, setDuration] = useState<string | null>(null);
   const [startTime, setStartTime] = useState<string | null>("9:00");
 
+  const mainColor = "secondary.main";
+  const color = "secondary";
+
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleSubmit = async () => {
-    const result = await activityService.create({title, description, duration, repeat, startTime});
-    console.log(result);
+    const result = await activityService.create({
+      title,
+      description,
+      duration,
+      repeat,
+      startTime,
+    });
+    if (result) {
+      setActivities([...activities, result.data]);
+    }
     handleClose();
-  }
+  };
 
   const titleInput: InputParams = {
     name: "title",
     value: title,
     state: setTitle,
     label: "Заглавие",
+    required: true,
   };
 
   const descriptionInput: InputParams = {
@@ -55,23 +88,20 @@ export function ActivityDialog({open, setOpen}: {open: boolean, setOpen: React.D
     value: startTime,
     state: setStartTime,
     label: "Начален час",
-  }
+  };
 
   const durationInput: TimeInputParams = {
     name: "duration",
     value: duration,
     state: setDuration,
     label: "Продължителност",
-  }
+  };
 
   return (
-    <Dialog
-      open={open}
-      fullWidth={true}
-    >
+    <Dialog open={open} fullWidth={true}>
       <DialogTitle
         sx={{
-          backgroundColor: "primary.main",
+          backgroundColor: mainColor,
           color: "primary.contrastText",
           textAlign: "center",
           fontWeight: "bolder",
@@ -82,30 +112,26 @@ export function ActivityDialog({open, setOpen}: {open: boolean, setOpen: React.D
       <DialogContent>
         <Grid container spacing={2}>
           <GridColumn>
-            <InputField
-              field={titleInput}
-            />
+            <InputField field={titleInput} />
           </GridColumn>
           <GridColumn>
-            <TimeInput
-              field={durationInput}
-              required={true}
-            />
+            <TimeInput field={durationInput} required={true} />
           </GridColumn>
           <Grid item xs={12}>
-            <InputField
-              field={descriptionInput}
-              fullWidth={true}
+            <InputField field={descriptionInput} fullWidth={true} />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={
+                <Switch onChange={(e) => setTimeToggle(e.target.checked)} />
+              }
+              label={
+                <Typography> Фиксиран час </Typography>
+              }
             />
           </Grid>
           <Grid item xs={12}>
-            <FormControlLabel 
-              control={<Switch onChange={(e) => setTimeToggle(e.target.checked)}/>} 
-              label={<Typography color="primary.main"> Фиксиран час </Typography>}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Box sx={{display: timeToggle ? "none" : "block"}}>
+            <Box sx={{ display: timeToggle ? "none" : "block" }}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -113,27 +139,28 @@ export function ActivityDialog({open, setOpen}: {open: boolean, setOpen: React.D
                     onChange={(e) => setDoRepeat(e.target.checked)}
                   />
                 }
-                label={<Typography color="primary.main"> Повтаря се </Typography>}
+                label={
+                  <Typography> Повтаря се </Typography>
+                }
               />
               <InputField
                 field={repeatInput}
                 fullWidth={false}
                 disabled={!doRepeat}
+                color={color}
               />
             </Box>
           </Grid>
           <Grid item xs={12}>
-            <Box sx={{display: timeToggle ? "block" : "none"}}>
-              <TimeInput
-                field={startTimeInput}
-              />
+            <Box sx={{ display: timeToggle ? "block" : "none" }}>
+              <TimeInput field={startTimeInput} />
             </Box>
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Затвори</Button>
-        <Button onClick={handleSubmit}>Създай</Button>
+        <Button color={color}  onClick={handleClose}>Затвори</Button>
+        <Button color={color} onClick={handleSubmit}>Създай</Button>
       </DialogActions>
     </Dialog>
   );

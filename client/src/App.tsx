@@ -22,10 +22,7 @@ const theme = createTheme({
   },
   typography: {
     body1: {
-      color: "#FFC40F"
-    },
-    body2: {
-      color: "#957100"
+      color: "#FFC40F",
     }
   }
 });

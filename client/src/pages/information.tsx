@@ -76,16 +76,19 @@ export default function Information() {
     event.preventDefault();
     const weekday_time = { start: start_time, end: end_time, };
     const weekend_time = { start: weekend_start_time, end: weekend_end_time, };
-    console.log(weekday_time);
-    console.log('on submit');
-    await userService.information({
+
+    const result = await userService.information({
       first_name,
       last_name,
       weekday_time,
       weekend_time,
     });
 
-    navigate(`/dashboard`);
+    if(result) {
+      navigate(`/dashboard`);
+    } else {
+      // setErrorText("Невалидни потребителски данни");
+    }
   };
 
 

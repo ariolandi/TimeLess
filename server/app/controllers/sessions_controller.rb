@@ -2,7 +2,7 @@ class SessionsController < ApplicationController
   def create
     user = User.find_by(username: params[:username])
     if user&.authenticate(params[:password])
-      User.login(user)
+      user.login
       onboarded = user.first_name.present?
 
       render json: {
@@ -17,16 +17,8 @@ class SessionsController < ApplicationController
   end
 
   def update
-    user_token = request.headers['Authorization']&.gsub('Bearer ', '')
     user = User.find_by(token: user_token)
-    if user&.update(
-      first_name: params[:first_name],
-      last_name: params[:last_name],
-      start_time: params[:weekday_time][:start].to_time,
-      end_time: params[:weekday_time][:end].to_time,
-      weekend_start_time: Time.parse(params[:weekend_time][:start]),
-      weekend_end_time: Time.parse(params[:weekend_time][:end])
-    )
+    if user&.update(update_params)
       user.save
       place = Place.find_by(user_id: user.id)
       unless place
@@ -51,5 +43,13 @@ class SessionsController < ApplicationController
       status: { code: 200, message: 'Signed out successfully.' },
       data: {}
     }
+  end
+
+  def user_token
+    request.headers['Authorization']&.gsub('Bearer ', '')
+  end
+
+  def update_params
+    params.require(:first_name, :last_name)
   end
 end

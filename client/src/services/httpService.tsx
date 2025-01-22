@@ -1,14 +1,21 @@
 const server_url = "http://127.0.0.1:3000";
 
+type METHOD = 'POST' | 'GET';
+
 export class HTTPService {
-  private async execRequest(params: object, headers: HeadersInit, endpoint: string, method: string) {
-    const response = await fetch(`${server_url}/${endpoint}`, {
+  private async execRequest(params: object, headers: HeadersInit, endpoint: string, method: METHOD) {
+    const init: RequestInit = {
       method: method,
       mode: "cors",
       credentials: "include",
       headers: headers,
-      body: JSON.stringify(params),
-    });
+    };
+
+    if (method === 'POST') {
+      init.body = JSON.stringify(params);
+    }
+    
+    const response = await fetch(`${server_url}/${endpoint}`, init);
     console.log(response);
 
     if (!response.ok) {
@@ -18,7 +25,7 @@ export class HTTPService {
     return await response.json();
   }
 
-  async request(params: object, endpoint: string, method: string) {
+  async request(params: object, endpoint: string, method: METHOD) {
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Credentials": "true",
@@ -27,11 +34,11 @@ export class HTTPService {
     return await this.execRequest(params, headers, endpoint, method);
   }
 
-  async authorizedRequest (
+  async authorizedRequest<T>(
     params: object,
     endpoint: string,
-    method: string
-  ) {
+    method: METHOD
+  ): Promise<T> {
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Credentials": "true",

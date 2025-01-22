@@ -15,11 +15,13 @@ export function InputField({
   fullWidth,
   disabled,
   error,
+  color,
 }: {
   field: InputParams;
   fullWidth?: boolean;
   disabled?: boolean;
-  error: boolean; 
+  error: boolean;
+  color: "primary" | "secondary";
 }) {
   return (
     <TextField
@@ -33,6 +35,7 @@ export function InputField({
       variant="standard"
       value={field.value}
       multiline={field.multiline}
+      color={color || "primary"}
       disabled={disabled}
       helperText={error && "Това поле е задължително"}
       onChange={(e) => field.state(e.target.value)}
