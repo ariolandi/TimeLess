@@ -20,10 +20,6 @@ class ActivityController < ApplicationController
 
   def get_all
     user = User.find_by(token: user_token)
-    puts user_token
-
-    puts user.nil?
-    puts user.blank?
     if user.nil?
       render json: {
         status: { message: "No such user" }

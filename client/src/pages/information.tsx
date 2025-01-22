@@ -26,6 +26,7 @@ export default function Information() {
   const [weekend_start_time, setWeekendStartTime] = useState<string | null>('9:00');
   const [weekend_end_time, setWeekendEndTime] = useState<string | null>('18:00');
   const [sameTime, setSameTime] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   const text_params: InputParams[] = [
     {
@@ -87,7 +88,7 @@ export default function Information() {
     if(result) {
       navigate(`/dashboard`);
     } else {
-      // setErrorText("Невалидни потребителски данни");
+      setErrorText("Невалидни потребителски данни");
     }
   };
 
@@ -178,6 +179,9 @@ export default function Information() {
                 }
               />
             </GridColumn>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography sx={{color: "secondary.main" }}> {errorText} </Typography>
           </Grid>
           <Grid
             item

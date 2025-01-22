@@ -35,6 +35,6 @@ export class UserService {
   }
 
   async information (information: UserInformation) {
-    return await this.httpService.authorizedRequest(information, "update_user", "POST");
+    return await this.httpService.authorizedRequest<{ data: UserInformation }>(information, "update_user", "POST");
   }
 }

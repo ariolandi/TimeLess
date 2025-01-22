@@ -1,25 +1,22 @@
-import { Button, Container } from "@mui/material";
+import { Box, Button, Container, Grid } from "@mui/material";
 import { Activity } from "../services/activityService";
-import { styles } from "./styles";
+import CalendarColumn from "./calendarColumn";
 
 export default function Calendar({ activities }: { activities: Activity[] }) {
   return (
-    <Container
+    <Grid 
+      component="main"
       sx={{
-        ...styles.formBorder,
-        ...{
-          color: "primary.main",
-          width: "50%",
-        },
-      }}
-    >
-      {activities.map((activity) => {
-        return (
-          <Button variant="contained" fullWidth sx={styles.submitButton}>
-            <b>{activity.title}</b>
-          </Button>
-        );
-      })}
-    </Container>
+        display: "flex",
+        width: "100%",
+      }}>
+      <CalendarColumn day={"Понеделник"} activities={activities} />
+      <CalendarColumn day={"Вторник"} activities={activities} />
+      <CalendarColumn day={"Сряда"} activities={activities} />
+      <CalendarColumn day={"Четвъртък"} activities={activities} />
+      <CalendarColumn day={"Петък"} activities={activities} />
+      <CalendarColumn day={"Събота"} activities={activities} />
+      <CalendarColumn day={"Неделя"} activities={activities} />
+    </Grid>
   );
 }

@@ -50,6 +50,8 @@ class SessionsController < ApplicationController
   end
 
   def update_params
-    params.require(:first_name, :last_name)
+    params.require(:first_name)
+    params.require(:last_name)
+    params.require(:session).permit(:first_name, :last_name, :start_time, :end_time, :weekend_start_time, :weekend_end_time)
   end
 end

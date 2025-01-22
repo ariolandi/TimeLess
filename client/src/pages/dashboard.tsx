@@ -28,8 +28,6 @@ export default function DashBoard() {
     })();
   }, []);
 
-
-  console.log(activities);
   return (
     <Container maxWidth={false} disableGutters>
       <Header />

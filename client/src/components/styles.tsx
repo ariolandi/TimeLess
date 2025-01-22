@@ -5,6 +5,7 @@ function makeStyles<T extends Record<string, SxProps<Theme>>>(styles: T) {
 }
 
 export const standardMargin = "15px";
+export const smallMargin = "7px";
 export const standardMarginPercent = "5%";
 export const smallMarginPercent = "2%";
 
