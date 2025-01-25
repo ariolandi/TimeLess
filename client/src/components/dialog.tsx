@@ -36,7 +36,7 @@ export function ActivityDialog({
   const [doRepeat, setDoRepeat] = useState(false);
   const [repeat, setRepeat] = useState("0");
   const [duration, setDuration] = useState<string | null>(null);
-  const [startTime, setStartTime] = useState<string | null>("9:00");
+  const [start_time, setStartTime] = useState<string | null>("9:00");
 
   const mainColor = "secondary.main";
   const color = "secondary";
@@ -51,7 +51,7 @@ export function ActivityDialog({
       description,
       duration,
       repeat,
-      startTime,
+      start_time,
     });
     if (result) {
       setActivities([...activities, result.data]);
@@ -85,7 +85,7 @@ export function ActivityDialog({
 
   const startTimeInput: TimeInputParams = {
     name: "startTime",
-    value: startTime,
+    value: start_time,
     state: setStartTime,
     label: "Начален час",
   };

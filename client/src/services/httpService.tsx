@@ -1,4 +1,4 @@
-const server_url = "http://127.0.0.1:3000";
+const server_url = import.meta.env.VITE_SERVER_HOST;
 
 type METHOD = 'POST' | 'GET';
 

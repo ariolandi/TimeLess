@@ -5,7 +5,7 @@ export interface ActivityInput {
     description: string,
     duration: string | null,
     repeat: string,
-    startTime: string | null,
+    start_time: string | null,
 }
 
 export interface Activity {
@@ -14,6 +14,7 @@ export interface Activity {
     description: string,
     duration: string,
     repeat: number,
+    start_time: string | null,
 }
 
 export class ActivityService {

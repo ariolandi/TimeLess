@@ -11,8 +11,8 @@ const activityService = new ActivityService();
 export default function DashBoard() {
   const [openDialog, setOpenDialog] = useState(false);
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<unknown>();
+  const [, setLoading] = useState(true);
+  const [, setError] = useState<unknown>();
 
   useEffect(() => {
     (async () => {
@@ -42,7 +42,10 @@ export default function DashBoard() {
       >
         <Button
           variant="contained"
-          sx={styles.submitButton}
+          sx={{
+            backgroundColor: "secondary.main",
+            ...styles.submitButton
+          }}
           onClick={() => setOpenDialog(true)}
         >
           <b>Създай дейност</b>

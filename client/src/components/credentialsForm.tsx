@@ -5,7 +5,7 @@ import Container from "@mui/material/Container";
 import { styles, standardMarginPercent } from "./styles";
 import { SubmitButton } from "./components";
 import { InputParams, InputField } from "./inputField";
-import { colors, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useState } from "react";
 
 export interface CredentialsFormProps {

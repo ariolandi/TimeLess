@@ -1,0 +1,42 @@
+services:
+  server: 
+    build: ./server
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgresql
+    environment:
+      RAILS_ENV: production
+      SECRET_KEY_BASE: b61a8d0584622106b76a3eb725ede96e
+      DB_PASSWORD: timeless
+      DB_HOST: postgresql
+      DB_USERNAME: postgres
+      DB_DATABASE: postgres
+    
+  postgresql:
+    image: postgres:17
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    # or set shared memory limit when deploy via swarm stack
+    #volumes:
+    #  - type: tmpfs
+    #    target: /dev/shm
+    #    tmpfs:
+    #      size: 134217728 # 128*2^20 bytes = 128Mb
+    environment:
+      POSTGRES_PASSWORD: timeless
+
+  client:
+    build:
+      context: ./client
+      args:
+        VITE_SERVER_HOST: http://127.0.0.1:3000
+    restart: always
+    ports:
+      - 3001:8080
+    depends_on:
+      - server
+
+

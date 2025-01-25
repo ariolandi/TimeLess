@@ -25,4 +25,7 @@ test:
 
 production:
   <<: *default
-  host: 'localhost'
+  password: <%= ENV.fetch("DB_PASSWORD")%>
+  host: <%= ENV.fetch("DB_HOST")%>
+  username: <%= ENV.fetch("DB_USERNAME")%>
+  database: <%= ENV.fetch("DB_DATABASE")%>

@@ -20,8 +20,8 @@ export function InputField({
   field: InputParams;
   fullWidth?: boolean;
   disabled?: boolean;
-  error: boolean;
-  color: "primary" | "secondary";
+  error?: boolean;
+  color?: "primary" | "secondary";
 }) {
   return (
     <TextField

@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { Activity } from "../services/activityService";
 import CalendarColumn from "./calendarColumn";
 

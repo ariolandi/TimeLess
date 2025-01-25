@@ -1,7 +1,7 @@
 import { TimeField } from "@mui/x-date-pickers/TimeField";
-import dayjs, { Dayjs } from "dayjs";
 import { Dispatch, SetStateAction } from "react";
 import { standardMargin } from "./styles";
+import { fromDaysjs, toDaysjs } from "./dateTime";
 
 export interface TimeInputParams {
   name: string;
@@ -21,16 +21,6 @@ export function TimeInput({
   disabled?: boolean;
   variant?: "outlined" | "filled" | "standard";
 }) {
-  const toDaysjs = (time: string | null): Dayjs | null => {
-    const year = "2000-01-01";
-    return time ? dayjs(`${year}T${time}`) : null;
-  };
-
-  function fromDaysjs(datetime: Dayjs | null): string {
-    const hours = datetime?.hour() || "00";
-    const minutes = datetime?.minute() || "00";
-    return `${hours}:${minutes}`;
-  }
 
   return (
     <TimeField
