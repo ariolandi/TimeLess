@@ -2,41 +2,64 @@ services:
   server: 
     build: ./server
     restart: always
-    ports:
-      - 3000:3000
     depends_on:
       - postgresql
     environment:
       RAILS_ENV: production
-      SECRET_KEY_BASE: b61a8d0584622106b76a3eb725ede96e
-      DB_PASSWORD: timeless
+      SECRET_KEY_BASE: $SECRET_KEY_BASE
+      DB_PASSWORD: $DB_PASSWORD
       DB_HOST: postgresql
       DB_USERNAME: postgres
       DB_DATABASE: postgres
+    networks:
+      - public
+      - database
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=public
+      - traefik.http.services.timeless-server.loadbalancer.server.port=3000
+      - traefik.http.routers.timeless-server.rule=Host(`timeless.ariolandi.com`)&&PathPrefix(`/api`)
+      - traefik.http.middlewares.timeless-server-prefix.stripprefix.prefixes=/api
+      - traefik.http.middlewares.timeless-server-scheme.redirectscheme.scheme=https
+      - traefik.http.routers.timeless-server.middlewares=timeless-server-scheme,timeless-server-prefix
+      - traefik.http.routers.timeless-server.tls=true
+      - traefik.http.routers.timeless-server.tls.certresolver=ariolandi-com
+      - traefik.http.routers.timeless-server.tls.domains[0].main=timeless.ariolandi.com
     
   postgresql:
     image: postgres:17
     restart: always
-    # set shared memory limit when using docker-compose
     shm_size: 128mb
-    # or set shared memory limit when deploy via swarm stack
-    #volumes:
-    #  - type: tmpfs
-    #    target: /dev/shm
-    #    tmpfs:
-    #      size: 134217728 # 128*2^20 bytes = 128Mb
     environment:
-      POSTGRES_PASSWORD: timeless
+      POSTGRES_PASSWORD: $DB_PASSWORD
+    volumes:
+      - /home/stella/data/timeless:/var/lib/postgresql/data
+    networks:
+      - database
 
   client:
     build:
       context: ./client
       args:
-        VITE_SERVER_HOST: http://127.0.0.1:3000
+        VITE_SERVER_HOST: $VITE_SERVER_HOST
     restart: always
-    ports:
-      - 3001:8080
     depends_on:
       - server
+    networks:
+      - public
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=public
+      - traefik.http.services.timeless-client.loadbalancer.server.port=8080
+      - traefik.http.routers.timeless-client.rule=Host(`timeless.ariolandi.com`)
+      - traefik.http.middlewares.timeless-client.redirectscheme.scheme=https
+      - traefik.http.routers.timeless-client.middlewares=timeless-client
+      - traefik.http.routers.timeless-client.tls=true
+      - traefik.http.routers.timeless-client.tls.certresolver=ariolandi-com
+      - traefik.http.routers.timeless-client.tls.domains[0].main=timeless.ariolandi.com
 
+networks:
+  public:
+    external: true
+  database:
 

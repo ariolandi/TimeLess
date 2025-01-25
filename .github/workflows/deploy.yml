@@ -1,0 +1,17 @@
+name: Deploy
+on: 
+  push: 
+    branches: main
+jobs:
+  Deploy:
+    runs-on: self-hosted
+    environment: main
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: docker compose up --build -d
+        env: 
+          VITE_SERVER_HOST: ${{ vars.VITE_SERVER_HOST }}
+          SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
