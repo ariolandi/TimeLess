@@ -16,8 +16,23 @@ import { InputParams, InputField } from "./inputField";
 import { TimeInput, TimeInputParams } from "./timeField";
 import { Activity, ActivityService } from "../services/activityService";
 import { GridColumn } from "./components";
+import { Form } from "react-router-dom";
+import { smallMargin } from "./styles";
 
 const activityService = new ActivityService();
+
+function zip(keys: string[], values: Array<unknown>) {
+  if (keys.length != values.length) return undefined;
+
+  const zipped = keys.map((key, i) => [key, values[i]]);
+  return Object.fromEntries(zipped);
+}
+
+interface DayControl {
+  label: string,
+  key: string,
+  state: {value: boolean, set: React.Dispatch<React.SetStateAction<boolean>>}
+}
 
 export function ActivityDialog({
   open,
@@ -27,8 +42,8 @@ export function ActivityDialog({
 }: {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  activities: Activity[];
-  setActivities: React.Dispatch<React.SetStateAction<Activity[]>>
+  activities: Array<Activity[]>;
+  setActivities: React.Dispatch<React.SetStateAction<Array<Activity[]>>>
 }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -37,6 +52,43 @@ export function ActivityDialog({
   const [repeat, setRepeat] = useState("0");
   const [duration, setDuration] = useState<string | null>(null);
   const [start_time, setStartTime] = useState<string | null>("9:00");
+  const days: DayControl[] = [
+    {
+      label: "понеделник",
+      key: "monday",
+      state: zip(['value', 'set'], useState(true))
+    },
+    {
+      label: "вторник",
+      key: "tuesday",
+      state: zip(['value', 'set'], useState(true))
+    },
+    {
+      label: "сряда",
+      key: "wednesday",
+      state: zip(['value', 'set'], useState(true))
+    },
+    {
+      label: "четвъртък",
+      key: "thursday",
+      state: zip(['value', 'set'], useState(true))
+    },
+    {
+      label: "петък",
+      key: "friday",
+      state: zip(['value', 'set'], useState(true))
+    },
+    {
+      label: "събота",
+      key: "saturday",
+      state: zip(['value', 'set'], useState(true))
+    },
+    {
+      label: "неделя",
+      key: "sunday",
+      state: zip(['value', 'set'], useState(true))
+    },
+  ]
 
   const mainColor = "secondary.main";
   const color = "secondary";
@@ -46,15 +98,30 @@ export function ActivityDialog({
   };
 
   const handleSubmit = async () => {
+    if (timeToggle === false) {
+      setStartTime(null);
+    }
+
+    if (doRepeat === false) {
+      setRepeat("0");
+    }
+
     const result = await activityService.create({
       title,
       description,
       duration,
       repeat,
       start_time,
+      days: days.map((day: DayControl) => Boolean(day.state.value)),
     });
     if (result) {
-      setActivities([...activities, result.data]);
+      const new_activity = result.data;
+      new_activity['days'].forEach((day, index) => {
+        if (day === true) {
+          activities[index].push(new_activity);
+        }
+      });
+      setActivities(activities);
     }
     handleClose();
   };
@@ -95,6 +162,7 @@ export function ActivityDialog({
     value: duration,
     state: setDuration,
     label: "Продължителност",
+    required: true,
   };
 
   return (
@@ -109,59 +177,81 @@ export function ActivityDialog({
       >
         Създаване на дейност
       </DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2}>
-          <GridColumn>
-            <InputField field={titleInput} />
-          </GridColumn>
-          <GridColumn>
-            <TimeInput field={durationInput} required={true} />
-          </GridColumn>
-          <Grid item xs={12}>
-            <InputField field={descriptionInput} fullWidth={true} />
-          </Grid>
-          <Grid item xs={12}>
-            <FormControlLabel
-              control={
-                <Switch onChange={(e) => setTimeToggle(e.target.checked)} />
-              }
-              label={
-                <Typography> Фиксиран час </Typography>
-              }
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Box sx={{ display: timeToggle ? "none" : "block" }}>
+      <Form onSubmit={handleSubmit}>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <GridColumn>
+              <InputField field={titleInput} />
+            </GridColumn>
+            <GridColumn>
+              <TimeInput field={durationInput} />
+            </GridColumn>
+            <Grid item xs={12}>
+              <InputField field={descriptionInput} fullWidth={true} />
+            </Grid>
+            <Grid item xs={12}>
               <FormControlLabel
                 control={
-                  <Checkbox
-                    value={doRepeat}
-                    onChange={(e) => setDoRepeat(e.target.checked)}
-                  />
+                  <Switch onChange={(e) => setTimeToggle(e.target.checked)} />
                 }
                 label={
-                  <Typography> Повтаря се </Typography>
+                  <Typography> Фиксиран час </Typography>
                 }
               />
-              <InputField
-                field={repeatInput}
-                fullWidth={false}
-                disabled={!doRepeat}
-                color={color}
-              />
-            </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <Box sx={{ display: timeToggle ? "none" : "block" }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={doRepeat}
+                      onChange={(e) => setDoRepeat(e.target.checked)}
+                    />
+                  }
+                  label={
+                    <Typography> Повтаря се през деня </Typography>
+                  }
+                />
+                <InputField
+                  field={repeatInput}
+                  fullWidth={false}
+                  disabled={!doRepeat}
+                  color={color}
+                />
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <Box sx={{ display: timeToggle ? "block" : "none" }}>
+                <TimeInput field={startTimeInput} />
+              </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <Box>
+                {days.map((day) => {
+                  return (
+                    <FormControlLabel key={day.key} sx={{margin: smallMargin}}
+                      control={
+                        <Checkbox
+                          checked={day.state.value}
+                          onChange={(e) => day.state.set(e.target.checked)}
+                        />
+                      }
+                      label={
+                        <Typography> {day.label} </Typography>
+                      }
+                      labelPlacement="bottom"
+                    />
+                  );
+                })}
+              </Box>
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <Box sx={{ display: timeToggle ? "block" : "none" }}>
-              <TimeInput field={startTimeInput} />
-            </Box>
-          </Grid>
-        </Grid>
-      </DialogContent>
-      <DialogActions>
-        <Button color={color}  onClick={handleClose}>Затвори</Button>
-        <Button color={color} onClick={handleSubmit}>Създай</Button>
-      </DialogActions>
+        </DialogContent>
+        <DialogActions>
+          <Button color={color} onClick={handleClose}>Затвори</Button>
+          <Button color={color} type="submit">Създай</Button>
+        </DialogActions>
+      </Form>
     </Dialog>
   );
 }

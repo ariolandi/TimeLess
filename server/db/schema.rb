@@ -23,7 +23,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_24_160634) do
     t.integer "repeat", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.time "start_time"
+    t.string "start_time"
+    t.boolean "days", array: true
   end
 
   create_table "places", force: :cascade do |t|

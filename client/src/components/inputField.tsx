@@ -1,4 +1,5 @@
 import TextField from "@mui/material/TextField";
+import { standardMargin } from "./styles";
 
 export interface InputParams {
   name: string;
@@ -35,8 +36,11 @@ export function InputField({
       variant="standard"
       value={field.value}
       multiline={field.multiline}
-      color={color || "primary"}
       disabled={disabled}
+      sx={{
+        color: color || "primary",
+        marginTop: standardMargin 
+      }}
       helperText={error && "Това поле е задължително"}
       onChange={(e) => field.state(e.target.value)}
     />

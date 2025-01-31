@@ -25,9 +25,14 @@ class ActivityController < ApplicationController
         status: { message: "No such user" }
       }, status: :unprocessable_entity
     else
+      activities = Activity.where(user_id: user.id)
+      days = (0..6).to_a
+
+      activities_by_day = days.map{ |day| activities.select{|activity| (activity.days || []).empty? || activity.days[day]}}
+
       render json: {
         status: { code: 200, message: '' },
-        data: Activity.where(user_id: user.id)
+        data: activities_by_day
       }
     end
   end
@@ -39,6 +44,6 @@ class ActivityController < ApplicationController
   end
 
   def activity_params
-    params.require(:activity).permit(:title, :description, :duration, :repeat, :start_time)
+    params.require(:activity).permit(:title, :description, :duration, :repeat, :start_time, days: [])
   end
 end

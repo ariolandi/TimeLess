@@ -10,7 +10,7 @@ const activityService = new ActivityService();
 
 export default function DashBoard() {
   const [openDialog, setOpenDialog] = useState(false);
-  const [activities, setActivities] = useState<Activity[]>([]);
+  const [activities, setActivities] = useState<Array<Activity[]>>(Array(7).fill([]));
   const [, setLoading] = useState(true);
   const [, setError] = useState<unknown>();
 
@@ -18,7 +18,6 @@ export default function DashBoard() {
     (async () => {
       try {
         const result = await activityService.fetch();
-        console.log(result);
         setActivities(result.data);
       } catch (error) {
         setError(error);

@@ -8,32 +8,33 @@ export interface TimeInputParams {
   value: string | null;
   state: Dispatch<SetStateAction<string | null>>;
   label: string;
+  required?: boolean;
 }
 
 export function TimeInput({
   field,
-  required,
   disabled,
   variant,
 }: {
   field: TimeInputParams;
-  required?: boolean;
   disabled?: boolean;
   variant?: "outlined" | "filled" | "standard";
 }) {
 
   return (
     <TimeField
-      required={required || false}
+      required={field.required || false}
       disabled={disabled || false}
       format="HH:mm"
       label={field.label}
       name={field.name}
       value={toDaysjs(field.value)}
       size="small"
-      color="primary"
       variant={variant || "standard"}
-      sx={{ marginTop: standardMargin }}
+      sx={{ 
+        color: "primary",
+        marginTop: standardMargin 
+      }}
       onChange={(e) => {
         field.state(fromDaysjs(e));
       }}

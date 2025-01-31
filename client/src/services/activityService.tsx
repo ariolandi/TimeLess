@@ -6,6 +6,7 @@ export interface ActivityInput {
     duration: string | null,
     repeat: string,
     start_time: string | null,
+    days: boolean[],
 }
 
 export interface Activity {
@@ -15,6 +16,7 @@ export interface Activity {
     duration: string,
     repeat: number,
     start_time: string | null,
+    days: boolean[],
 }
 
 export class ActivityService {
@@ -25,6 +27,6 @@ export class ActivityService {
   }
 
   async fetch () {
-    return await this.httpService.authorizedRequest<{ data: Activity[] }>({}, "activity", "GET");
+    return await this.httpService.authorizedRequest<{ data: Array<Activity[]> }>({}, "activity", "GET");
   }
 }

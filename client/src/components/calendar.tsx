@@ -2,7 +2,7 @@ import { Grid } from "@mui/material";
 import { Activity } from "../services/activityService";
 import CalendarColumn from "./calendarColumn";
 
-export default function Calendar({ activities }: { activities: Activity[] }) {
+export default function Calendar({ activities }: { activities: Array<Activity[]> }) {
   return (
     <Grid 
       component="main"
@@ -10,13 +10,13 @@ export default function Calendar({ activities }: { activities: Activity[] }) {
         display: "flex",
         width: "100%",
       }}>
-      <CalendarColumn day={"Понеделник"} activities={activities} />
-      <CalendarColumn day={"Вторник"} activities={activities} />
-      <CalendarColumn day={"Сряда"} activities={activities} />
-      <CalendarColumn day={"Четвъртък"} activities={activities} />
-      <CalendarColumn day={"Петък"} activities={activities} />
-      <CalendarColumn day={"Събота"} activities={activities} />
-      <CalendarColumn day={"Неделя"} activities={activities} />
+      <CalendarColumn day={"Понеделник"} activities={activities[0]} />
+      <CalendarColumn day={"Вторник"} activities={activities[1]} />
+      <CalendarColumn day={"Сряда"} activities={activities[2]} />
+      <CalendarColumn day={"Четвъртък"} activities={activities[3]} />
+      <CalendarColumn day={"Петък"} activities={activities[4]} />
+      <CalendarColumn day={"Събота"} activities={activities[5]} />
+      <CalendarColumn day={"Неделя"} activities={activities[6]} />
     </Grid>
   );
 }

@@ -1,7 +1,6 @@
 import { Box, Button, Grid } from "@mui/material";
 import { Activity } from "../services/activityService";
 import {smallMargin, styles } from "./styles";
-import { formatTime } from "./dateTime";
 
 export default function CalendarColumn({ day, activities }: { day: string, activities: Activity[] }) {
   return (
@@ -10,7 +9,7 @@ export default function CalendarColumn({ day, activities }: { day: string, activ
         ...styles.formBorder,
         ...styles.column,
         ...{
-          color: "primary.main",
+          color: "secondary.main",
           margin: smallMargin,
           padding: 0,
           width: "100%",
@@ -18,17 +17,24 @@ export default function CalendarColumn({ day, activities }: { day: string, activ
       }}
     >
     <Box>
-      <h3>{day}</h3>
+      <h3 color="secondary.main">{day}</h3>
     </Box>
     {activities.map((activity) => {
         return (
-        <Button variant="contained" fullWidth sx={styles.submitButton}>
+        <Button 
+          variant="contained" 
+          fullWidth 
+          sx={{
+            backgroundColor: "primary.main",
+            ...styles.submitButton
+          }}
+        >
             <Grid>
               <Grid item xs={12}>
                 <b>{activity.title}</b>
               </Grid>
               <Grid item xs={12}>
-                {formatTime(activity.start_time)}
+                {activity.start_time}
               </Grid>
             </Grid>
         </Button>
