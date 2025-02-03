@@ -2,11 +2,12 @@
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { styles, standardMarginPercent } from "./styles";
+import { styles } from "./styles";
 import { SubmitButton } from "./components";
 import { InputParams, InputField } from "./inputField";
 import { Typography } from "@mui/material";
 import { useState } from "react";
+import { primaryColor, secondaryColor, standardMarginPercent } from "./constants";
 
 export interface CredentialsFormProps {
   params: InputParams[];
@@ -40,7 +41,7 @@ export function CredentialsForm({
         sx={{
           ...styles.formBorder,
           ...{
-            color: "primary.main",
+            color: primaryColor,
             padding: standardMarginPercent,
           },
         }}
@@ -72,7 +73,7 @@ export function CredentialsForm({
               <SubmitButton buttonText={buttonText} />
             </Grid>
             <Grid item xs={12}>
-              <Typography sx={{color: "secondary.main" }}> {errorText} </Typography>
+              <Typography sx={{color: secondaryColor }}> {errorText} </Typography>
             </Grid>
           </Grid>
         </Box>

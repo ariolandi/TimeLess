@@ -39,10 +39,6 @@ class ActivityController < ApplicationController
 
   private
 
-  def user_token
-    request.headers['Authorization']&.gsub('Bearer ', '')
-  end
-
   def activity_params
     params.require(:activity).permit(:title, :description, :duration, :repeat, :start_time, days: [])
   end

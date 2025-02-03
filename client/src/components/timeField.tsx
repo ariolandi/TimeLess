@@ -1,7 +1,7 @@
 import { TimeField } from "@mui/x-date-pickers/TimeField";
 import { Dispatch, SetStateAction } from "react";
-import { standardMargin } from "./styles";
 import { fromDaysjs, toDaysjs } from "./dateTime";
+import { standardMargin } from "./constants";
 
 export interface TimeInputParams {
   name: string;

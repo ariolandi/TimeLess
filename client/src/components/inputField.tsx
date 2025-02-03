@@ -1,5 +1,5 @@
 import TextField from "@mui/material/TextField";
-import { standardMargin } from "./styles";
+import { standardMargin } from "./constants";
 
 export interface InputParams {
   name: string;

@@ -1,6 +1,7 @@
 import { Box, Button, Grid } from "@mui/material";
 import { Activity } from "../services/activityService";
-import {smallMargin, styles } from "./styles";
+import { styles } from "./styles";
+import { secondaryColor, smallMargin } from "./constants";
 
 export default function CalendarColumn({ day, activities }: { day: string, activities: Activity[] }) {
   return (
@@ -9,7 +10,7 @@ export default function CalendarColumn({ day, activities }: { day: string, activ
         ...styles.formBorder,
         ...styles.column,
         ...{
-          color: "secondary.main",
+          color: secondaryColor,
           margin: smallMargin,
           padding: 0,
           width: "100%",
@@ -17,7 +18,7 @@ export default function CalendarColumn({ day, activities }: { day: string, activ
       }}
     >
     <Box>
-      <h3 color="secondary.main">{day}</h3>
+      <h3 color={secondaryColor}><b>{day}</b></h3>
     </Box>
     {activities.map((activity) => {
         return (

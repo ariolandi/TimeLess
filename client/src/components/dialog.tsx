@@ -17,7 +17,7 @@ import { TimeInput, TimeInputParams } from "./timeField";
 import { Activity, ActivityService } from "../services/activityService";
 import { GridColumn } from "./components";
 import { Form } from "react-router-dom";
-import { smallMargin } from "./styles";
+import { secondaryColor, smallMargin } from "./constants";
 
 const activityService = new ActivityService();
 
@@ -90,7 +90,6 @@ export function ActivityDialog({
     },
   ]
 
-  const mainColor = "secondary.main";
   const color = "secondary";
 
   const handleClose = () => {
@@ -169,7 +168,7 @@ export function ActivityDialog({
     <Dialog open={open} fullWidth={true}>
       <DialogTitle
         sx={{
-          backgroundColor: mainColor,
+          backgroundColor: secondaryColor,
           color: "primary.contrastText",
           textAlign: "center",
           fontWeight: "bolder",

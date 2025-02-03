@@ -2,9 +2,10 @@ import "../css/App.css";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Grid } from "@mui/material";
 import { Logo } from "../components/components";
-import { styles, small_screen_size } from "../components/styles";
+import { styles } from "../components/styles";
 import SignUp from "./entry-page/registerForm";
 import LogIn from "./entry-page/loginForm";
+import { small_screen_size } from "../components/constants";
 
 export default function EntryPage() {
   const small_screen = useMediaQuery(small_screen_size);
@@ -29,10 +30,8 @@ export default function EntryPage() {
 
   const small_screen_style = (
     <Grid
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-      }}
+      component="main"
+      sx={styles.column}
     >
       <Grid item sx={styles.headerBlock}>
         <Logo maxWidth={2 / 3} height={1} />

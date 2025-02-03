@@ -1,15 +1,30 @@
 import "../css/App.css";
-import { Box, Grid, Typography, Checkbox, Divider, FormControlLabel, Container } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Typography,
+  Checkbox,
+  Divider,
+  FormControlLabel,
+  Container,
+} from "@mui/material";
 import { useState } from "react";
 import { GridColumn, Logo } from "../components/components";
-import { styles, smallMarginPercent } from "../components/styles";
+import { styles } from "../components/styles";
 import { SubmitButton } from "../components/components";
 import { UserService } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 import { InputField, InputParams } from "../components/inputField";
 import { TimeInput, TimeInputParams } from "../components/timeField";
+import {
+  primaryColor,
+  secondaryColor,
+  smallMargin,
+  smallMarginPercent,
+} from "../components/constants";
 
 const userService = new UserService();
+
 interface TimeFieldParams {
   time_params: TimeInputParams[];
   text: string;
@@ -21,10 +36,10 @@ export default function Information() {
 
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
-  const [start_time, setStartTime] = useState<string | null>('9:00');
-  const [end_time, setEndTime] = useState<string | null>('18:00');
-  const [weekend_start_time, setWeekendStartTime] = useState<string | null>('9:00');
-  const [weekend_end_time, setWeekendEndTime] = useState<string | null>('18:00');
+  const [start_time, setStartTime] = useState<string | null>("9:00");
+  const [end_time, setEndTime] = useState<string | null>("18:00");
+  const [weekend_start_time, setWeekendStartTime] = useState<string | null>("9:00");
+  const [weekend_end_time, setWeekendEndTime] = useState<string | null>("18:00");
   const [sameTime, setSameTime] = useState(false);
   const [errorText, setErrorText] = useState("");
 
@@ -34,12 +49,14 @@ export default function Information() {
       value: first_name,
       state: setFirstName,
       label: "Име",
+      required: true,
     },
     {
       name: "last_name",
       value: last_name,
       state: setLastName,
       label: "Фамилия",
+      required: true,
     },
   ];
 
@@ -49,12 +66,14 @@ export default function Information() {
       value: start_time,
       state: setStartTime,
       label: "Начален час",
+      required: true,
     },
     {
       name: "end_time",
       value: end_time,
       state: setEndTime,
       label: "Краен час",
+      required: true,
     },
   ];
 
@@ -64,42 +83,38 @@ export default function Information() {
       value: weekend_start_time,
       state: setWeekendStartTime,
       label: "Начален час",
+      required: true,
     },
     {
       name: "weekend_end_time",
       value: weekend_end_time,
       state: setWeekendEndTime,
       label: "Краен час",
+      required: true,
     },
   ];
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const weekday_time = { start: start_time, end: end_time, };
-    const weekend_time = { start: weekend_start_time, end: weekend_end_time, };
 
     const result = await userService.information({
       first_name,
       last_name,
-      weekday_time,
-      weekend_time,
+      start_time,
+      end_time,
+      weekend_start_time,
+      weekend_end_time,
     });
 
-    if(result) {
+    if (result) {
       navigate(`/dashboard`);
     } else {
       setErrorText("Невалидни потребителски данни");
     }
   };
 
-
   return (
-    <Grid
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <Grid sx={styles.column}>
       <Grid
         container
         direction="column"
@@ -113,7 +128,7 @@ export default function Information() {
           orientation="horizontal"
           variant="middle"
           flexItem
-          sx={{ bgcolor: "secondary.main" }}
+          sx={{ backgroundColor: secondaryColor }}
         />
         <Typography
           variant="h5"
@@ -132,24 +147,21 @@ export default function Information() {
           sx={{
             ...styles.formBorder,
             ...styles.column,
-            ...{ color: "secondary.main" },
+            ...{ color: secondaryColor },
           }}
         >
           <Grid container spacing={4}>
             {text_params.map((field) => {
               return (
-                <GridColumn>
-                  <Container key={field.name}>
-                    <InputField
-                      field={field}
-                      fullWidth={true}
-                    />
+                <GridColumn key={field.name}>
+                  <Container sx={{ marginTop: smallMargin }}>
+                    <InputField field={field} fullWidth={true} />
                   </Container>
                 </GridColumn>
               );
             })}
           </Grid>
-          <Grid container>
+          <Grid container sx={{ marginTop: smallMargin }}>
             <GridColumn>
               <TimeFields
                 time_params={weekday_time_params}
@@ -170,18 +182,24 @@ export default function Information() {
                     onChange={(e) => {
                       setWeekendStartTime(start_time);
                       setWeekendEndTime(end_time);
-                      setSameTime(e.target.checked)
+                      setSameTime(e.target.checked);
                     }}
                   />
                 }
                 label={
-                  <Typography color="primary.main"> Същите като в делничен ден </Typography>
+                  <Typography color={primaryColor}>
+                    {" "}
+                    Същите като в делничен ден{" "}
+                  </Typography>
                 }
               />
             </GridColumn>
           </Grid>
           <Grid item xs={12}>
-            <Typography sx={{color: "secondary.main" }}> {errorText} </Typography>
+            <Typography sx={{ color: secondaryColor }}>
+              {" "}
+              {errorText}{" "}
+            </Typography>
           </Grid>
           <Grid
             item
@@ -200,7 +218,7 @@ export default function Information() {
 function TimeFields(params: TimeFieldParams) {
   return (
     <Grid item margin={smallMarginPercent}>
-      <Typography color="primary.main"> {params.text} </Typography>
+      <Typography color={primaryColor}> {params.text} </Typography>
       {params.time_params.map((field) => {
         return (
           <Grid item key={field.name} marginTop={smallMarginPercent}>
@@ -212,6 +230,6 @@ function TimeFields(params: TimeFieldParams) {
           </Grid>
         );
       })}
-  </Grid>
+    </Grid>
   );
 }

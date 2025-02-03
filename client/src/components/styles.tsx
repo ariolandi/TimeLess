@@ -1,17 +1,13 @@
 import { SxProps, Theme } from "@mui/material";
+import { primaryColor, smallMarginPercent, standardMargin, standardMarginPercent } from "./constants";
 
 function makeStyles<T extends Record<string, SxProps<Theme>>>(styles: T) {
   return styles;
 }
 
-export const standardMargin = "15px";
-export const smallMargin = "7px";
-export const standardMarginPercent = "5%";
-export const smallMarginPercent = "2%";
-
 function headerBlockConstructor(width: number) {
   return {
-    backgroundColor: "primary.main",
+    backgroundColor: primaryColor,
     display: "flex",
     justifyContent: "center",
     width: width,
@@ -42,5 +38,3 @@ export const styles = makeStyles({
   headerBlock: headerBlockConstructor(1),
   halfPageHeaderBlock: headerBlockConstructor(1 / 2),
 });
-
-export const small_screen_size = "(max-width:1000px)";

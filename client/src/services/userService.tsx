@@ -11,16 +11,13 @@ export interface LoginUser {
   password: string,
 }
 
-interface Time {
-  start: string | null,
-  end: string | null,
-}
-
 export interface UserInformation {
   first_name: string,
   last_name: string,
-  weekday_time: Time,
-  weekend_time: Time,
+  start_time: string | null,
+  end_time: string | null,
+  weekend_start_time: string | null,
+  weekend_end_time: string | null,
 }
 
 export class UserService {
@@ -32,6 +29,10 @@ export class UserService {
 
   async login (user: LoginUser) {
     return await this.httpService.request(user, "login", "POST");
+  }
+
+  async logout () {
+    return await this.httpService.authorizedRequest({}, "logout", "GET");
   }
 
   async information (information: UserInformation) {

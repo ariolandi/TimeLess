@@ -16,9 +16,6 @@ export function formatTime(datetime: string | null): string | null {
     return null;
   }
 
-  console.log(datetime);
   const isoTimeDate = dayjs(datetime);
-  console.log(isoTimeDate);
-  console.log(isoTimeDate.hour());
   return fromDaysjs(isoTimeDate);
 }
