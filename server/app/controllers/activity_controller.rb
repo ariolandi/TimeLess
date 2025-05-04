@@ -4,8 +4,9 @@ class ActivityController < ApplicationController
   def create
     user = User.find_by(token: user_token)
 
+    activity_params[user_id] = user.id
     activity = Activity.new(activity_params)
-    activity.user_id = user.id
+
     if activity.save
       render json: {
         status: { code: 200, message: 'Created successfully.' },
@@ -40,6 +41,6 @@ class ActivityController < ApplicationController
   private
 
   def activity_params
-    params.require(:activity).permit(:title, :description, :duration, :repeat, :start_time, days: [])
+    params.require(:activity).permit(:user_id, :title, :description, :duration, :repeat, :start_time, days: [])
   end
 end

@@ -10,21 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_24_160634) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_04_110613) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "activities", force: :cascade do |t|
     t.integer "user_id"
-    t.string "title", null: false
-    t.string "description"
-    t.time "duration", null: false
+    t.text "title", null: false
+    t.text "description"
+    t.string "duration", null: false
     t.integer "place"
     t.integer "repeat", default: 0
+    t.string "start_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "start_time"
-    t.boolean "days", array: true
+    t.boolean "days", default: [], array: true
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.integer "activity_id"
+    t.integer "user_id"
+    t.string "title"
+    t.boolean "system", default: false
+    t.string "start_time", limit: 255
+    t.integer "duration"
+    t.boolean "days", default: [], array: true
+    t.integer "before", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "after", default: [], array: true
   end
 
   create_table "places", force: :cascade do |t|
@@ -47,11 +61,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_24_160634) do
     t.time "end_time"
     t.time "weekend_start_time"
     t.time "weekend_end_time"
-    t.string "token"
+    t.text "token"
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   add_foreign_key "activities", "places", column: "place"
   add_foreign_key "activities", "users"
+  add_foreign_key "events", "activities"
+  add_foreign_key "events", "users"
   add_foreign_key "places", "users"
 end

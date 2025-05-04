@@ -2,6 +2,7 @@ class User < ApplicationRecord
   validates :username, :email, presence: true
   has_secure_password
   has_secure_password :recovery_password, validations: false
+  validates :username, :email, uniqueness: { case_sensitive: false }
 
   def self.login(user)
     user_token = SecureRandom.hex
