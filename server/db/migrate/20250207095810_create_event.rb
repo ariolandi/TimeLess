@@ -6,9 +6,11 @@ class CreateEvent < ActiveRecord::Migration[7.1]
       t.string :title
       t.boolean :system, default: false
       t.time :start_time
+      t.time :end_time
       t.integer :duration
-      t.boolean :days, array: true, :default => []
-      t.integer :before, array: true, :default => []
+      t.boolean :days, array: true, default: []
+      t.boolean :fixed, default: false
+      
       t.timestamps
     end
 
