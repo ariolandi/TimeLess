@@ -49,8 +49,11 @@ class Schedule
     reorganize_schedule(event, index)
   end
 
-  def add_nonfixed_event(event)
+  def add_nonfixed_event(event, start_time = @start.start_time, end_time = @end.start_time)
     index = 1
+    while index < @schedule.length && @schedule[index - 1].end_time < start_time
+      index += 1
+    end
 
     while index < @schedule.length
       previous_event = @schedule[index - 1]
@@ -112,7 +115,7 @@ class Schedule
 
     reschedule = []
 
-    for i in 1 .. delete_events
+    for _ in 1 .. delete_events
       reschedule.append(@schedule[index])
       @schedule.delete_at(index)
     end

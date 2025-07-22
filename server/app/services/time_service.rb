@@ -42,7 +42,7 @@ class TimeService
     hours > other.hours || (hours == other.hours && minutes > other.minutes)
   end
 
-    def < (other)
+  def < (other)
     other = TimeService.new(other) if other.is_a?(String)
 
     hours < other.hours || (hours == other.hours && minutes < other.minutes)

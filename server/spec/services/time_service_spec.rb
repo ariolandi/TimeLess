@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe TimeService do
-  context "parces successfully" do
+  context "parses successfully" do
     it "a string" do
       time = TimeService.new("09:15")
 
@@ -31,7 +31,7 @@ RSpec.describe TimeService do
     end
   end
 
-  context "parces correctly to minutes" do
+  context "parses correctly to minutes" do
     it "when only minutes" do
       time = TimeService.new("00:15")
 
@@ -45,7 +45,7 @@ RSpec.describe TimeService do
     end
   end
 
-  context "parces correctly to datetime" do
+  context "parses correctly to datetime" do
     it "when only minutes" do
       time = TimeService.new(nil)
 
@@ -68,12 +68,12 @@ RSpec.describe TimeService do
       expect(time + added).to eq(expected)
     end
 
-    it "when substraction" do
+    it "when subtraction" do
       time = TimeService.new("09:15")
-      substacted = TimeService.new("01:15")
+      subtracted = TimeService.new("01:15")
       expected = TimeService.new("08:00")
 
-      expect(time - substacted).to eq(expected)
+      expect(time - subtracted).to eq(expected)
     end
 
     it "when calculates duration" do
