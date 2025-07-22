@@ -1,7 +1,7 @@
 require "rails_helper"
 
 # Activities are described in format:
-#  user_id | activity_id | title | start_time | duration
+#  user_id | activity_id | title | start_time | duration | repeat
 # Events are described in format:
 #  activity_id | title | start_time | duration | fixed | system
 
@@ -174,30 +174,32 @@ RSpec.describe Schedule do
 
         it "when there are fixed events outside preferred time" do
           activities = setup_activities <<~ACTIVITIES
-            1 | 1 | fixed activity 1 | 10:00 | 00:30
-            1 | 2 | fixed activity 2 | 12:00 | 00:45
+            1 | 1 | fixed activity 1 | 09:00 | 00:30
+            1 | 2 | fixed activity 2 | 10:00 | 00:45
             1 | 3 | fixed activity 3 | 16:00 | 01:00
             1 | 4 | fixed activity 4 | 08:00 | 00:10
-            1 | 5 | fixed activity 5 | 19:00 | 00:30
           ACTIVITIES
 
-          activity = setup_activity("1 | 6 | nonfixed activity | | 00:30")
+          activity = setup_activity("1 | 5 | nonfixed activity | | 00:30")
   
           expected_schedule = setup_events <<~EVENTS
             4 | fixed activity 4  | 08:00 | 00:10 | true  | false
               | Start             | 09:00 | 00:00 | true  | true
-            6 | nonfixed activity | 09:00 | 00:30 | false | false
-            1 | fixed activity 1  | 10:00 | 00:30 | true  | false
-            2 | fixed activity 2  | 12:00 | 00:45 | true  | false
+            1 | fixed activity 1  | 09:00 | 00:30 | true  | false
+            5 | nonfixed activity | 09:30 | 00:30 | false | false
+            2 | fixed activity 2  | 10:00 | 00:45 | true  | false
+              | End               | 11:00 | 00:00 | true  | true
             3 | fixed activity 3  | 16:00 | 01:00 | true  | false
-              | End               | 18:00 | 00:00 | true  | true
-            5 | fixed activity 5  | 19:00 | 00:30 | true  | false
           EVENTS
 
-          schedule = Schedule.new("09:00", "18:00", activities: activities)
+          schedule = Schedule.new("09:00", "11:00", activities: activities)
           schedule.add_activity(activity)
 
           expect_equal(schedule, expected_schedule)
+
+          activity = setup_activity("1 | 6 | nonfixed activity | | 01:00")
+          
+          expect { schedule.add_activity(activity) }.to raise_error(ArgumentError)
         end
       end
 
@@ -269,16 +271,72 @@ RSpec.describe Schedule do
         empty_schedule = Schedule.new("09:00", "18:00")
         empty_schedule.send(:create_breakpoint, 2)
 
-        breakpoints = empty_schedule.breakpoints[2].map { |breakpoint| breakpoint.start_time.to_fs(:time) }
-        expect(breakpoints).to eq(["13:30"])
+        expect(empty_schedule.breakpoints[2]).to eq(["13:30"])
       end
 
       it "for three parts" do
         empty_schedule = Schedule.new("09:00", "18:00")
         empty_schedule.send(:create_breakpoint, 3)
 
-        breakpoints = empty_schedule.breakpoints[3].map { |breakpoint| breakpoint.start_time.to_fs(:time) }
-        expect(breakpoints).to eq(["12:00", "15:00"])
+        expect(empty_schedule.breakpoints[3]).to eq(["12:00", "15:00"])
+      end
+    end
+
+    context "handles repeated events" do
+      context "creates successfully" do 
+        it "with two parts" do
+          activities = setup_activities <<~ACTIVITIES
+            1 | 1 | fixed activity 1 | 10:00 | 00:30
+            1 | 2 | fixed activity 2 | 12:00 | 00:45
+            1 | 3 | fixed activity 3 | 16:00 | 01:00 
+          ACTIVITIES
+  
+          activity = setup_activity("1 | 4 | repeat activity | | 00:30 | 2")
+
+          expected_schedule = setup_events <<~EVENTS
+              | Start             | 09:00 | 00:00 | true  | true
+            4 | repeat activity   | 09:00 | 00:30 | false | false
+            1 | fixed activity 1  | 10:00 | 00:30 | true  | false
+            2 | fixed activity 2  | 12:00 | 00:45 | true  | false
+              | Breakpoint        | 13:30 | 00:00 | true  | true
+            4 | repeat activity   | 13:30 | 00:30 | false | false
+            3 | fixed activity 3  | 16:00 | 01:00 | true  | false
+              | End               | 18:00 | 00:00 | true  | true
+          EVENTS
+
+          schedule = Schedule.new("09:00", "18:00", activities: activities)
+          schedule.add_activity(activity)
+
+          expect_equal(schedule, expected_schedule)
+        end
+
+        it "with three parts" do
+          activities = setup_activities <<~ACTIVITIES
+            1 | 1 | fixed activity 1 | 10:00 | 00:30
+            1 | 2 | fixed activity 2 | 12:00 | 00:45
+            1 | 3 | fixed activity 3 | 16:00 | 01:00 
+          ACTIVITIES
+  
+          activity = setup_activity("1 | 4 | repeat activity | | 00:30 | 3")
+
+          expected_schedule = setup_events <<~EVENTS
+              | Start             | 09:00 | 00:00 | true  | true
+            4 | repeat activity   | 09:00 | 00:30 | false | false
+            1 | fixed activity 1  | 10:00 | 00:30 | true  | false
+              | Breakpoint        | 12:00 | 00:00 | true  | true
+            2 | fixed activity 2  | 12:00 | 00:45 | true  | false
+            4 | repeat activity   | 12:45 | 00:30 | false | false
+              | Breakpoint        | 15:00 | 00:00 | true  | true
+            4 | repeat activity   | 15:00 | 00:30 | false | false
+            3 | fixed activity 3  | 16:00 | 01:00 | true  | false
+              | End               | 18:00 | 00:00 | true  | true
+          EVENTS
+
+          schedule = Schedule.new("09:00", "18:00", activities: activities)
+          schedule.add_activity(activity)
+
+          expect_equal(schedule, expected_schedule)
+        end
       end
     end
   end
@@ -303,7 +361,7 @@ RSpec.describe Schedule do
   end
 
   def setup_activity(activity)
-    user_id, activity_id, title, start_time, duration = activity.split('|').map(&:strip)
+    user_id, activity_id, title, start_time, duration, repeat = activity.split('|').map(&:strip)
       
     Activity.new({
       id: activity_id,
@@ -311,6 +369,7 @@ RSpec.describe Schedule do
       title: title, 
       start_time: start_time,
       duration: duration,
+      repeat: repeat
     })
   end
 

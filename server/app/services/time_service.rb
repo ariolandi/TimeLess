@@ -37,7 +37,7 @@ class TimeService
   end
 
   def > (other)
-    other = TimeService.new(other) if other.is_a?(String)
+    other = TimeService.new(other) if other.is_a?(String) 
 
     hours > other.hours || (hours == other.hours && minutes > other.minutes)
   end
@@ -50,6 +50,10 @@ class TimeService
 
   def == (other)
     other.is_a?(String) ? str == other : str == other.str
+  end
+
+  def <= (other)
+    self < other || self == other
   end
 
   def to_minutes
