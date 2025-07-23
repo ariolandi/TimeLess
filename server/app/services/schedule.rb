@@ -1,21 +1,15 @@
 class Schedule
   attr_reader :schedule, :breakpoints
 
-  def initialize(start_time, end_time, activities: [], events: [])
-    @end = Event.create("End", start_time: end_time, system: true)
-    @start = Event.create("Start", start_time: start_time, system: true)
+  def initialize(start_time, end_time, day, activities: [], events: [])
+    @day = day
+    @end = Event.create(start_time: end_time, system: true, day: @day)
+    @start = Event.create(start_time: start_time, system: true, day: @day)
     @preferred_times = TimeInterval.new(start_time, end_time)
     @breakpoints = {}
 
     activities.each do |activity| 
-      events.append(
-        Event.create(
-          activity.title, 
-          start_time: activity.start_time, 
-          duration: activity.duration,
-          activity_id: activity.id
-        )
-      )
+      events.append(Event.create(activity: activity, day: @day))
     end
 
     fixed_events, nonfixed_events = events.partition{ |event| event.start_time.present? }
@@ -26,12 +20,7 @@ class Schedule
   end
 
   def add_activity(activity)
-    event = Event.create(
-      activity.title, 
-      start_time: activity.start_time, 
-      duration: activity.duration,
-      activity_id: activity.id
-    )
+    event = Event.create(activity: activity, day: @day)
 
     if activity.repeat
       add_repeated_event(event, activity.repeat)
@@ -44,20 +33,6 @@ class Schedule
 
   private
 
-  def add_system_event(title, time)
-    event = Event.create(title, start_time: time, system: true)
-    if event.before(@start)
-      @schedule = [event] + @schedule
-      return
-    elsif @end.before(event)
-      @schedule = @schedule + [event]
-      return
-    end
-
-    index = find_place(event)
-    @schedule.insert(index, event)
-  end
-
   def add_fixed_event(event)
     if event.before(@start)
       @schedule = [event] + @schedule
@@ -68,6 +43,12 @@ class Schedule
     end
 
     index = find_place(event)
+
+    if event.system
+      @schedule.insert(index, event)
+      return
+    end
+
     reorganize_schedule(event, index)
   end
 
@@ -86,9 +67,8 @@ class Schedule
     intervals.append(TimeInterval.new(previous_time, @preferred_times.end_time))
 
     intervals.each do |time_interval|
-      add_nonfixed_event(event.dup, time_interval)
+      add_nonfixed_event(event.copy, time_interval)
     end
-
   end
 
   def add_nonfixed_event(event, time_interval = @preferred_times)
@@ -135,7 +115,7 @@ class Schedule
     end
 
     # if there is not empty space
-    raise ArgumentError, "There is no space for this event"
+    raise ArgumentError, "There is no space for this event: #{event.represent}"
   end
 
   def reorganize_schedule(event, index, time_interval = @preferred_times)
@@ -167,12 +147,11 @@ class Schedule
       @schedule.delete_at(index)
     end
 
-    # inserting the event at possition
+    # inserting the event at position
     @schedule.insert(index, event)
 
     # rescheduling the removed events if possible
     reschedule.each do |event| 
-      event.set_time(nil)
       begin
         add_nonfixed_event(event, time_interval)
       rescue
@@ -220,7 +199,8 @@ class Schedule
     end
 
     breakpoint_times.each do |time|
-      add_system_event("Breakpoint", time.str)
+      event = Event.create(start_time: time, system: true, day: @day)
+      add_fixed_event(event)
     end
 
     @breakpoints[number_of_parts] = breakpoint_times

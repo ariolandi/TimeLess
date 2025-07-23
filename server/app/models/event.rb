@@ -1,31 +1,57 @@
 class Event < ApplicationRecord
-  def self.create(title, start_time: nil, duration: nil, activity_id: nil, system: false, fixed: nil)
-    start_time = TimeService.new(start_time) if start_time.present?
-    duration = TimeService.new(duration)
-    end_time = start_time.present? ? start_time + duration : nil
+  belongs_to :activity, optional: true
 
-    if fixed.nil?
-      fixed = start_time.present?
-    end
-    
+  def self.create(activity: nil, start_time: nil, day: nil, fixed: nil, system: false, user_id: nil)
+    fixed ||= activity&.start_time.present? || system
+    start_time = activity&.start_time.presence || start_time
+
     params = {
-      title: title,
-      start_time: start_time&.to_datetime,
-      duration: duration.to_minutes,
-      end_time: end_time&.to_datetime,
-      activity_id: activity_id,
-      fixed: fixed,
+      user_id: user_id || activity&.user_id,
+      activity: activity,
+      start_time: start_time.present? ? TimeService.new(start_time).to_datetime : nil,
       system: system,
+      fixed: fixed,
+      day: day
     }
 
     Event.new(params)
   end
 
+  def copy
+    params = {
+      user_id: user_id,
+      activity: activity,
+      start_time: start_time&.duplicate,
+      system: system,
+      fixed: fixed,
+      day: day
+    }
+
+    Event.new(params)
+  end
+
+  def represent
+    {
+      user_id: user_id,
+      activity_id: activity&.id,
+      title: activity&.title,
+      start_time: start_time || activity&.start_time,
+      duration: activity&.duration,
+      fixed: fixed,
+      system: system
+    }
+  end
+
+  def end_time
+    TimeService.new(self.start_time) + TimeService.new(activity&.duration)
+  end
+
+  def duration
+    TimeService.new(activity&.duration).to_minutes
+  end
+
   def set_time(start_time)
-    self.start_time = start_time
-    self.end_time = start_time.nil? ?
-      nil :
-      (TimeService.new(start_time) + self.duration).to_datetime
+    self.start_time = start_time.to_datetime
   end
 
   def before(other)

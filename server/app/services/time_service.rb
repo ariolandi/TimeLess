@@ -13,6 +13,12 @@ class TimeService
         return
     end
 
+    if time.is_a?(TimeService)
+        @hours = time.hours
+        @minutes = time.minutes
+        return
+    end
+
     raise TypeError, "#{time} is not a string" unless time.is_a?(String)
     raise ArgumentError, "#{time} does not match hours:minutes format" unless time.match?(/^([01][0-9]|2[0-3]):[0-5][0-9]$/)
     @hours, @minutes = time.split(":").map { |x| x.to_i }
@@ -37,19 +43,22 @@ class TimeService
   end
 
   def > (other)
-    other = TimeService.new(other) if other.is_a?(String) 
+    other = TimeService.new(other) if other.is_a?(String) || other.is_a?(Time)
 
     hours > other.hours || (hours == other.hours && minutes > other.minutes)
   end
 
   def < (other)
-    other = TimeService.new(other) if other.is_a?(String)
+    other = TimeService.new(other) if other.is_a?(String) || other.is_a?(Time)
 
     hours < other.hours || (hours == other.hours && minutes < other.minutes)
   end
 
   def == (other)
-    other.is_a?(String) ? str == other : str == other.str
+    return str == other if other.is_a?(String)
+    return str == other.str if other.is_a?(TimeService)
+
+    str == TimeService.new(other).str
   end
 
   def <= (other)
