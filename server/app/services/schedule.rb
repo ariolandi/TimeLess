@@ -198,6 +198,7 @@ class Schedule
       @preferred_times.start_time + (part_number * partition_duration)
     end
 
+    # adding the system events
     breakpoint_times.each do |time|
       event = Event.create(start_time: time, system: true, day: @day)
       add_fixed_event(event)

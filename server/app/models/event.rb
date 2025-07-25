@@ -35,7 +35,7 @@ class Event < ApplicationRecord
       user_id: user_id,
       activity_id: activity&.id,
       title: activity&.title,
-      start_time: start_time || activity&.start_time,
+      start_time: TimeService.new(start_time || activity&.start_time).str,
       duration: activity&.duration,
       fixed: fixed,
       system: system

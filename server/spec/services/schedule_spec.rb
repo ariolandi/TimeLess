@@ -1,7 +1,7 @@
 require "rails_helper"
 
 # Activities are described in format:
-#  user_id | activity_id | title | start_time | duration | repeat
+#  activity_id | title | start_time | duration | repeat
 # Events are described in format:
 #  activity_id | title | start_time | duration | fixed | system
 
@@ -37,7 +37,7 @@ RSpec.describe Schedule do
     end
 
     it "adds fixed activity correctly" do
-      activity = setup_activity(" | 1 | fixed activity | 10:00 | 00:10")
+      activity = setup_activity("1 | fixed activity | 10:00 | 00:10")
 
       expected_schedule = setup_events <<~EVENTS
           |                | 09:00 |       | true  | true  
@@ -52,7 +52,7 @@ RSpec.describe Schedule do
     end
   
     it "adds fixed activity after ending hour" do
-      activity = setup_activity(" | 1 | fixed activity | 19:00 | 00:10")
+      activity = setup_activity("1 | fixed activity | 19:00 | 00:10")
 
       expected_schedule = setup_events <<~EVENTS
           |                | 09:00 |       | true  | true 
@@ -67,7 +67,7 @@ RSpec.describe Schedule do
     end
 
     it "adds fixed activity before starting hour" do
-      activity = setup_activity(" | 1 | fixed activity | 08:00 | 00:10")
+      activity = setup_activity("1 | fixed activity | 08:00 | 00:10")
 
       expected_schedule = setup_events <<~EVENTS
         1 | fixed activity | 08:00 | 00:10 | true  | false
@@ -85,8 +85,8 @@ RSpec.describe Schedule do
   context "with fixed activities" do
     it "creates events for the activities" do
       activities = setup_activities <<~ACTIVITIES
-        | 1 | fixed activity 1 | 16:00 | 01:00
-        | 2 | fixed activity 2 | 10:00 | 00:30
+        1 | fixed activity 1 | 16:00 | 01:00
+        2 | fixed activity 2 | 10:00 | 00:30
       ACTIVITIES
 
       expected_events = setup_events <<~EVENTS
@@ -103,8 +103,8 @@ RSpec.describe Schedule do
 
     it "calculates the schedule correctly" do
       activities = setup_activities <<~ACTIVITIES
-        | 1 | fixed activity 1 | 16:00 | 01:00
-        | 2 | fixed activity 2 | 10:00 | 00:30
+        1 | fixed activity 1 | 16:00 | 01:00
+        2 | fixed activity 2 | 10:00 | 00:30
       ACTIVITIES
   
       expected_schedule = setup_events <<~EVENTS
@@ -121,11 +121,11 @@ RSpec.describe Schedule do
 
     it "throws error for time duplications" do
       activities = setup_activities <<~ACTIVITIES
-        | 1 | fixed activity 1 | 16:00 | 01:00
-        | 2 | fixed activity 2 | 10:00 | 00:30
+        1 | fixed activity 1 | 16:00 | 01:00
+        2 | fixed activity 2 | 10:00 | 00:30
       ACTIVITIES
 
-      activity = setup_activity(" | 3 | duplicate activity | 10:00 | 00:10")
+      activity = setup_activity("3 | duplicate activity | 10:00 | 00:10")
 
       schedule = Schedule.new("09:00", "18:00", 1, activities: activities)
 
@@ -134,11 +134,11 @@ RSpec.describe Schedule do
 
     it "throws error when there is no free slot" do
       activities = setup_activities <<~ACTIVITIES
-        | 1 | fixed activity 1 | 16:00 | 01:00
-        | 2 | fixed activity 2 | 10:00 | 00:30
+        1 | fixed activity 1 | 16:00 | 01:00
+        2 | fixed activity 2 | 10:00 | 00:30
       ACTIVITIES
 
-      activity = setup_activity(" | 3 | activity | 16:30 | 00:10")
+      activity = setup_activity("3 | activity | 16:30 | 00:10")
 
       schedule = Schedule.new("09:00", "18:00", 1, activities: activities)
       
@@ -151,12 +151,12 @@ RSpec.describe Schedule do
       context "adds successfully" do
         it "when there is enough space" do
           activities = setup_activities <<~ACTIVITIES
-            | 1 | fixed activity 1 | 10:00 | 00:30
-            | 2 | fixed activity 2 | 12:00 | 00:45
-            | 3 | fixed activity 3 | 16:00 | 01:00
+            1 | fixed activity 1 | 10:00 | 00:30
+            2 | fixed activity 2 | 12:00 | 00:45
+            3 | fixed activity 3 | 16:00 | 01:00
           ACTIVITIES
   
-          activity = setup_activity(" | 4 | nonfixed activity | | 01:30")
+          activity = setup_activity("4 | nonfixed activity | | 01:30")
 
           expected_schedule = setup_events <<~EVENTS
               |                   | 09:00 |       | true  | true 
@@ -175,13 +175,13 @@ RSpec.describe Schedule do
 
         it "when there are fixed events outside preferred time" do
           activities = setup_activities <<~ACTIVITIES
-            | 1 | fixed activity 1 | 09:00 | 00:30
-            | 2 | fixed activity 2 | 10:00 | 00:45
-            | 3 | fixed activity 3 | 16:00 | 01:00
-            | 4 | fixed activity 4 | 08:00 | 00:10
+            1 | fixed activity 1 | 09:00 | 00:30
+            2 | fixed activity 2 | 10:00 | 00:45
+            3 | fixed activity 3 | 16:00 | 01:00
+            4 | fixed activity 4 | 08:00 | 00:10
           ACTIVITIES
 
-          activity = setup_activity(" | 5 | nonfixed activity | | 00:30")
+          activity = setup_activity("5 | nonfixed activity | | 00:30")
   
           expected_schedule = setup_events <<~EVENTS
             4 | fixed activity 4  | 08:00 | 00:10 | true  | false
@@ -198,7 +198,7 @@ RSpec.describe Schedule do
 
           expect_equal(schedule, expected_schedule)
 
-          activity = setup_activity(" | 6 | nonfixed activity | | 01:00")
+          activity = setup_activity("6 | nonfixed activity | | 01:00")
           
           expect { schedule.add_activity(activity) }.to raise_error(ArgumentError)
         end
@@ -206,14 +206,14 @@ RSpec.describe Schedule do
 
       it "raises error when there is not enough space" do
         activities = setup_activities <<~ACTIVITIES
-          | 1 | fixed activity 1 | 10:00 | 00:30
-          | 2 | fixed activity 2 | 12:00 | 00:45
-          | 3 | fixed activity 3 | 16:00 | 01:00
-          | 4 | fixed activity 4 | 08:00 | 00:10
-          | 5 | fixed activity 5 | 19:00 | 00:30
+          1 | fixed activity 1 | 10:00 | 00:30
+          2 | fixed activity 2 | 12:00 | 00:45
+          3 | fixed activity 3 | 16:00 | 01:00
+          4 | fixed activity 4 | 08:00 | 00:10
+          5 | fixed activity 5 | 19:00 | 00:30
         ACTIVITIES
 
-        activity = setup_activity(" | 4 | nonfixed activity | | 04:30")
+        activity = setup_activity("4 | nonfixed activity | | 04:30")
 
         schedule = Schedule.new("09:00", "18:00", 1, activities: activities)
 
@@ -222,15 +222,15 @@ RSpec.describe Schedule do
 
       it "reschedule if there is need" do
         activities = setup_activities <<~ACTIVITIES
-          | 1 | fixed activity 1    | 10:00 | 00:30 
-          | 2 | fixed activity 2    | 12:00 | 00:45 
-          | 3 | fixed activity 3    | 16:00 | 01:00
-          | 4 | nonfixed activity 1 |       | 00:30
-          | 5 | nonfixed activity 2 |       | 01:00
-          | 6 | nonfixed activity 3 |       | 01:00
+          1 | fixed activity 1    | 10:00 | 00:30 
+          2 | fixed activity 2    | 12:00 | 00:45 
+          3 | fixed activity 3    | 16:00 | 01:00
+          4 | nonfixed activity 1 |       | 00:30
+          5 | nonfixed activity 2 |       | 01:00
+          6 | nonfixed activity 3 |       | 01:00
         ACTIVITIES
 
-        rescheduling_activity = setup_activity(" | 7 | nonfixed activity 4 | | 02:30")
+        rescheduling_activity = setup_activity("7 | nonfixed activity 4 | | 02:30")
 
         expected_schedule_1 = setup_events <<~EVENTS
             |                     | 09:00 |       | true  | true 
@@ -287,12 +287,12 @@ RSpec.describe Schedule do
       context "creates successfully" do 
         it "with two parts" do
           activities = setup_activities <<~ACTIVITIES
-            | 1 | fixed activity 1 | 10:00 | 00:30
-            | 2 | fixed activity 2 | 12:00 | 00:45
-            | 3 | fixed activity 3 | 16:00 | 01:00 
+            1 | fixed activity 1 | 10:00 | 00:30
+            2 | fixed activity 2 | 12:00 | 00:45
+            3 | fixed activity 3 | 16:00 | 01:00 
           ACTIVITIES
   
-          activity = setup_activity(" | 4 | repeat activity | | 00:30 | 2")
+          activity = setup_activity("4 | repeat activity | | 00:30 | 2")
 
           expected_schedule = setup_events <<~EVENTS
               |                   | 09:00 |       | true  | true 
@@ -313,12 +313,12 @@ RSpec.describe Schedule do
 
         it "with three parts" do
           activities = setup_activities <<~ACTIVITIES
-            | 1 | fixed activity 1 | 10:00 | 00:30
-            | 2 | fixed activity 2 | 12:00 | 00:45
-            | 3 | fixed activity 3 | 16:00 | 01:00 
+            1 | fixed activity 1 | 10:00 | 00:30
+            2 | fixed activity 2 | 12:00 | 00:45
+            3 | fixed activity 3 | 16:00 | 01:00 
           ACTIVITIES
   
-          activity = setup_activity(" | 4 | repeat activity | | 00:30 | 3")
+          activity = setup_activity("4 | repeat activity | | 00:30 | 3")
 
           expected_schedule = setup_events <<~EVENTS
               |                   | 09:00 |       | true  | true 
@@ -361,11 +361,10 @@ RSpec.describe Schedule do
   end
 
   def setup_activity(activity)
-    user_id, activity_id, title, start_time, duration, repeat = activity.split('|').map(&:strip)
+    activity_id, title, start_time, duration, repeat = activity.split('|').map(&:strip)
 
     Activity.new({
-      id: activity_id,
-      user_id: user_id, 
+      id: activity_id, 
       title: title, 
       start_time: start_time,
       duration: duration,
@@ -376,7 +375,7 @@ RSpec.describe Schedule do
   def setup_event(event)
     activity_id, title, start_time, duration, fixed, system = event.split('|').map(&:strip)  
 
-    activity = activity_id.present? ? setup_activity(" | #{activity_id} | #{title} | | #{duration} | ") : nil
+    activity = activity_id.present? ? setup_activity("#{activity_id} | #{title} | | #{duration} | ") : nil
 
     Event.create(
       activity: activity,
