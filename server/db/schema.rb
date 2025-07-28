@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_24_122435) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_25_144111) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,19 +24,19 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_24_122435) do
     t.string "start_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "days", default: [], array: true
     t.integer "importance", default: 2
+    t.integer "days", default: [], array: true
   end
 
   create_table "events", force: :cascade do |t|
     t.integer "user_id"
-    t.boolean "system", default: false
     t.time "start_time"
     t.boolean "fixed", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "activity_id"
     t.integer "day"
+    t.string "event_type"
     t.index ["activity_id"], name: "index_events_on_activity_id"
   end
 

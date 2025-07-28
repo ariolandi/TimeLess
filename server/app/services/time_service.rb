@@ -20,7 +20,7 @@ class TimeService
     end
 
     raise TypeError, "#{time} is not a string" unless time.is_a?(String)
-    raise ArgumentError, "#{time} does not match hours:minutes format" unless time.match?(/^([01][0-9]|2[0-3]):[0-5][0-9]$/)
+    raise ArgumentError, "#{time} does not match hours:minutes format" unless time.match?(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/)
     @hours, @minutes = time.split(":").map { |x| x.to_i }
   end
 

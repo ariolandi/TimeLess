@@ -14,6 +14,8 @@ export class HTTPService {
     if (method === 'POST') {
       init.body = JSON.stringify(params);
     }
+
+    console.log(init);
     
     const response = await fetch(`${server_url}/${endpoint}`, init);
     console.log(response);

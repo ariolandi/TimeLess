@@ -4,21 +4,30 @@ import { styles } from "../components/styles";
 import { ActivityDialog } from "../components/dialog";
 import { useEffect, useState } from "react";
 import Calendar from "../components/calendar";
-import { Activity, ActivityService } from "../services/activityService";
+import { Event, EventService } from "../services/eventService";
 
-const activityService = new ActivityService();
+const eventService = new EventService();
 
 export default function DashBoard() {
   const [openDialog, setOpenDialog] = useState(false);
-  const [activities, setActivities] = useState<Array<Activity[]>>(Array(7).fill([]));
+  const [events, setEvents] = useState<Array<Event[]>>(Array(7).fill([]));
   const [, setLoading] = useState(true);
   const [, setError] = useState<unknown>();
 
   useEffect(() => {
     (async () => {
       try {
-        const result = await activityService.fetch();
-        setActivities(result.data);
+        const schedule = [
+          (await eventService.fetch(0)).data,
+          (await eventService.fetch(1)).data,
+          (await eventService.fetch(2)).data,
+          (await eventService.fetch(3)).data,
+          (await eventService.fetch(4)).data,
+          (await eventService.fetch(5)).data,
+          (await eventService.fetch(6)).data
+        ]
+
+        setEvents(schedule);
       } catch (error) {
         setError(error);
       } finally {
@@ -52,11 +61,11 @@ export default function DashBoard() {
         <ActivityDialog
           open={openDialog}
           setOpen={setOpenDialog}
-          activities={activities}
-          setActivities={setActivities}
+          events={events}
+          setEvents={setEvents}
         />
       </Container>
-      <Calendar activities={activities} />
+      <Calendar events={events} />
     </Container>
   );
 }

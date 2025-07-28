@@ -56,7 +56,7 @@ Event.create!([
     {
         user_id: user_id,
         activity_id: activity1_id,
-        start_time: "09:00",
+        start_time: "10:00",
         fixed: false,
         day: 5
     },

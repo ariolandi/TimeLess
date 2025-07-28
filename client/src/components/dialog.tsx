@@ -14,12 +14,15 @@ import Dialog from "@mui/material/Dialog";
 import { useState } from "react";
 import { InputParams, InputField } from "./inputField";
 import { TimeInput, TimeInputParams } from "./timeField";
-import { Activity, ActivityService } from "../services/activityService";
+import { ActivityService } from "../services/activityService";
 import { GridColumn } from "./components";
 import { Form } from "react-router-dom";
 import { secondaryColor, smallMargin } from "./constants";
+import { Event, EventService } from '../services/eventService';
 
 const activityService = new ActivityService();
+const eventService = new EventService();
+
 
 function zip(keys: string[], values: Array<unknown>) {
   if (keys.length != values.length) return undefined;
@@ -31,19 +34,19 @@ function zip(keys: string[], values: Array<unknown>) {
 interface DayControl {
   label: string,
   key: string,
-  state: {value: boolean, set: React.Dispatch<React.SetStateAction<boolean>>}
+  state: { value: boolean, set: React.Dispatch<React.SetStateAction<boolean>> }
 }
 
 export function ActivityDialog({
   open,
   setOpen,
-  activities,
-  setActivities,
+  events,
+  setEvents,
 }: {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  activities: Array<Activity[]>;
-  setActivities: React.Dispatch<React.SetStateAction<Array<Activity[]>>>
+  events: Array<Event[]>;
+  setEvents: React.Dispatch<React.SetStateAction<Array<Event[]>>>
 }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -111,16 +114,16 @@ export function ActivityDialog({
       duration,
       repeat,
       start_time,
-      days: days.map((day: DayControl) => Boolean(day.state.value)),
+      days: days.map((day: DayControl) => Boolean(day.state.value)).flatMap((day, index) => day ? index : []),
     });
     if (result) {
       const new_activity = result.data;
-      new_activity['days'].forEach((day, index) => {
-        if (day === true) {
-          activities[index].push(new_activity);
-        }
+      eventService.create(new_activity.id);
+
+      new_activity['days'].forEach(day => {
+        events[day] = eventService.fetch(day);
       });
-      setActivities(activities);
+      setEvents(events);
     }
     handleClose();
   };
@@ -228,7 +231,7 @@ export function ActivityDialog({
               <Box>
                 {days.map((day) => {
                   return (
-                    <FormControlLabel key={day.key} sx={{margin: smallMargin}}
+                    <FormControlLabel key={day.key} sx={{ margin: smallMargin }}
                       control={
                         <Checkbox
                           checked={day.state.value}

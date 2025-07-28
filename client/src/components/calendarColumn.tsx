@@ -1,9 +1,11 @@
 import { Box, Button, Grid } from "@mui/material";
-import { Activity } from "../services/activityService";
 import { styles } from "./styles";
 import { secondaryColor, smallMargin } from "./constants";
+import { Event } from '../services/eventService';
 
-export default function CalendarColumn({ day, activities }: { day: string, activities: Activity[] }) {
+export default function CalendarColumn({ day, events }: { day: string, events: Event[] }) {
+  console.log(events);
+
   return (
     <Box
       sx={{
@@ -20,7 +22,7 @@ export default function CalendarColumn({ day, activities }: { day: string, activ
     <Box>
       <h3 color={secondaryColor}><b>{day}</b></h3>
     </Box>
-    {activities.map((activity) => {
+    {events.map((event) => {
         return (
         <Button 
           variant="contained" 
@@ -32,10 +34,10 @@ export default function CalendarColumn({ day, activities }: { day: string, activ
         >
             <Grid>
               <Grid item xs={12}>
-                <b>{activity.title}</b>
+                <b>{event.title}</b>
               </Grid>
               <Grid item xs={12}>
-                {activity.start_time}
+                {event.start_time}
               </Grid>
             </Grid>
         </Button>

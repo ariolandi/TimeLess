@@ -9,6 +9,13 @@ RSpec.describe TimeService do
       expect(time.minutes).to eq(15)
     end
 
+    it "a string without starting 0" do
+      time = TimeService.new("9:15")
+
+      expect(time.hours).to eq(9)
+      expect(time.minutes).to eq(15)
+    end
+
     it "nil" do
       time = TimeService.new(nil)
 

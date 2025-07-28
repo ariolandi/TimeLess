@@ -4,7 +4,7 @@ class ActivityController < ApplicationController
   def create
     user = User.find_by(token: user_token)
 
-    activity_params[user_id] = user.id
+    params[:activity][:user_id] = user.id
     activity = Activity.new(activity_params)
 
     if activity.save
@@ -19,21 +19,20 @@ class ActivityController < ApplicationController
     end
   end
 
-  def get_all
+  def get_day
     user = User.find_by(token: user_token)
+
     if user.nil?
       render json: {
         status: { message: "No such user" }
       }, status: :unprocessable_entity
     else
-      activities = Activity.where(user_id: user.id)
-      days = (0..6).to_a
-
-      activities_by_day = days.map{ |day| activities.select{|activity| (activity.days || []).empty? || activity.days[day]}}
+      day = params[:day]
+      activities = Activity.where(user_id: user.id).select { |activity| activity.days.include?(day) }
 
       render json: {
         status: { code: 200, message: '' },
-        data: activities_by_day
+        data: activities
       }
     end
   end

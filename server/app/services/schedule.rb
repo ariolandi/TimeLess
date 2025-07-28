@@ -1,20 +1,19 @@
 class Schedule
-  attr_reader :schedule, :breakpoints
+  attr_reader :schedule, :breakpoints, :preferred_times
 
   def initialize(start_time, end_time, day, activities: [], events: [])
     @day = day
-    @end = Event.create(start_time: end_time, system: true, day: @day)
-    @start = Event.create(start_time: start_time, system: true, day: @day)
     @preferred_times = TimeInterval.new(start_time, end_time)
-    @breakpoints = {}
 
     activities.each do |activity| 
       events.append(Event.create(activity: activity, day: @day))
     end
 
     fixed_events, nonfixed_events = events.partition{ |event| event.start_time.present? }
+
+    @schedule = fixed_events.sort_by(&:start_time)
     
-    @schedule = ([@start, @end] + fixed_events).sort_by(&:start_time)
+    load_breakpoint(fixed_events)
 
     nonfixed_events.each { |event| add_nonfixed_event(event) }
   end
@@ -22,7 +21,7 @@ class Schedule
   def add_activity(activity)
     event = Event.create(activity: activity, day: @day)
 
-    if activity.repeat
+    if activity.repeat && activity.repeat != 0
       add_repeated_event(event, activity.repeat)
     elsif event.fixed
       add_fixed_event(event)
@@ -34,17 +33,17 @@ class Schedule
   private
 
   def add_fixed_event(event)
-    if event.before(@start)
+    if event.before(@preferred_times.start_time)
       @schedule = [event] + @schedule
       return
-    elsif @end.before(event)
+    elsif event.after(@preferred_times.end_time)
       @schedule = @schedule + [event]
       return
     end
 
     index = find_place(event)
 
-    if event.system
+    if event.event_type.present?
       @schedule.insert(index, event)
       return
     end
@@ -76,21 +75,24 @@ class Schedule
       @schedule[index].in_time_interval(time_interval)
     end
 
-    # dropping the first index, as it is the last event before the current
-    possible_indexes.drop(1).each do |index|
-      previous_event = @schedule[index - 1]
-      next_event = @schedule[index]
+    possible_indexes.each do |index|
+      # maximum ending time for the index
+      ending_time = @schedule[index].start_time
+      ending_time = time_interval.end_time if time_interval.end_time < ending_time
 
-      # if there is empty space
-      if previous_event.difference(next_event) >= event.duration
-        event.set_time(previous_event.end_time)
+      # starting time for the index
+      starting_time = index == 0 ? time_interval.start_time : @schedule[index - 1].end_time
+      starting_time = time_interval.start_time if time_interval.start_time > starting_time
+
+      if TimeService.duration(starting_time, ending_time).to_minutes >= event.duration
+        event.set_time(starting_time)
         @schedule.insert(index, event)
         return
       end
     end
 
     fixed_events = @schedule.select do |event| 
-      event.fixed && event.in_time_interval(time_interval)
+      event.fixed && event.event_type.nil? && event.in_time_interval(time_interval)
     end
 
     # trying to find a place between the fixed events 
@@ -115,7 +117,7 @@ class Schedule
     end
 
     # if there is not empty space
-    raise ArgumentError, "There is no space for this event: #{event.represent}"
+    raise ArgumentError, "There is no space for this event"
   end
 
   def reorganize_schedule(event, index, time_interval = @preferred_times)
@@ -162,14 +164,16 @@ class Schedule
 
   # used only for fixed events, where binary search by time is possible
   def find_place(event, start_index = 0, end_index = @schedule.length) 
+    return start_index if start_index == end_index
+
     index = (start_index + end_index) / 2
 
     current_event = @schedule[index]
 
     # if the event is after the current
-    if current_event.before(event) 
-      next_event = @schedule[index + 1]
-      if next_event.before(event)
+    if current_event.nil? || current_event.before(event) 
+      next_event = index == end_index ? nil : @schedule[index + 1]
+      if next_event.present? && next_event.before(event)
         return find_place(event, index + 1, end_index)
       else
         # if the event should be placed in the position after the current
@@ -177,8 +181,9 @@ class Schedule
       end
     else
       # if the event is before the current
-      previous_event = @schedule[index - 1]
-      if previous_event.before(event)
+      previous_event = index == 0 ? nil : @schedule[index - 1]
+
+      if previous_event.nil? || previous_event.before(event)
         # if the event should be placed in the position before the current
         return index
       else
@@ -200,10 +205,23 @@ class Schedule
 
     # adding the system events
     breakpoint_times.each do |time|
-      event = Event.create(start_time: time, system: true, day: @day)
+      event = Event.create(start_time: time, event_type: "breakpoint #{number_of_parts}", day: @day)
       add_fixed_event(event)
     end
 
     @breakpoints[number_of_parts] = breakpoint_times
+  end
+
+  def load_breakpoint(events)
+    breakpoints_events = events.select { |event| event.event_type.present? && event.event_type =~ /^breakpoint /}
+
+    @breakpoints = {}
+
+    breakpoints_events.each do |event|
+      _, number_of_parts = event.event_type.split(' ')
+
+      @breakpoints[number_of_parts] = [] unless @breakpoints.keys.include?(number_of_parts)
+      @breakpoints[number_of_parts].append(event.start_time)
+    end
   end
 end
