@@ -117,7 +117,7 @@ class Schedule
     end
 
     # if there is not empty space
-    raise ArgumentError, "There is no space for this event"
+    raise ArgumentError, "There is no space for this event: #{event.represent}"
   end
 
   def reorganize_schedule(event, index, time_interval = @preferred_times)
@@ -138,7 +138,7 @@ class Schedule
 
     # if there is a fixed event in the same slot
     if next_event.present? && next_event.fixed && next_event.start_time <= event.end_time
-      raise ArgumentError, "There is already other event at the same time"
+      raise ArgumentError, "There is already other event at the same time: #{event.represent}"
     end
 
     reschedule = []

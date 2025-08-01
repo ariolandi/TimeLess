@@ -5,6 +5,7 @@ class ActivityController < ApplicationController
     user = User.find_by(token: user_token)
 
     params[:activity][:user_id] = user.id
+    puts activity_params
     activity = Activity.new(activity_params)
 
     if activity.save

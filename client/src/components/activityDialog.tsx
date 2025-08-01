@@ -45,8 +45,8 @@ export function ActivityDialog({
 }: {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  events: Array<Event[]>;
-  setEvents: React.Dispatch<React.SetStateAction<Array<Event[]>>>
+  events: Event[][];
+  setEvents: React.Dispatch<React.SetStateAction<Event[][]>>
 }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -100,9 +100,7 @@ export function ActivityDialog({
   };
 
   const handleSubmit = async () => {
-    if (timeToggle === false) {
-      setStartTime(null);
-    }
+    const startTime = timeToggle === false ? null : start_time;
 
     if (doRepeat === false) {
       setRepeat("0");
@@ -113,16 +111,18 @@ export function ActivityDialog({
       description,
       duration,
       repeat,
-      start_time,
+      start_time: startTime,
       days: days.map((day: DayControl) => Boolean(day.state.value)).flatMap((day, index) => day ? index : []),
     });
     if (result) {
       const new_activity = result.data;
       eventService.create(new_activity.id);
 
-      new_activity['days'].forEach(day => {
-        events[day] = eventService.fetch(day);
-      });
+      for (const day in new_activity['days']) {
+        const numericDay: number = +day;
+        events[numericDay] = (await eventService.fetch(numericDay)).data;
+      }
+
       setEvents(events);
     }
     handleClose();
