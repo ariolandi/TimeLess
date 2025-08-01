@@ -1,13 +1,14 @@
 import { HTTPService } from './httpService'
 
 export interface Event {
+    user_id: number,
     activity_id: number,
-    duration: string,
-    fixed: boolean,
-    start_time: string,
-    system: boolean,
     title: string,
-    user_id: boolean[],
+    start_time: string,
+    duration: string,
+    end_time: string,
+    fixed: boolean,
+    event_type: string,
 }
 
 
@@ -15,10 +16,10 @@ export class EventService {
   private httpService = new HTTPService()
 
   async create (activity_id: number) {
-    return await this.httpService.authorizedRequest({ activity_id: activity_id }, "event", "POST");
+    return await this.httpService.authorizedRequest("event", "POST", { activity_id });
   }
 
   async fetch (day: number) {
-    return await this.httpService.authorizedRequest<{ data: Event[] }>({ day: day }, "schedule", "POST");
+    return await this.httpService.authorizedRequest<{ data: Event[] }>(`schedule/${day}`, "GET");
   }
 }

@@ -3,7 +3,7 @@ const server_url = import.meta.env.VITE_SERVER_HOST;
 type METHOD = 'POST' | 'GET';
 
 export class HTTPService {
-  private async execRequest(params: object, headers: HeadersInit, endpoint: string, method: METHOD) {
+  private async execRequest(headers: HeadersInit, endpoint: string, method: METHOD, params?: object) {
     const init: RequestInit = {
       method: method,
       mode: "cors",
@@ -11,11 +11,9 @@ export class HTTPService {
       headers: headers,
     };
 
-    if (method === 'POST') {
+    if (method !== 'GET' && params !== undefined) {
       init.body = JSON.stringify(params);
     }
-
-    console.log(init);
     
     const response = await fetch(`${server_url}/${endpoint}`, init);
     console.log(response);
@@ -27,19 +25,19 @@ export class HTTPService {
     return await response.json();
   }
 
-  async request(params: object, endpoint: string, method: METHOD) {
+  async request(endpoint: string, method: METHOD, params?: object, ) {
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Credentials": "true",
     };
 
-    return await this.execRequest(params, headers, endpoint, method);
+    return await this.execRequest(headers, endpoint, method, params);
   }
 
   async authorizedRequest<T>(
-    params: object,
     endpoint: string,
-    method: METHOD
+    method: METHOD,
+    params?: object
   ): Promise<T> {
     const headers = {
       "Content-Type": "application/json",
@@ -47,7 +45,7 @@ export class HTTPService {
       "Authorization": `Bearer ${localStorage.getItem("current_user")}`,
     };
   
-    return await this.execRequest(params, headers, endpoint, method);
+    return await this.execRequest(headers, endpoint, method, params);
   }
 }
 

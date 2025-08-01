@@ -19,7 +19,7 @@ class ActivityController < ApplicationController
     end
   end
 
-  def get_day
+  def get_by_id
     user = User.find_by(token: user_token)
 
     if user.nil?
@@ -27,12 +27,12 @@ class ActivityController < ApplicationController
         status: { message: "No such user" }
       }, status: :unprocessable_entity
     else
-      day = params[:day]
-      activities = Activity.where(user_id: user.id).select { |activity| activity.days.include?(day) }
+      id = params[:id]
+      activity = Activity.where(user_id: user.id, id: id).first
 
       render json: {
         status: { code: 200, message: '' },
-        data: activities
+        data: activity
       }
     end
   end

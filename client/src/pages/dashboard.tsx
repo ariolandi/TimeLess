@@ -1,7 +1,7 @@
 import Header from "../components/header";
 import { Container, Button } from "@mui/material";
 import { styles } from "../components/styles";
-import { ActivityDialog } from "../components/dialog";
+import { ActivityDialog } from "../components/activityDialog";
 import { useEffect, useState } from "react";
 import Calendar from "../components/calendar";
 import { Event, EventService } from "../services/eventService";

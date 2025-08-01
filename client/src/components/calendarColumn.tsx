@@ -1,10 +1,10 @@
-import { Box, Button, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import { styles } from "./styles";
 import { secondaryColor, smallMargin } from "./constants";
 import { Event } from '../services/eventService';
+import CalendarEvent from "./calendarEvent";
 
 export default function CalendarColumn({ day, events }: { day: string, events: Event[] }) {
-  console.log(events);
 
   return (
     <Box
@@ -24,24 +24,8 @@ export default function CalendarColumn({ day, events }: { day: string, events: E
     </Box>
     {events.map((event) => {
         return (
-        <Button 
-          variant="contained" 
-          fullWidth 
-          sx={{
-            backgroundColor: "primary.main",
-            ...styles.submitButton
-          }}
-        >
-            <Grid>
-              <Grid item xs={12}>
-                <b>{event.title}</b>
-              </Grid>
-              <Grid item xs={12}>
-                {event.start_time}
-              </Grid>
-            </Grid>
-        </Button>
-        );
+          <CalendarEvent event={event} />
+        )
     })}
     </Box>
   );

@@ -24,10 +24,10 @@ export class ActivityService {
   private httpService = new HTTPService()
 
   async create (activity: ActivityInput) {
-    return await this.httpService.authorizedRequest<{ data: Activity }>(activity, "activity", "POST");
+    return await this.httpService.authorizedRequest<{ data: Activity }>("activity/create", "POST", activity);
   }
 
-  async fetch (day: number) {
-    return await this.httpService.authorizedRequest<{ data: Activity[] }>({ day: day }, "activity/day", "POST");
+  async fetch_activity (id: number) {
+    return await this.httpService.authorizedRequest<{ data: Activity }>(`activity/id/${id}`, "GET");
   }
 }

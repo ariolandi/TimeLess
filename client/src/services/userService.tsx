@@ -24,18 +24,18 @@ export class UserService {
   private httpService = new HTTPService()
 
   async create (user: CreateUser) {
-      return await this.httpService.request({user}, "signup", "POST");
+      return await this.httpService.request("signup", "POST", {user});
   }
 
   async login (user: LoginUser) {
-    return await this.httpService.request(user, "login", "POST");
+    return await this.httpService.request("login", "POST", user);
   }
 
   async logout () {
-    return await this.httpService.authorizedRequest({}, "logout", "GET");
+    return await this.httpService.authorizedRequest("logout", "GET");
   }
 
   async information (information: UserInformation) {
-    return await this.httpService.authorizedRequest<{ data: UserInformation }>(information, "update_user", "POST");
+    return await this.httpService.authorizedRequest<{ data: UserInformation }>("update_user", "POST", information);
   }
 }

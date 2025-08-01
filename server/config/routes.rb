@@ -5,10 +5,10 @@ Rails.application.routes.draw do
   get '/logout' => 'sessions#destroy'
   post '/update_user' => 'sessions#update'
 
-  post '/activity' => 'activity#create'
-  post '/activity/day' => 'activity#get_day'
+  post '/activity/create' => 'activity#create'
+  get '/activity/id/:id' => 'activity#get_by_id'
 
-  post '/schedule' => 'event#get_schedule'
+  get '/schedule/:day' => 'event#get_schedule'
   post '/event' => 'event#create'
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

@@ -40,7 +40,7 @@ class EventController < ApplicationController
     else
       day = params[:day]
       events = Event
-        .where(user_id: user.id, day: day, system: false)
+        .where(user_id: user.id, day: day, event_type: nil)
         .map(&:represent)
         .sort_by { |event| event[:start_time] }
 
