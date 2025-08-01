@@ -51,6 +51,9 @@ export function EventPreview({
             <GridColumn>
               { "Начален час: " + event.start_time }
             </GridColumn>
+            <GridColumn>
+              { "Краен час: " + event.end_time }
+            </GridColumn>
             <Grid item xs={12}>
               { activity.description }
             </Grid>
