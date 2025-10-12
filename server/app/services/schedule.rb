@@ -71,14 +71,15 @@ class Schedule
   end
 
   def add_nonfixed_event(event, time_interval = @preferred_times)
-    possible_indexes = @schedule.each_index.select do |index| 
-      @schedule[index].in_time_interval(time_interval)
+    possible_indexes = (0..@schedule.length).select do |index| 
+      element = @schedule[index]
+      element ? element.in_time_interval(time_interval) : true
     end
 
     possible_indexes.each do |index|
       # maximum ending time for the index
-      ending_time = @schedule[index].start_time
-      ending_time = time_interval.end_time if time_interval.end_time < ending_time
+      ending_time = @schedule[index]&.start_time
+      ending_time = time_interval.end_time if ending_time.nil? || time_interval.end_time < ending_time
 
       # starting time for the index
       starting_time = index == 0 ? time_interval.start_time : @schedule[index - 1].end_time

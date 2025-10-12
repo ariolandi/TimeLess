@@ -1,9 +1,9 @@
 import Header from "../components/header";
 import { Container, Button } from "@mui/material";
 import { styles } from "../components/styles";
-import { ActivityDialog } from "../components/activityDialog";
+import { CreateActivity } from "../components/dialogs/createActivity";
 import { useEffect, useState } from "react";
-import Calendar from "../components/calendar";
+import Calendar from "../components/calendar/calendar";
 import { Event, EventService } from "../services/eventService";
 
 const eventService = new EventService();
@@ -14,27 +14,27 @@ export default function DashBoard() {
   const [, setLoading] = useState(true);
   const [, setError] = useState<unknown>();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const schedule = [
-          (await eventService.fetch(0)).data,
-          (await eventService.fetch(1)).data,
-          (await eventService.fetch(2)).data,
-          (await eventService.fetch(3)).data,
-          (await eventService.fetch(4)).data,
-          (await eventService.fetch(5)).data,
-          (await eventService.fetch(6)).data
-        ]
+  async function loadEvents() {
+    try {
+      const schedule = [
+        (await eventService.fetch(0)).data,
+        (await eventService.fetch(1)).data,
+        (await eventService.fetch(2)).data,
+        (await eventService.fetch(3)).data,
+        (await eventService.fetch(4)).data,
+        (await eventService.fetch(5)).data,
+        (await eventService.fetch(6)).data
+      ]
 
-        setEvents(schedule);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+      setEvents(schedule);
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {loadEvents()}, []);
 
   return (
     <Container maxWidth={false} disableGutters>
@@ -58,7 +58,7 @@ export default function DashBoard() {
         >
           <b>Създай дейност</b>
         </Button>
-        <ActivityDialog
+        <CreateActivity
           open={openDialog}
           setOpen={setOpenDialog}
           events={events}

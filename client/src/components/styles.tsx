@@ -1,5 +1,5 @@
 import { SxProps, Theme } from "@mui/material";
-import { primaryColor, smallMarginPercent, standardMargin, standardMarginPercent } from "./constants";
+import { primaryColor, smallMargin, smallMarginPercent, standardMargin, standardMarginPercent } from "./constants";
 
 function makeStyles<T extends Record<string, SxProps<Theme>>>(styles: T) {
   return styles;
@@ -20,13 +20,18 @@ export const styles = makeStyles({
     padding: standardMargin,
     marginTop: standardMargin,
   },
+  eventTile: {
+    padding: standardMargin,
+    marginTop: smallMargin,
+    marginBottom: smallMargin
+  },
   formBorder: {
     border: 1,
     borderRadius: 8,
     padding: standardMarginPercent,
     margin: standardMarginPercent,
     paddingTop: 0,
-    paddingBottom: smallMarginPercent,
+    paddingBottom: standardMarginPercent,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",

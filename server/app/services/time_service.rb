@@ -5,7 +5,7 @@ class TimeService
   DEFAULT_YEAR = Date.parse("2000-01-01")
 
   def initialize(time)
-    time ||= "00:00"
+    time = "00:00" if time.nil? || (time.is_a?(String) && time.empty?)
 
     if time.is_a?(Time)
         @hours = time.hour

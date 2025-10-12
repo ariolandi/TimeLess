@@ -65,6 +65,19 @@ RSpec.describe Schedule do
 
       expect_equal(empty_schedule, expected_schedule)
     end
+
+    it "adds nonfixed activity" do
+      activity = setup_activity("1 | nonfixed activity | | 00:10")
+
+      expected_schedule = setup_events <<~EVENTS
+        1 | nonfixed activity | 09:00 | 00:10 | false  |
+      EVENTS
+
+      empty_schedule = Schedule.new("09:00", "18:00", 1)
+      empty_schedule.add_activity(activity)
+
+      expect_equal(empty_schedule, expected_schedule)
+    end
   end
 
   context "with fixed activities" do

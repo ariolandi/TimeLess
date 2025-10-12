@@ -1,36 +1,27 @@
 import TextField from "@mui/material/TextField";
 import { standardMargin } from "./constants";
 
-export interface InputParams {
+export interface ReadonlyInputParams {
   name: string;
   value: string;
-  state: (value: string) => void;
   label: string;
   type?: string;
   multiline?: boolean;
-  required?: boolean;
-  readonly?: boolean
 }
 
-export function InputField({
+export function ReadonlyField({
   field,
   fullWidth,
-  disabled,
-  error,
   color,
   variant
 }: {
-  field: InputParams;
+  field: ReadonlyInputParams;
   fullWidth?: boolean;
-  disabled?: boolean;
-  error?: boolean;
   color?: "primary" | "secondary";
   variant?: "outlined" | "standard"
 }) {
   return (
     <TextField
-      required={field.required}
-      error={error}
       fullWidth={fullWidth}
       id={field.name}
       label={field.label}
@@ -39,14 +30,12 @@ export function InputField({
       variant={variant ?? "standard"}
       value={field.value}
       multiline={field.multiline}
-      disabled={disabled}
-      inputProps={{ readOnly: field.readonly }}
+      inputProps={{ readOnly: true }}
       sx={{
         color: color || "primary",
         marginTop: standardMargin 
       }}
-      helperText={error && "Това поле е задължително"}
-      onChange={(e) => field.state(e.target.value)}
+      
     />
   );
 }

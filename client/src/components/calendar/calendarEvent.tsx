@@ -1,26 +1,19 @@
 import { Button, Grid } from "@mui/material";
-import { styles } from "./styles";
-import { Event } from '../services/eventService';
-import { EventPreview } from "./eventPreview";
+import { styles } from "../styles";
+import { Event } from '../../services/eventService';
+import { EventPreview } from "../dialogs/eventPreview";
 import { useEffect, useState } from "react";
-import { Activity, ActivityService } from "../services/activityService";
+import { Activity, ActivityService } from "../../services/activityService";
 
 const activityService = new ActivityService();
 
-export default function CalendarEvent({ event }: { event: Event }) {
-  const defaultActivity = {
-    id: event.activity_id,
-    user_id: event.user_id,
-    title: event.title,
-    description: "",
-    duration: "00:00",
-    start_time: null,
-    repeat: 0,
-    days: []
-  }
-
+export default function CalendarEvent({ event, allEvents, setEvents }: { 
+  event: Event,
+  allEvents:  Array<Event[]>, 
+  setEvents: React.Dispatch<React.SetStateAction<Event[][]>> 
+}) {
   const [openDialog, setOpenDialog] = useState(false);
-  const [activity, setActivity] = useState<Activity>(defaultActivity);
+  const [activity, setActivity] = useState<Activity>();
   const [, setLoading] = useState(true);
   const [, setError] = useState<unknown>();
 
@@ -37,8 +30,6 @@ export default function CalendarEvent({ event }: { event: Event }) {
     })();
   }, [event]);
 
-  console.log(event, activity);
-
   return (
     <>
       <Button 
@@ -46,7 +37,7 @@ export default function CalendarEvent({ event }: { event: Event }) {
         fullWidth 
         sx={{
           backgroundColor: "primary.main",
-          ...styles.submitButton
+          ...styles.eventTile
         }}
         onClick={() => {setOpenDialog(true);}}
         >
@@ -59,12 +50,14 @@ export default function CalendarEvent({ event }: { event: Event }) {
           </Grid>
         </Grid>
       </Button>
-      <EventPreview
+      {activity && <EventPreview
         open={openDialog}
         setOpen={setOpenDialog}
         event={event}
         activity={activity}
-      />
+        allEvents={allEvents}
+        setEvents={setEvents}
+      />}
     </>
   );
 }

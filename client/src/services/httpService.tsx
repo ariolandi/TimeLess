@@ -1,6 +1,6 @@
 const server_url = import.meta.env.VITE_SERVER_HOST;
 
-type METHOD = 'POST' | 'GET';
+type METHOD = 'POST' | 'GET' | "PUT";
 
 export class HTTPService {
   private async execRequest(headers: HeadersInit, endpoint: string, method: METHOD, params?: object) {
