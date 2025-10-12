@@ -326,6 +326,26 @@ RSpec.describe Schedule do
     end
   end
 
+  it "removes an activity" do
+    activities = setup_activities <<~ACTIVITIES
+      1 | fixed activity 1 | 10:00 | 00:30
+      2 | fixed activity 2 | 12:00 | 00:45
+      3 | fixed activity 3 | 16:00 | 01:00
+    ACTIVITIES
+    
+    activity = setup_activity("2 | fixed activity 2 | 12:00 | 00:45")
+
+    expected_schedule = setup_events <<~EVENTS
+      1 | fixed activity 1  | 10:00 | 00:30 | true  |
+      3 | fixed activity 3  | 16:00 | 01:00 | true  |
+    EVENTS
+
+    schedule = Schedule.new("09:00", "18:00", 1, activities: activities)
+    schedule.remove_activity(activity)
+
+    expect_equal(schedule, expected_schedule)
+  end
+
   private
 
   def expect_equal(schedule, expected_schedule)

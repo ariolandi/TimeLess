@@ -30,6 +30,10 @@ class Schedule
     end
   end
 
+  def remove_activity(activity)
+    @schedule.keep_if{ |event| event.activity_id != activity.id }
+  end
+
   private
 
   def add_fixed_event(event)

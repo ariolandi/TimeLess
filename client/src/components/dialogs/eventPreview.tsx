@@ -6,14 +6,17 @@ import {
   Grid,
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
-import { Activity } from "../../services/activityService";
-import { Event } from "../../services/eventService";
+import { Activity, ActivityService } from "../../services/activityService";
+import { Event, EventService } from "../../services/eventService";
 import { GridColumn } from "../components";
 import { Form } from "react-router-dom";
 import { secondaryColor } from "../constants";
 import { ReadonlyField } from "../readonlyField"
 import { UpdateActivity } from "./updateActivity";
 import { useState } from "react";
+
+const activityService = new ActivityService();
+const eventService = new EventService();
 
 export function EventPreview({
   open,
@@ -42,7 +45,19 @@ export function EventPreview({
     onClose();
   };
 
-  const onSave = () => {
+  const onDelete = async () => {
+    const result = await activityService.delete(activity.id);
+
+    if (result) {
+      const newSchedule = allEvents;
+      for (const day in activity.days) {
+        const numericDay: number = +day;
+        newSchedule[numericDay] = (await eventService.fetch(numericDay)).data;
+      }
+
+      setEvents(newSchedule);
+    }
+    
     onClose();
   };
 
@@ -102,6 +117,7 @@ export function EventPreview({
           </DialogContent>
           <DialogActions>
             <Button color={color} type="submit">Промени</Button>
+            <Button color={color} onClick={onDelete}>Изтрий</Button>
             <Button color={color} onClick={onClose}>Затвори</Button>
           </DialogActions>
         </Form>
@@ -111,7 +127,6 @@ export function EventPreview({
         event={event}
         open={openDialog} 
         setOpen={setOpenDialog} 
-        onSave={onSave}
         events={allEvents}
         setEvents={setEvents}
       />

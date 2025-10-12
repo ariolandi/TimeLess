@@ -55,6 +55,27 @@ class ActivityController < ApplicationController
     end
   end
 
+  def delete
+    user = User.find_by(token: user_token)
+
+    if user.nil?
+      render json: {
+        status: { message: "No such user" }
+      }, status: :unprocessable_entity
+    else
+      id = params[:id]
+
+      
+        Event.where(activity_id: id).destroy_all
+        Activity.destroy(id: id)
+
+        render json: {
+          status: { code: 200, message: '' },
+          data: activity
+        }
+    end
+  end
+
   def get_by_id
     user = User.find_by(token: user_token)
 

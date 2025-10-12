@@ -12,7 +12,6 @@ export function UpdateActivity({
   setOpen,
   activity,
   event,
-  onSave,
   events,
   setEvents,
 }: {
@@ -20,7 +19,6 @@ export function UpdateActivity({
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   activity: Activity;
   event: Event;
-  onSave: () => void | Promise<void>;
   events: Event[][];
   setEvents: React.Dispatch<React.SetStateAction<Event[][]>>
 }) {
@@ -41,8 +39,8 @@ export function UpdateActivity({
     const repeat = doRepeat.value === false ? "0" : repeatTimes.value;
     const activityDays = days.map((day: DayControl) => Boolean(day.state.value)).flatMap((day, index) => day ? index : []);
 
-    const result = await activityService.update({
-      id: activity.id,
+    const result = await activityService.update(activity.id, {
+      title: title.value,
       description: description.value,
       duration: duration.value,
       repeat,
@@ -60,9 +58,7 @@ export function UpdateActivity({
       setEvents(newSchedule);
     }
 
-    console.log(result);
-
-    onSave();
+    onClose();
   };
 
   return (

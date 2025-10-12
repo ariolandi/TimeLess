@@ -9,15 +9,6 @@ export interface ActivityInput {
   days: number[],
 }
 
-export interface ActivityUpdate {
-  id: number,
-  description: string,
-  duration: string | null,
-  repeat: string,
-  start_time: string | null,
-  days: number[],
-}
-
 export interface Activity {
   id: number,
   user_id: number,
@@ -36,8 +27,12 @@ export class ActivityService {
     return await this.httpService.authorizedRequest<{ data: Activity }>("activity/create", "POST", activity);
   }
 
-  async update (activity: ActivityUpdate) {
-    return await this.httpService.authorizedRequest<{ data: Activity }>("activity/update", "PUT", activity);
+  async update (id: number, activity: ActivityInput) {
+    return await this.httpService.authorizedRequest<{ data: Activity }>(`activity/update/${id}`, "PUT", activity);
+  }
+
+  async delete (id: number) {
+    return await this.httpService.authorizedRequest(`activity/delete/${id}`, "PUT");
   }
 
   async fetch_activity (id: number) {

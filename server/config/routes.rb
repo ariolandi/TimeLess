@@ -6,7 +6,8 @@ Rails.application.routes.draw do
   post '/update_user' => 'sessions#update'
 
   post '/activity/create' => 'activity#create'
-  put '/activity/update' => 'activity#update'
+  put '/activity/update/:id' => 'activity#update'
+  put '/activity/delete/:id' => 'activity#delete'
   get '/activity/id/:id' => 'activity#get_by_id'
 
   get '/schedule/:day' => 'schedule#get_schedule'
