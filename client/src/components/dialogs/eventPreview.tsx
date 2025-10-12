@@ -16,22 +16,19 @@ import { UpdateActivity } from "./updateActivity";
 import { useState } from "react";
 
 const activityService = new ActivityService();
-const eventService = new EventService();
 
 export function EventPreview({
   open,
   setOpen,
   event,
   activity,
-  allEvents,
-  setEvents
+  onSaveChanges
 }: {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   event: Event;
   activity: Activity;
-  allEvents:  Array<Event[]>, 
-  setEvents: React.Dispatch<React.SetStateAction<Event[][]>>;
+  onSaveChanges: () => void
 }) {
   const color = "secondary";
   const [openDialog, setOpenDialog] = useState(false);
@@ -46,17 +43,7 @@ export function EventPreview({
   };
 
   const onDelete = async () => {
-    const result = await activityService.delete(activity.id);
-
-    if (result) {
-      const newSchedule = allEvents;
-      for (const day in activity.days) {
-        const numericDay: number = +day;
-        newSchedule[numericDay] = (await eventService.fetch(numericDay)).data;
-      }
-
-      setEvents(newSchedule);
-    }
+    await activityService.delete(activity.id);
     
     onClose();
   };
@@ -126,9 +113,8 @@ export function EventPreview({
         activity={activity} 
         event={event}
         open={openDialog} 
-        setOpen={setOpenDialog} 
-        events={allEvents}
-        setEvents={setEvents}
+        setOpen={setOpenDialog}
+        onSaveChanges={onSaveChanges}
       />
     </>
   );

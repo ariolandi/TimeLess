@@ -7,11 +7,7 @@ import { Activity, ActivityService } from "../../services/activityService";
 
 const activityService = new ActivityService();
 
-export default function CalendarEvent({ event, allEvents, setEvents }: { 
-  event: Event,
-  allEvents:  Array<Event[]>, 
-  setEvents: React.Dispatch<React.SetStateAction<Event[][]>> 
-}) {
+export default function CalendarEvent({ event, onSaveChanges }: { event: Event, onSaveChanges: () => void }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [activity, setActivity] = useState<Activity>();
   const [, setLoading] = useState(true);
@@ -55,8 +51,7 @@ export default function CalendarEvent({ event, allEvents, setEvents }: {
         setOpen={setOpenDialog}
         event={event}
         activity={activity}
-        allEvents={allEvents}
-        setEvents={setEvents}
+        onSaveChanges={onSaveChanges}
       />}
     </>
   );

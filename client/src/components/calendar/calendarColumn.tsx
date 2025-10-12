@@ -4,11 +4,10 @@ import { secondaryColor, smallMargin } from "../constants";
 import { Event } from '../../services/eventService';
 import CalendarEvent from "./calendarEvent";
 
-export default function CalendarColumn({ day, dayEvents, allEvents, setEvents }: { 
-  day: string, 
-  dayEvents: Event[],
-  allEvents:  Array<Event[]>, 
-  setEvents: React.Dispatch<React.SetStateAction<Event[][]>> 
+export default function CalendarColumn({ day, events, onSaveChanges }: { 
+  day: string,  
+  events: Event[],
+  onSaveChanges: () => void
 }) {
   return (
     <Box
@@ -26,9 +25,9 @@ export default function CalendarColumn({ day, dayEvents, allEvents, setEvents }:
     <Box>
       <h3 color={secondaryColor}><b>{day}</b></h3>
     </Box>
-    {dayEvents.map((event) => {
+    {events.map((event) => {
         return (
-          <CalendarEvent event={event} allEvents={allEvents} setEvents={setEvents} />
+          <CalendarEvent event={event} onSaveChanges={onSaveChanges} />
         )
     })}
     </Box>

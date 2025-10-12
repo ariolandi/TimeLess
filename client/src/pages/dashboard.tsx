@@ -61,11 +61,10 @@ export default function DashBoard() {
         <CreateActivity
           open={openDialog}
           setOpen={setOpenDialog}
-          events={events}
-          setEvents={setEvents}
+          onSaveChanges={loadEvents}
         />
       </Container>
-      <Calendar events={events} />
+      <Calendar events={events} onSaveChanges={loadEvents} />
     </Container>
   );
 }

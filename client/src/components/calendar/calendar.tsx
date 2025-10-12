@@ -3,10 +3,7 @@ import { Event } from '../../services/eventService';
 import CalendarColumn from "./calendarColumn";
 import { small_screen_size } from "../constants";
 
-export default function Calendar({ events, setEvents }: { 
-  events: Array<Event[]>, 
-  setEvents: React.Dispatch<React.SetStateAction<Event[][]>> 
-}) {
+export default function Calendar({ events, onSaveChanges }: { events: Array<Event[]>, onSaveChanges: () => void }) {
   const small_screen = useMediaQuery(small_screen_size);
 
   return (
@@ -16,13 +13,13 @@ export default function Calendar({ events, setEvents }: {
         display: small_screen ? "block" : "flex",
         width: "100%",
       }}>
-      <CalendarColumn day={"Понеделник"} dayEvents={events[0]} allEvents={events} setEvents={setEvents} />
-      <CalendarColumn day={"Вторник"} dayEvents={events[1]} allEvents={events} setEvents={setEvents} />
-      <CalendarColumn day={"Сряда"} dayEvents={events[2]} allEvents={events} setEvents={setEvents} />
-      <CalendarColumn day={"Четвъртък"} dayEvents={events[3]} allEvents={events} setEvents={setEvents} />
-      <CalendarColumn day={"Петък"} dayEvents={events[4]} allEvents={events} setEvents={setEvents} />
-      <CalendarColumn day={"Събота"} dayEvents={events[5]} allEvents={events} setEvents={setEvents} />
-      <CalendarColumn day={"Неделя"} dayEvents={events[6]} allEvents={events} setEvents={setEvents} />
+      <CalendarColumn day={"Понеделник"} events={events[0]} onSaveChanges={onSaveChanges} />
+      <CalendarColumn day={"Вторник"} events={events[1]} onSaveChanges={onSaveChanges} />
+      <CalendarColumn day={"Сряда"} events={events[2]} onSaveChanges={onSaveChanges} />
+      <CalendarColumn day={"Четвъртък"} events={events[3]} onSaveChanges={onSaveChanges} />
+      <CalendarColumn day={"Петък"} events={events[4]} onSaveChanges={onSaveChanges} />
+      <CalendarColumn day={"Събота"} events={events[5]} onSaveChanges={onSaveChanges} />
+      <CalendarColumn day={"Неделя"} events={events[6]} onSaveChanges={onSaveChanges} />
     </Grid>
   );
 }
