@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import { Activity, ActivityService } from "../../services/activityService";
-import { Event, EventService } from "../../services/eventService";
+import { Event } from "../../services/eventService";
 import { GridColumn } from "../components";
 import { Form } from "react-router-dom";
 import { secondaryColor } from "../constants";

@@ -1,9 +1,6 @@
 import Header from "../components/header";
-import { Container, Button, Box } from "@mui/material";
-import { styles } from "../components/styles";
-import { CreateActivity } from "../components/dialogs/createActivity";
+import { Container } from "@mui/material";
 import { useEffect, useState } from "react";
-import Calendar from "../components/calendar/calendar";
 import { User, UserService } from "../services/userService";
 
 const userService = new UserService();
@@ -23,7 +20,7 @@ export default function Profile() {
   return (
     <Container maxWidth={false} disableGutters>
       <Header />
-      
+        {user?.username}
     </Container>
   );
 }

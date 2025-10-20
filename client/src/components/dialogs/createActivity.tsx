@@ -1,5 +1,4 @@
 import { ActivityService } from "../../services/activityService";
-import { Event, EventService } from '../../services/eventService';
 import { useDayControls } from "../daysControl";
 import { useCreateState } from "../stateControl";
 import { ActivityDialog } from "./activityDialog";
