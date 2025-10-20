@@ -1,6 +1,7 @@
 class SessionsController < ApplicationController
   def create
     user = User.find_by(username: params[:username])
+
     if user&.authenticate(params[:password])
       User.login(user)
       onboarded = user.first_name.present?
@@ -33,7 +34,21 @@ class SessionsController < ApplicationController
     else
       render json: {
         status: { message: "User couldn't be found." }
-      }, status: :unprocessable_entity
+      }, status: :not_found
+    end
+  end
+
+  def get
+    user = User.find_by(token: user_token)
+    if user
+      render json: {
+        status: { code: 200 },
+        data: user
+      }
+    else
+      render json: {
+        status: { message: "User couldn't be found." }
+      }, status: :not_found
     end
   end
 

@@ -45,6 +45,7 @@ export function EventPreview({
   const onDelete = async () => {
     await activityService.delete(activity.id);
     
+    onSaveChanges();
     onClose();
   };
 

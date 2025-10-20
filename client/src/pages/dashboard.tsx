@@ -5,6 +5,7 @@ import { CreateActivity } from "../components/dialogs/createActivity";
 import { useEffect, useState } from "react";
 import Calendar from "../components/calendar/calendar";
 import { Event, EventService } from "../services/eventService";
+import { Days } from "../components/constants";
 
 const eventService = new EventService();
 
@@ -17,13 +18,13 @@ export default function DashBoard() {
   async function loadEvents() {
     try {
       const schedule = [
-        (await eventService.fetch(0)).data,
-        (await eventService.fetch(1)).data,
-        (await eventService.fetch(2)).data,
-        (await eventService.fetch(3)).data,
-        (await eventService.fetch(4)).data,
-        (await eventService.fetch(5)).data,
-        (await eventService.fetch(6)).data
+        (await eventService.fetch(Days.Monday)).data,
+        (await eventService.fetch(Days.Tuesday)).data,
+        (await eventService.fetch(Days.Wednesday)).data,
+        (await eventService.fetch(Days.Thursday)).data,
+        (await eventService.fetch(Days.Friday)).data,
+        (await eventService.fetch(Days.Saturday)).data,
+        (await eventService.fetch(Days.Sunday)).data
       ]
 
       setEvents(schedule);

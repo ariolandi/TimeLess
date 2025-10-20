@@ -7,7 +7,7 @@ import { SubmitButton } from "./components";
 import { InputParams, InputField } from "./inputField";
 import { Typography } from "@mui/material";
 import { useState } from "react";
-import { primaryColor, secondaryColor, standardMarginPercent } from "./constants";
+import { secondaryColor, standardMarginPercent } from "./constants";
 
 export interface CredentialsFormProps {
   params: InputParams[];
@@ -41,7 +41,7 @@ export function CredentialsForm({
         sx={{
           ...styles.formBorder,
           ...{
-            color: primaryColor,
+            color: secondaryColor,
             padding: standardMarginPercent,
           },
         }}

@@ -1,26 +1,37 @@
 const server_url = import.meta.env.VITE_SERVER_HOST;
 
-type METHOD = 'POST' | 'GET' | "PUT";
+export enum METHOD {
+  GET,
+  POST,
+  PUT,
+  DELETE
+}
+
+function toString(method: METHOD) {
+  switch(method) {
+    case METHOD.GET: return "GET";
+    case METHOD.POST: return "POST";
+    case METHOD.PUT: return "PUT";
+    case METHOD.DELETE: return "DELETE";
+  }
+  
+  return "";
+}
 
 export class HTTPService {
   private async execRequest(headers: HeadersInit, endpoint: string, method: METHOD, params?: object) {
     const init: RequestInit = {
-      method: method,
+      method: toString(method),
       mode: "cors",
       credentials: "include",
       headers: headers,
     };
 
-    if (method !== 'GET' && params !== undefined) {
+    if (method !== METHOD.GET && params !== undefined) {
       init.body = JSON.stringify(params);
     }
     
     const response = await fetch(`${server_url}/${endpoint}`, init);
-    console.log(response);
-
-    if (!response.ok) {
-      return false;
-    }
 
     return await response.json();
   }

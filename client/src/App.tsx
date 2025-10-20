@@ -6,6 +6,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import EntryPage from "./pages/entryPage";
 import Information from "./pages/information";
 import DashBoard from "./pages/dashboard";
+import Profile from "./pages/profile";
 
 const theme = createTheme({
   palette: {
@@ -15,6 +16,7 @@ const theme = createTheme({
     },
     secondary: {
       main: "#CC3366",
+      contrastText: "#FFFFFF"
     },
     error: {
       main: "#CC3366",
@@ -39,6 +41,10 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <DashBoard />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />
   }
 ]);
 

@@ -1,4 +1,4 @@
-import { HTTPService } from './httpService'
+import { HTTPService, METHOD } from './httpService'
 
 export interface CreateUser {
   username: string,
@@ -20,22 +20,31 @@ export interface UserInformation {
   weekend_end_time: string | null,
 }
 
+export interface User extends UserInformation {
+  username: string,
+  email: string
+}
+
 export class UserService {
   private httpService = new HTTPService()
 
-  async create (user: CreateUser) {
-      return await this.httpService.request("signup", "POST", user);
+  async create(user: CreateUser) {
+    return await this.httpService.request("signup", METHOD.POST, user );
   }
 
-  async login (user: LoginUser) {
-    return await this.httpService.request("login", "POST", user);
+  async login(user: LoginUser) {
+    return await this.httpService.request("login", METHOD.PUT, user );
   }
 
-  async logout () {
-    return await this.httpService.authorizedRequest("logout", "GET");
+  async logout() {
+    return await this.httpService.authorizedRequest("logout", METHOD.DELETE);
   }
 
-  async information (information: UserInformation) {
-    return await this.httpService.authorizedRequest<{ data: UserInformation }>("update_user", "POST", information);
+  async information(information: UserInformation) {
+    return await this.httpService.authorizedRequest<{ data: UserInformation }>("update_user", METHOD.PUT, information);
+  }
+
+  async profile(): Promise<{data: User, status: object}> {
+    return await this.httpService.authorizedRequest("profile", METHOD.GET);
   }
 }

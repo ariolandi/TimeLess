@@ -1,4 +1,4 @@
-import { HTTPService } from './httpService'
+import { HTTPService, METHOD } from './httpService'
 
 export interface Event {
   user_id: number,
@@ -14,12 +14,13 @@ export interface Event {
 
 export class EventService {
   private httpService = new HTTPService()
+  private endpoint = "schedule";
 
   async create (activity_id: number) {
-    return await this.httpService.authorizedRequest("schedule", "POST", { activity_id });
+    return await this.httpService.authorizedRequest(this.endpoint, METHOD.POST, { activity_id });
   }
 
   async fetch (day: number) {
-    return await this.httpService.authorizedRequest<{ data: Event[] }>(`schedule/${day}`, "GET");
+    return await this.httpService.authorizedRequest<{ data: Event[] }>(`${this.endpoint}/${day}`, METHOD.GET);
   }
 }

@@ -2,24 +2,12 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import { Logo } from "./components"
-import { Button, useMediaQuery } from "@mui/material";
-import { UserService } from "../services/userService";
-import { useNavigate } from "react-router-dom";
+import { useMediaQuery } from "@mui/material";
 import { small_screen_size } from "./constants";
-
-const userService = new UserService();
+import HeaderMenu from "./headerMenu";
 
 export default function Header() {
   const small_screen = useMediaQuery(small_screen_size);
-  const navigate = useNavigate();
-  
-  const onSubmit = async () => {
-    const result = await userService.logout();
-
-    if (result) {
-      navigate(`/`);
-    }
-  };
 
   const smallScreenHeader = (
     <Box sx={{flexGrow: 1}}>
@@ -27,15 +15,7 @@ export default function Header() {
         <Toolbar>
           <Logo />
         </Toolbar>
-        <Button
-          onClick={onSubmit}
-          sx={{
-            color: "primary.contrastText", 
-            alignSelf: "flex-end"
-          }}
-        >
-          <b>Изход</b>
-        </Button>
+        <HeaderMenu/>
       </AppBar>
     </Box>
   );
@@ -46,15 +26,7 @@ export default function Header() {
         <Toolbar>
           <Logo />
           <Box sx={{ flexGrow: 1 }} />
-          <Button
-            onClick={onSubmit}
-            sx={{
-              color: "primary.contrastText", 
-              alignSelf: "flex-end"
-            }}
-          >
-            <b>Изход</b>
-          </Button>
+            <HeaderMenu/>
         </Toolbar>
       </AppBar>
     </Box>

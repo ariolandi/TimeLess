@@ -14,8 +14,8 @@ export default function EntryPage() {
     <Grid
       component="main"
       sx={{
+        minHeight: "100vh",
         display: "flex",
-        height: "100vh",
       }}
     >
       <Grid item sx={styles.halfPageHeaderBlock}>

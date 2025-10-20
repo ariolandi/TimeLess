@@ -1,5 +1,13 @@
-import { SxProps, Theme } from "@mui/material";
-import { primaryColor, smallMargin, smallMarginPercent, standardMargin, standardMarginPercent } from "./constants";
+import { PopoverOrigin, SxProps, Theme } from "@mui/material";
+import { 
+  primaryColor, 
+  secondaryColor, 
+  secondaryTextColor, 
+  smallMargin, 
+  smallMarginPercent, 
+  standardMargin, 
+  standardMarginPercent 
+} from "./constants";
 
 function makeStyles<T extends Record<string, SxProps<Theme>>>(styles: T) {
   return styles;
@@ -14,6 +22,11 @@ function headerBlockConstructor(width: number) {
     padding: smallMarginPercent,
   };
 }
+
+export const anchor: PopoverOrigin = {
+  vertical: 'top',
+  horizontal: 'right',
+};
 
 export const styles = makeStyles({
   submitButton: {
@@ -39,6 +52,10 @@ export const styles = makeStyles({
   column: {
     display: "flex",
     flexDirection: "column",
+  },
+  menuItem: {
+    backgroundColor: secondaryColor,
+    color: secondaryTextColor
   },
   headerBlock: headerBlockConstructor(1),
   halfPageHeaderBlock: headerBlockConstructor(1 / 2),

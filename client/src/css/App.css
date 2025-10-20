@@ -5,3 +5,8 @@ p {
 body {
    margin: 0; 
 }
+
+li.MuiMenuItem-root:hover {
+    background-color: white;
+    color: #CC3366;
+}
