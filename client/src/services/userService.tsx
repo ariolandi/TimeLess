@@ -29,7 +29,7 @@ export class UserService {
   private httpService = new HTTPService()
 
   async create(user: CreateUser) {
-    return await this.httpService.request("signup", METHOD.POST, user );
+    return await this.httpService.request("signup", METHOD.POST, { user } );
   }
 
   async login(user: LoginUser) {
