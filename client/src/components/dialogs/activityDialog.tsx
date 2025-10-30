@@ -92,6 +92,12 @@ export function ActivityDialog({
     required: true,
   };
 
+  const onsubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    await onSave();
+  }
+
   return (
     <Dialog open={open} fullWidth={true}>
       <DialogTitle
@@ -104,7 +110,7 @@ export function ActivityDialog({
       >
         {dialogTitle}
       </DialogTitle>
-      <Form onSubmit={onSave}>
+      <Form onSubmit={onsubmit}>
         <DialogContent>
           <Grid container spacing={2}>
             <GridColumn>
