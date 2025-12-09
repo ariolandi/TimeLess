@@ -57,6 +57,17 @@ export const styles = makeStyles({
     backgroundColor: secondaryColor,
     color: secondaryTextColor
   },
+  table: {
+    border: 1,
+    borderRadius: 8,
+    borderColor: secondaryColor,
+    marginTop: smallMargin,
+  },
+  tableHeader: {
+    backgroundColor: primaryColor,
+    borderBottom: 1,
+    borderColor: primaryColor,
+  },
   headerBlock: headerBlockConstructor(1),
   halfPageHeaderBlock: headerBlockConstructor(1 / 2),
 });

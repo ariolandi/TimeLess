@@ -1,15 +1,20 @@
 import Header from "../components/header";
-import { Container, Divider, Grid, Typography } from "@mui/material";
+import { Autocomplete, Button, Container, Divider, Grid, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { User, UserService } from "../services/userService";
 import { primaryColor, secondaryColor, standardMargin } from "../components/constants";
 import { formatTime } from "../components/dateTime";
-import FriendsTable, { FriendData } from "../components/friendsTable";
+import { FriendData, FriendsTable } from "../components/friendsTable";
+import { styles } from "../components/styles";
+import { Form } from "react-router-dom";
 
 const userService = new UserService();
 
 export default function Profile() {
   const [user, setUser] = useState<User>();
+  const [usersList, setUsersList] = useState<string[]>([]);
+  const [friends, setFriends] = useState<FriendData[]>([]);
+  const [friendSearch, setFriendSearch] = useState<string>();
 
   async function loadUser() {
     const result = await userService.profile();
@@ -19,28 +24,43 @@ export default function Profile() {
     }
   }
 
-  useEffect(() => {loadUser()}, []);
+  async function loadFriends() {
+    const result = await userService.friends();
 
-  const friends: FriendData[] = [
-    {
-      status: true,
-      username: 'user1',
-      name: 'Name Name',
-      start_time: '09:00',
-      end_time: '18:00',
-      weekend_start_time: '10:00',
-      weekend_end_time: '20:00'
-    },
-    {
-      status: false,
-      username: 'user2',
-      name: 'Test User',
-      start_time: '09:00',
-      end_time: '18:00',
-      weekend_start_time: '10:00',
-      weekend_end_time: '20:00'
+    if (result) {
+      setFriends(result.data.map((user) => {
+        return {
+          status: true,
+          username: user.username,
+          name: `${user.first_name} ${user.last_name}`,
+          start_time: user.start_time,
+          end_time: user.end_time,
+          weekend_start_time: user.weekend_start_time,
+          weekend_end_time: user.weekend_end_time
+        } as FriendData}));
     }
-  ];
+  }
+
+  async function loadUsersList() {
+    const result = await userService.list();
+
+    if (result) {
+      setUsersList(result.data);
+    }
+  }
+
+  useEffect(() => {loadUser()}, []);
+  useEffect(() => {loadUsersList()}, []);
+  useEffect(() => {loadFriends()}, []);
+
+  const addFriend = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log('add Friend')
+
+    userService.add_friend(friendSearch || '');
+    
+    await loadFriends();
+  }
 
   return (
     <Container maxWidth={false} disableGutters>
@@ -58,7 +78,9 @@ export default function Profile() {
           <Grid item>
           </Grid>
           <Grid item>
-            <Typography color={primaryColor}> </Typography>
+            <Typography color={secondaryColor}> 
+              Делнични дни:
+            </Typography>
             <Typography color={primaryColor}> 
               Начален час: {formatTime(user?.start_time ?? null)} 
             </Typography>
@@ -79,13 +101,40 @@ export default function Profile() {
           </Grid>
         </Grid>
       </Container>
+
       <Divider
         orientation="horizontal"
         variant="middle"
         flexItem
         sx={{ backgroundColor: secondaryColor }}
       />
-      <FriendsTable rows={friends} />
+
+      <Container>
+        <Form onSubmit={addFriend}>
+          <Grid container sx={{padding: standardMargin}}>
+            <Grid item>
+              <Autocomplete
+                disablePortal
+                options={usersList}
+                onInputChange={(_, value) => setFriendSearch(value)}
+                sx={{ width: 300, margin: standardMargin }}
+                renderInput={(params) => <TextField {...params} label="Търси приятели" />}
+              />
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                type="submit"
+                sx={styles.submitButton}
+              >
+                Добави приятел
+              </Button>
+            </Grid>
+          </Grid>
+        </Form>
+      </Container>
+    
+      <FriendsTable rows={friends || []} />
     </Container>
   );
 }

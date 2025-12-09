@@ -1,15 +1,18 @@
 Rails.application.routes.draw do
   post '/signup' => 'user#create'
+  get '/list' => 'user#list'
 
   put '/login' => 'sessions#create'
   delete '/logout' => 'sessions#destroy'
   put '/update_user' => 'sessions#update'
   get 'profile' => 'sessions#get'
+  put '/add_friend' => 'sessions#add_friend'
+  get 'friends' => 'sessions#get_friends'
 
   post '/activity/create' => 'activity#create'
   put '/activity/update/:id' => 'activity#update'
   delete '/activity/delete/:id' => 'activity#delete'
-  get '/activity/id/:id' => 'activity#get_by_id'
+  get '/activity/:id' => 'activity#get_by_id'
 
   get '/schedule/:day' => 'schedule#get_schedule'
   post '/schedule' => 'schedule#create'

@@ -17,6 +17,25 @@ class UserController < ApplicationController
     end
   end
 
+  def list
+    user = User.find_by(token: user_token)
+    
+    if user
+      usernames = User.all
+        .map { |user| user.username }
+        .filter { |username| username != user.username }
+
+      render json: {
+        status: { code: 200, message: '' },
+        data: usernames
+      }
+    else
+      render json: {
+        status: { message: "User couldn't be found." }
+      }, status: :not_found
+    end
+  end
+
   private
 
   def user_params

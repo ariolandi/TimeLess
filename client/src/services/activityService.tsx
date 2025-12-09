@@ -37,6 +37,6 @@ export class ActivityService {
   }
 
   async fetch_activity (id: number) {
-    return await this.httpService.authorizedRequest<{ data: Activity }>(`${this.endpoint}/id/${id}`, METHOD.GET);
+    return await this.httpService.authorizedRequest<{ data: Activity }>(`${this.endpoint}/${id}`, METHOD.GET);
   }
 }

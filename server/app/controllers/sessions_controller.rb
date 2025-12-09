@@ -38,6 +38,36 @@ class SessionsController < ApplicationController
     end
   end
 
+  def get_friends
+    user = User.find_by(token: user_token)
+    if user
+      render json: {
+        status: { code: 200, message: '' },
+        data: user.friends()
+      }
+    else
+      render json: {
+        status: { message: "User couldn't be found." }
+      }, status: :not_found
+    end
+  end
+
+  def add_friend
+    user = User.find_by(token: user_token)
+    friend = User.find_by(username: params[:username])
+
+    if user.add_friend(friend)
+      render json: {
+        status: { code: 200, message: 'Connection created successfully.' },
+        data: {}
+      }
+    else
+      render json: {
+        status: { message: "User couldn't be found." }
+      }, status: :not_found
+    end
+  end
+
   def get
     user = User.find_by(token: user_token)
     if user
@@ -71,5 +101,10 @@ class SessionsController < ApplicationController
     params.require(:weekend_end_time)
 
     params.require(:session).permit(:first_name, :last_name, :start_time, :end_time, :weekend_start_time, :weekend_end_time)
+  end
+
+  def friend_params
+    params.require(:username)
+    params.require(:session).permit(:username)
   end
 end

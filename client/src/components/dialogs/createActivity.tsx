@@ -49,6 +49,7 @@ export function CreateActivity({
     });
 
     if (result) {
+      console.log(result);
       eventService.create(result.data.id);
 
       onSaveChanges();

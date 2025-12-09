@@ -7,7 +7,9 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Container from '@mui/material/Container';
-import { primaryColor } from './constants';
+import { primaryColor, secondaryColor } from './constants';
+import { styles } from './styles';
+import { Typography } from '@mui/material';
 
 interface Column {
   id: 'status' |
@@ -42,7 +44,7 @@ export interface FriendData {
   weekend_end_time: string;
 }
 
-export default function FriendsTable({rows}: {rows: FriendData[]}) {
+export function FriendsTable({rows}: {rows: FriendData[]}) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -57,15 +59,21 @@ export default function FriendsTable({rows}: {rows: FriendData[]}) {
 
   return (
     <Container>
-      <TableContainer sx={{ maxHeight: 440 }}>
+      <TableContainer sx={{ maxHeight: 440, ...styles.table }}>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell align="center" colSpan={1} sx={{backgroundColor: primaryColor}} />
-              <TableCell align="center" colSpan={2} sx={{backgroundColor: primaryColor}} />
-              <TableCell align="center" colSpan={2} sx={{backgroundColor: primaryColor}} />
-              <TableCell align="center" colSpan={2} sx={{backgroundColor: primaryColor}}>
-                Почивни дни
+              <TableCell align="center" colSpan={1} sx={styles.tableHeader} />
+              <TableCell align="center" colSpan={2} sx={styles.tableHeader} />
+              <TableCell align="center" colSpan={2} sx={styles.tableHeader} >
+                <Typography color={secondaryColor} fontWeight='bold'> 
+                  Делнични дни
+                </Typography>
+              </TableCell>
+              <TableCell align="center" colSpan={2} sx={styles.tableHeader} >
+                <Typography color={secondaryColor} fontWeight='bold'> 
+                  Почивни дни
+                </Typography>
               </TableCell>
             </TableRow>
             <TableRow>
@@ -75,7 +83,7 @@ export default function FriendsTable({rows}: {rows: FriendData[]}) {
                   align={column.align}
                   sx={{backgroundColor: primaryColor}}
                 >
-                  {column.label}
+                  <Typography color={secondaryColor}> {column.label} </Typography> 
                 </TableCell>
               ))}
             </TableRow>

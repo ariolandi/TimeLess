@@ -25,6 +25,7 @@ export interface User extends UserInformation {
   email: string
 }
 
+
 export class UserService {
   private httpService = new HTTPService()
 
@@ -46,5 +47,17 @@ export class UserService {
 
   async profile(): Promise<{data: User, status: object}> {
     return await this.httpService.authorizedRequest("profile", METHOD.GET);
+  }
+
+  async list(): Promise<{data: string[], status: object}> {
+    return await this.httpService.authorizedRequest("list", METHOD.GET);
+  }
+
+  async add_friend(username: string) {
+    return await this.httpService.authorizedRequest("add_friend", METHOD.PUT, {username: username});
+  }
+
+  async friends(): Promise<{data: User[], status: object}> {
+    return await this.httpService.authorizedRequest("friends", METHOD.GET);
   }
 }
