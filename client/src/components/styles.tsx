@@ -39,7 +39,7 @@ export const styles = makeStyles({
     marginBottom: smallMargin
   },
   formBorder: {
-    border: 1,
+    border: 2,
     borderRadius: 8,
     padding: standardMarginPercent,
     margin: standardMarginPercent,

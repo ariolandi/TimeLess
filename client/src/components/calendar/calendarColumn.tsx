@@ -22,14 +22,14 @@ export default function CalendarColumn({ day, events, onSaveChanges }: {
         },
       }}
     >
-    <Box>
-      <h3 color={secondaryColor}><b>{day}</b></h3>
-    </Box>
-    {events.map((event) => {
-        return (
-          <CalendarEvent event={event} onSaveChanges={onSaveChanges} />
-        )
-    })}
+      <Box>
+        <h3 color={secondaryColor}><b>{day}</b></h3>
+      </Box>
+      {events.map((event) => {
+          return (
+            <CalendarEvent event={event} onSaveChanges={onSaveChanges} />
+          )
+      })}
     </Box>
   );
 }

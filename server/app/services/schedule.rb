@@ -21,10 +21,13 @@ class Schedule
   def add_activity(activity)
     event = Event.create(activity: activity, day: @day)
 
-    if activity.repeat && activity.repeat != 0
+    # repeated activity
+    if activity.repeat && activity.repeat > 1
       add_repeated_event(event, activity.repeat)
+    # fixed activity
     elsif event.fixed
       add_fixed_event(event)
+    # non-fixed activity
     else
       add_nonfixed_event(event)
     end

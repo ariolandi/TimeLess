@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Activity, ActivityService } from "../../services/activityService";
 import { Event } from "../../services/eventService";
 import { DayControl, useDayControls } from "../daysControl";
@@ -20,6 +21,7 @@ export function UpdateActivity({
   onSaveChanges: () => void
 }) {
   const title = useCreateState(activity.title);
+  const [error, setError] = useState("");
   const description = useCreateState(activity.description);
   const timeToggle = useCreateState(activity.start_time != null);
   const doRepeat = useCreateState(activity.repeat > 1);
@@ -37,17 +39,21 @@ export function UpdateActivity({
     const repeat = doRepeat.value === false ? "0" : repeatTimes.value;
     const activityDays = days.map((day: DayControl) => Boolean(day.state.value)).flatMap((day, index) => day ? index : []);
 
-    await activityService.update(activity.id, {
-      title: title.value,
-      description: description.value,
-      duration: duration.value,
-      repeat,
-      start_time,
-      days: activityDays
-    });
+    try {
+      await activityService.update(activity.id, {
+        title: title.value,
+        description: description.value,
+        duration: duration.value,
+        repeat,
+        start_time,
+        days: activityDays
+      });
 
-    onSaveChanges();
-    handleClose();
+      onSaveChanges();
+      handleClose();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Появи се грешка при промяната на дейността."); 
+    }
   };
 
   return (
@@ -55,6 +61,7 @@ export function UpdateActivity({
       open={open}
       onClose={handleClose}
       onSave={onSubmit}
+      error={error}
       dialogTitle="Промяна на дейност"
       title={title}
       description={description}

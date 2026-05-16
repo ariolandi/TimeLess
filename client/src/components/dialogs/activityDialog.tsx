@@ -28,6 +28,7 @@ export function ActivityDialog({
   open,
   onClose,
   onSave,
+  error,
   dialogTitle,
   title,
   description,
@@ -41,6 +42,7 @@ export function ActivityDialog({
   open: boolean;
   onClose: () => void;
   onSave: () => void | Promise<void>;
+  error: string;
   dialogTitle: string;
   title: State<string>;
   description: State<string>;
@@ -110,6 +112,9 @@ export function ActivityDialog({
       >
         {dialogTitle}
       </DialogTitle>
+      <Typography color="error" textAlign="center">
+        {error}
+      </Typography>
       <Form onSubmit={onsubmit}>
         <DialogContent>
           <Grid container spacing={2}>

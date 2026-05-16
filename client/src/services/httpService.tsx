@@ -33,6 +33,12 @@ export class HTTPService {
     
     const response = await fetch(`${server_url}/${endpoint}`, init);
 
+    if (!response.ok) {
+      if (response.status === 409) {
+        throw new Error("Дейността не може да бъде създадена - вече съществува събитие в същия времеви слот.");
+      }
+    }
+
     return await response.json();
   }
 

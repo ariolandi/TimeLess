@@ -11,6 +11,7 @@ module ScheduleHelper
 
       schedule.add_activity(activity)
       
+      activity.save
       schedule.schedule.each { |event| event.save }
     end
   end

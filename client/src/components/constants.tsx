@@ -1,4 +1,4 @@
-export const small_screen_size = "(max-width:1000px)";
+export const small_screen_size = "(max-width:800px)";
 
 export const primaryColor = "primary.main";
 export const secondaryColor = "secondary.main";

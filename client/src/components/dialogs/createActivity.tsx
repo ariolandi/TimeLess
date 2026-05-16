@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ActivityService } from "../../services/activityService";
 import { EventService } from "../../services/eventService";
 import { useDayControls } from "../daysControl";
@@ -23,6 +24,7 @@ export function CreateActivity({
   onSaveChanges: () => void
 }) {
   const title = useCreateState("");
+  const [error, setError] = useState("");
   const description = useCreateState("");
   const timeToggle = useCreateState(false);
   const doRepeat = useCreateState(false);
@@ -39,23 +41,24 @@ export function CreateActivity({
     const start_time = timeToggle.value === false ? null : startTime.value;
     const repeat = doRepeat.value === false ? "0" : repeatTimes.value;
 
-    const result = await activityService.create({
-      title: title.value,
-      description: description.value,
-      duration: duration.value,
-      repeat,
-      start_time,
-      days: days.map((day: DayControl) => Boolean(day.state.value)).flatMap((day, index) => day ? index : []),
-    });
-
-    if (result) {
-      console.log(result);
-      eventService.create(result.data.id);
+    try {
+      await activityService.create({
+        title: title.value,
+        description: description.value,
+        duration: duration.value,
+        repeat,
+        start_time,
+        days: days.map((day: DayControl) => Boolean(day.state.value)).flatMap((day, index) => day ? index : []),
+      });
 
       onSaveChanges();
+      
+      handleClose();
+    } catch (e) {
+      console.log(e);
+      setError(e instanceof Error ? e.message : "Появи се грешка при създаването на дейността.");
     }
-    
-    handleClose();
+
   };
 
   return (
@@ -63,6 +66,7 @@ export function CreateActivity({
       open={open}
       onClose={handleClose}
       onSave={saveActivity}
+      error={error}
       dialogTitle="Създаване на дейност"
       title={title}
       description={description}

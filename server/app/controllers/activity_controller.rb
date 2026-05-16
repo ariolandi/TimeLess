@@ -7,15 +7,19 @@ class ActivityController < ApplicationController
     params[:activity][:user_id] = user.id
     activity = Activity.new(activity_params)
 
-    if activity.save
+    puts activity.inspect
+
+    begin 
+      ScheduleHelper.add(user, activity)
+
       render json: {
         status: { code: 200, message: 'Created successfully.' },
         data: activity
       }
-    else
+    rescue => error
       render json: {
-        status: { message: "Activity couldn't be created successfully." }
-      }, status: :unprocessable_entity
+        status: { message: "Activity couldn't be created successfully. " + error.message(), code: :conflict },
+      }, status: :conflict
     end
   end
 

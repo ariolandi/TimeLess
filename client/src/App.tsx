@@ -24,7 +24,7 @@ const theme = createTheme({
   },
   typography: {
     body1: {
-      color: "#ca9800ff",
+      color: "#CA9800FF",
     }
   }
 });

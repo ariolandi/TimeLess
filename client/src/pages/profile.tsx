@@ -28,15 +28,15 @@ export default function Profile() {
     const result = await userService.friends();
 
     if (result) {
-      setFriends(result.data.map((user) => {
+      setFriends(result.data.map((connection) => {
         return {
-          status: true,
-          username: user.username,
-          name: `${user.first_name} ${user.last_name}`,
-          start_time: user.start_time,
-          end_time: user.end_time,
-          weekend_start_time: user.weekend_start_time,
-          weekend_end_time: user.weekend_end_time
+          status: connection.status,
+          username: connection.user.username,
+          name: `${connection.user.first_name} ${connection.user.last_name}`,
+          start_time: connection.user.start_time,
+          end_time: connection.user.end_time,
+          weekend_start_time: connection.user.weekend_start_time,
+          weekend_end_time: connection.user.weekend_end_time
         } as FriendData}));
     }
   }

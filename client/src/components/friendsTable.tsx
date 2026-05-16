@@ -10,6 +10,7 @@ import Container from '@mui/material/Container';
 import { primaryColor, secondaryColor } from './constants';
 import { styles } from './styles';
 import { Typography } from '@mui/material';
+import { formatTime } from './dateTime';
 
 interface Column {
   id: 'status' |
@@ -21,17 +22,18 @@ interface Column {
     'weekend_end_time';
   label: string;
   align?: 'right';
-  format?: (value: number) => string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  format?: (value: any) => string | null;
 }
 
 const columns: Column[] = [
-  { id: 'status', label: 'Статус'},
+  { id: 'status', label: 'Статус', format: (value: boolean) => value ? '' : 'В изчакване'  },
   { id: 'username', label: 'Потребител' },
   { id: 'name', label: 'Име' },
-  { id: 'start_time', label: 'Начален час' },
-  { id: 'end_time', label: 'Краен час' },
-  { id: 'weekend_start_time', label: 'Начален час' },
-  { id: 'weekend_end_time', label: 'Краен час' },
+  { id: 'start_time', label: 'Начален час', format: formatTime  },
+  { id: 'end_time', label: 'Краен час', format: formatTime },
+  { id: 'weekend_start_time', label: 'Начален час', format: formatTime },
+  { id: 'weekend_end_time', label: 'Краен час', format: formatTime },
 ];
 
 export interface FriendData {
@@ -98,7 +100,7 @@ export function FriendsTable({rows}: {rows: FriendData[]}) {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
+                          {column.format
                             ? column.format(value)
                             : value}
                         </TableCell>
