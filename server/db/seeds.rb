@@ -2,17 +2,30 @@ Place.destroy_all
 Activity.destroy_all
 User.destroy_all
 
-User.create!([{
-    username: 'user',
-    password_digest: '$2a$12$dPfumrX9SXrIMY1wrSIjY.uV4r22Tc29vZFyoAzqPSI.A5uuP2qEe', # testpass
-    email: 'user@example.com',
-    first_name: 'Тестов',
-    last_name: 'Потребител',
-    start_time: '09:00',
-    end_time: '18:00',
-    weekend_start_time: '10:00',
-    weekend_end_time: '19:00',
-}])
+User.create!([
+    {
+        username: 'user',
+        password_digest: '$2a$12$dPfumrX9SXrIMY1wrSIjY.uV4r22Tc29vZFyoAzqPSI.A5uuP2qEe', # testpass
+        email: 'user@example.com',
+        first_name: 'Тестов',
+        last_name: 'Потребител',
+        start_time: '09:00',
+        end_time: '18:00',
+        weekend_start_time: '10:00',
+        weekend_end_time: '19:00',
+    },
+    {
+        username: 'ariolandi',
+        password_digest: '$2a$12$dPfumrX9SXrIMY1wrSIjY.uV4r22Tc29vZFyoAzqPSI.A5uuP2qEe', # testpass
+        email: 'arilandi@example.com',
+        first_name: 'Стела',
+        last_name: 'Маринова',
+        start_time: '09:00',
+        end_time: '18:00',
+        weekend_start_time: '10:00',
+        weekend_end_time: '19:00',
+    }
+])
 
 user_id = User.find_by(username: 'user').id
 

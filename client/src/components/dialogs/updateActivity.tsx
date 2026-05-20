@@ -20,15 +20,20 @@ export function UpdateActivity({
   event: Event;
   onSaveChanges: () => void
 }) {
+  console.log(activity);
+
   const title = useCreateState(activity.title);
   const [error, setError] = useState("");
   const description = useCreateState(activity.description);
+  const place = useCreateState(activity.place);
   const timeToggle = useCreateState(activity.start_time != null);
   const doRepeat = useCreateState(activity.repeat > 1);
   const repeatTimes = useCreateState(`${activity.repeat}`);
   const duration = useCreateState<string | null>(activity.duration);
   const startTime = useCreateState<string | null>(activity.start_time || event.start_time);
+  const dateToggle = useCreateState(activity.date != null);
   const days: DayControl[] = useDayControls(activity.days);
+  const date = useCreateState<Date | null>(activity.date ? new Date(activity.date) : null);
 
   const handleClose = () => {
     setOpen(false);
@@ -43,10 +48,12 @@ export function UpdateActivity({
       await activityService.update(activity.id, {
         title: title.value,
         description: description.value,
+        place: place.value,
         duration: duration.value,
         repeat,
         start_time,
-        days: activityDays
+        days: activityDays,
+        date: date.value
       });
 
       onSaveChanges();
@@ -65,12 +72,15 @@ export function UpdateActivity({
       dialogTitle="Промяна на дейност"
       title={title}
       description={description}
+      place={place}
       timeToggle={timeToggle}
       doRepeat={doRepeat}
       repeatTimes={repeatTimes}
       duration={duration}
       startTime={startTime}
       days={days}
+      date={date}
+      dateToggle={dateToggle}
     />
   );
 }

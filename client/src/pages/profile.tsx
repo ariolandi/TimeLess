@@ -66,11 +66,11 @@ export default function Profile() {
     <Container maxWidth={false} disableGutters>
       <Header />
       <Container sx={{padding: standardMargin}}>
-        <Typography variant="h4" color={secondaryColor}> 
-          {user?.first_name} {user?.last_name} 
-        </Typography>
-        <Grid container spacing={32}>
+        <Grid container spacing={16}>
           <Grid item>
+            <Typography variant="h4" color={secondaryColor}> 
+              {user?.first_name} {user?.last_name} 
+            </Typography>
             <Typography variant="h6" color={primaryColor}> 
               {user?.username} 
             </Typography>
@@ -125,7 +125,7 @@ export default function Profile() {
               <Button
                 variant="contained"
                 type="submit"
-                sx={styles.submitButton}
+                sx={{...styles.submitButton, backgroundColor: secondaryColor}}
               >
                 Добави приятел
               </Button>

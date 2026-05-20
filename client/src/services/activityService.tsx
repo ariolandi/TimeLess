@@ -4,9 +4,11 @@ export interface ActivityInput {
   title: string,
   description: string,
   duration: string | null,
+  place: string | null,
   repeat: string,
   start_time: string | null,
   days: number[],
+  date: Date | null,
 }
 
 export interface Activity {
@@ -14,10 +16,12 @@ export interface Activity {
   user_id: number,
   title: string,
   description: string,
+  place: string,
   duration: string,
   repeat: number,
   start_time: string | null,
   days: number[],
+  date: string,
 }
 
 export class ActivityService {

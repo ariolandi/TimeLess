@@ -17,6 +17,7 @@ import { GridColumn } from "../components";
 import { Form } from "react-router-dom";
 import { secondaryColor, smallMargin } from "../constants";
 import { State } from "../stateControl";
+import { DateField } from "@mui/x-date-pickers";
 
 interface DayControl {
   label: string,
@@ -32,12 +33,15 @@ export function ActivityDialog({
   dialogTitle,
   title,
   description,
+  place,
   timeToggle,
   doRepeat,
   repeatTimes,
   duration,
   startTime,
-  days
+  dateToggle,
+  days,
+  date
 }: {
   open: boolean;
   onClose: () => void;
@@ -45,13 +49,16 @@ export function ActivityDialog({
   error: string;
   dialogTitle: string;
   title: State<string>;
+  place: State<string>;
   description: State<string>;
   timeToggle: State<boolean>;
   doRepeat: State<boolean>;
   repeatTimes: State<string>;
   duration: State<string | null>;
   startTime: State<string | null>;
+  dateToggle: State<boolean>;
   days: DayControl[];
+  date: State<Date | null>;
 }) {
   const color = "secondary";
 
@@ -94,6 +101,13 @@ export function ActivityDialog({
     required: true,
   };
 
+  const placeInput: InputParams = {
+    name: "place",
+    value: place.value,
+    state: place.set,
+    label: "Място на провеждане",
+  };
+
   const onsubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -126,6 +140,9 @@ export function ActivityDialog({
             </GridColumn>
             <Grid item xs={12}>
               <InputField field={descriptionInput} fullWidth={true} />
+            </Grid>
+            <Grid item xs={12}>
+              <InputField field={placeInput} fullWidth={true} />
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
@@ -164,7 +181,17 @@ export function ActivityDialog({
               </Box>
             </Grid>
             <Grid item xs={12}>
-              <Box>
+              <FormControlLabel
+                control={
+                  <Switch onChange={(e) => dateToggle.set(e.target.checked)} />
+                }
+                label={
+                  <Typography> Фиксирана дата </Typography>
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Box sx={{ display: dateToggle.value ? "none" : "block" }}>
                 {days.map((day) => {
                   return (
                     <FormControlLabel key={day.key} sx={{ margin: smallMargin }}
@@ -181,6 +208,14 @@ export function ActivityDialog({
                     />
                   );
                 })}
+              </Box>
+              <Box sx={{ display: dateToggle.value ? "block" : "none" }}>
+                <DateField
+                  label="Дата"
+                  value={date.value}
+                  onChange={(newValue) => date.set(newValue)}
+                  format="DD.MM.YYYY"
+                />
               </Box>
             </Grid>
           </Grid>

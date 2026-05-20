@@ -99,6 +99,17 @@ export function EventPreview({
                   }
                   variant="outlined"
                   fullWidth={true}
+                />
+                <ReadonlyField 
+                  field={
+                    {
+                      name: "place",
+                      value: activity.place,
+                      label: "Място на провеждане",
+                    } 
+                  }
+                  variant="outlined"
+                  fullWidth={true}
                   />
               </Grid>
             </Grid>

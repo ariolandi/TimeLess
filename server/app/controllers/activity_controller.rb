@@ -101,6 +101,6 @@ class ActivityController < ApplicationController
   private
 
   def activity_params
-    params.require(:activity).permit(:user_id, :title, :description, :duration, :repeat, :start_time, days: [])
+    params.require(:activity).permit(:user_id, :title, :description, :duration, :repeat, :start_time, :place, :date, days: [])
   end
 end
