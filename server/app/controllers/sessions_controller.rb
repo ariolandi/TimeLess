@@ -52,6 +52,20 @@ class SessionsController < ApplicationController
     end
   end
 
+  def get_friend_requests
+    user = User.find_by(token: user_token)
+    if user
+      render json: {
+        status: { code: 200, message: '' },
+        data: user.friends_requests()
+      }
+    else
+      render json: {
+        status: { message: "User couldn't be found." }
+      }, status: :not_found
+    end
+  end
+
   def add_friend
     user = User.find_by(token: user_token)
     friend = User.find_by(username: params[:username])
@@ -64,6 +78,22 @@ class SessionsController < ApplicationController
     else
       render json: {
         status: { message: "User couldn't be found." }
+      }, status: :not_found
+    end
+  end
+
+  def accept_friend
+    user = User.find_by(token: user_token)
+    friend = User.find_by(username: params[:username])
+
+    if user && friend && user.accept_friend(friend)
+      render json: {
+        status: { code: 200, message: 'Friend request accepted successfully.' },
+        data: {}
+      }
+    else
+      render json: {
+        status: { message: "User couldn't be found or friend request not found." }
       }, status: :not_found
     end
   end

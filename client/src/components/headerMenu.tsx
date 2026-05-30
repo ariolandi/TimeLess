@@ -55,7 +55,7 @@ export default function HeaderMenu() {
         onClose={handleCloseUserMenu}
         MenuListProps={{ sx: { py: 0 } }}
       >
-        <MenuItem onClick={toDashboard} sx={styles.menuItem} divider={true} > Главна страница </MenuItem>
+        <MenuItem onClick={toDashboard} sx={styles.menuItem} divider={true} > Календар </MenuItem>
         <MenuItem onClick={toProfile} sx={styles.menuItem} divider={true} > Профил </MenuItem>
         <MenuItem onClick={onExit} sx={styles.menuItem}> Изход </MenuItem>
       </Menu>

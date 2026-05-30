@@ -7,7 +7,9 @@ Rails.application.routes.draw do
   put '/update_user' => 'sessions#update'
   get 'profile' => 'sessions#get'
   put '/add_friend' => 'sessions#add_friend'
+  put '/accept_friend' => 'sessions#accept_friend'
   get 'friends' => 'sessions#get_friends'
+  get 'friend_requests' => 'sessions#get_friend_requests'
 
   post '/activity/create' => 'activity#create'
   put '/activity/update/:id' => 'activity#update'

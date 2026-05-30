@@ -62,7 +62,15 @@ export class UserService {
     return await this.httpService.authorizedRequest("add_friend", METHOD.PUT, {username: username});
   }
 
+  async accept_friend(username: string) {
+    return await this.httpService.authorizedRequest("accept_friend", METHOD.PUT, {username: username});
+  }
+
   async friends(): Promise<{data: Connection[], status: object}> {
     return await this.httpService.authorizedRequest("friends", METHOD.GET);
+  }
+  
+  async friend_requests(): Promise<{data: Connection[], status: object}> {
+    return await this.httpService.authorizedRequest("friend_requests", METHOD.GET);
   }
 }

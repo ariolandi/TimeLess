@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { User, UserService } from "../services/userService";
 import { primaryColor, secondaryColor, standardMargin } from "../components/constants";
 import { formatTime } from "../components/dateTime";
-import { FriendData, FriendsTable } from "../components/friendsTable";
+import { FriendData, FriendsTable } from "../components/table/friendsTable";
 import { styles } from "../components/styles";
 import { Form } from "react-router-dom";
 

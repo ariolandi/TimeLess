@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { ActivityService } from "../../services/activityService";
-import { EventService } from "../../services/eventService";
 import { useDayControls } from "../daysControl";
 import { useCreateState } from "../stateControl";
 import { ActivityDialog } from "./activityDialog";
 
 const activityService = new ActivityService();
-const eventService = new EventService();
 
 interface DayControl {
   label: string,
@@ -61,7 +59,6 @@ export function CreateActivity({
       
       handleClose();
     } catch (e) {
-      console.log(e);
       setError(e instanceof Error ? e.message : "Появи се грешка при създаването на дейността.");
     }
 

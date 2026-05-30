@@ -1,5 +1,5 @@
 import Header from "../components/header";
-import { Container, Button, Typography, Box, useMediaQuery } from "@mui/material";
+import { Container, Button, Typography, Box, useMediaQuery, TableRow, TableCell, TableHead, Table, TableContainer, TableBody } from "@mui/material";
 import { styles } from "../components/styles";
 import { CreateActivity } from "../components/dialogs/createActivity";
 import { useEffect, useState } from "react";
@@ -7,8 +7,9 @@ import Calendar from "../components/calendar/calendar";
 import { Event, EventService } from "../services/eventService";
 import { Days, small_screen_size } from "../components/constants";
 import { UserService } from "../services/userService";
-import { FriendData } from "../components/friendsTable";
+import { FriendData } from "../components/table/friendsTable";
 import { startOfWeek, endOfWeek, subWeeks, addWeeks } from 'date-fns';
+import { createTableHeaderCell } from "../components/table/table";
 
 const eventService = new EventService();
 const userService = new UserService();
@@ -20,31 +21,35 @@ export default function DashBoard() {
   const [events, setEvents] = useState<Array<Event[]>>(Array(7).fill([]));
   const [, setLoading] = useState(true);
   const [, setError] = useState<unknown>();
+  const [friends, setFriends] = useState<FriendData[]>([]);
 
   const [monday, setMonday] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [sunday, setSunday] = useState(endOfWeek(new Date(), { weekStartsOn: 1 }));
 
-  // async function loadFriendsRequest() {
-  //   const result = await userService.friends();
+  async function loadFriendsRequest() {
+    const result = await userService.friend_requests();
 
-  //   if (result) {
-  //     setFriends(result.data.map((connection) => {
-  //       return {
-  //         status: connection.status,
-  //         username: connection.user.username,
-  //         name: `${connection.user.first_name} ${connection.user.last_name}`,
-  //         start_time: connection.user.start_time,
-  //         end_time: connection.user.end_time,
-  //         weekend_start_time: connection.user.weekend_start_time,
-  //         weekend_end_time: connection.user.weekend_end_time
-  //       } as FriendData}));
-  //   }
-  // }
+    if (result) {
+      setFriends(result.data.filter((connection) => connection.status === false).map((connection) => {
+        return {
+          status: connection.status,
+          username: connection.user.username,
+          name: `${connection.user.first_name} ${connection.user.last_name}`,
+          start_time: connection.user.start_time,
+          end_time: connection.user.end_time,
+          weekend_start_time: connection.user.weekend_start_time,
+          weekend_end_time: connection.user.weekend_end_time
+        } as FriendData}));
+    }
+  }
+
+  async function acceptFriend(username: string) {
+    await userService.accept_friend(username);
+    await loadFriendsRequest();
+  }
 
   async function loadEvents() {
     try {
-      console.log("Loading events for week: ", monday, sunday);
-
       const schedule = [
         (await eventService.fetch(Days.Monday)).data,
         (await eventService.fetch(Days.Tuesday)).data,
@@ -64,10 +69,55 @@ export default function DashBoard() {
   }
 
   useEffect(() => {loadEvents()}, [monday, sunday]);
+  useEffect(() => {loadFriendsRequest()}, []);
+
+  const header = [
+    createTableHeaderCell('Потребител'),
+    createTableHeaderCell('Име'),
+    createTableHeaderCell(),
+  ]
 
   return (
     <Container maxWidth={false} disableGutters>
       <Header />
+      <Container>
+        {friends.length > 0 && (
+          <TableContainer sx={{ maxHeight: 440, ...styles.table }}>
+          <Table stickyHeader>
+            <TableHead> 
+              <TableRow>
+                {header}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {friends
+                .map((row) => {
+                  return (
+                    <TableRow key={row.username}>
+                      <TableCell key={row.username} align='center'>
+                        {row.username}
+                      </TableCell>
+                      <TableCell key={row.name} align='center'>
+                        {row.name}
+                      </TableCell>
+                      <TableCell key='action' align='center'>
+                        <Button 
+                          sx={{backgroundColor: "secondary.main"}} 
+                          variant="contained" 
+                          disabled={row.status}
+                          onClick={() => acceptFriend(row.username)}
+                        >
+                          {row.status ? 'Прието' : 'Приеми'}
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table> 
+          </TableContainer >
+        )}
+      </Container>
       <Container
         // maxWidth="md"
         sx={{
@@ -89,6 +139,18 @@ export default function DashBoard() {
           onClick={() => setOpenDialog(true)}
         >
           <b>Създай дейност</b>
+        </Button>
+        <Button
+          variant="contained"
+          sx={{
+            marginLeft: small_screen ? "0" : "15px",
+            backgroundColor: "secondary.main",
+            ...styles.submitButton,
+            ...(small_screen ? { width: "100%", marginBottom: "15px" } : {}),
+          }}
+          onClick={() => setOpenDialog(true)}
+        >
+          <b>Създай споделена дейност</b>
         </Button>
         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
           <Button 

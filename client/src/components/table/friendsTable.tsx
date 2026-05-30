@@ -7,24 +7,10 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Container from '@mui/material/Container';
-import { primaryColor, secondaryColor } from './constants';
-import { styles } from './styles';
-import { Typography } from '@mui/material';
-import { formatTime } from './dateTime';
-
-interface Column {
-  id: 'status' |
-    'username' | 
-    'name' | 
-    'start_time' | 
-    'end_time' | 
-    'weekend_start_time' | 
-    'weekend_end_time';
-  label: string;
-  align?: 'right';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  format?: (value: any) => string | null;
-}
+import { styles } from '../styles';
+import { formatTime } from '../dateTime';
+import { Column } from './table';
+import { createTableHeaderCell } from './table';
 
 const columns: Column[] = [
   { id: 'status', label: 'Статус', format: (value: boolean) => value ? '' : 'В изчакване'  },
@@ -59,35 +45,25 @@ export function FriendsTable({rows}: {rows: FriendData[]}) {
     setPage(0);
   };
 
+  const firstRow = [
+    createTableHeaderCell('', 1),
+    createTableHeaderCell('', 2),
+    createTableHeaderCell('Делнични дни', 2),
+    createTableHeaderCell('Почивни дни', 2),
+  ];
+
   return (
     <Container>
       <TableContainer sx={{ maxHeight: 440, ...styles.table }}>
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell align="center" colSpan={1} sx={styles.tableHeader} />
-              <TableCell align="center" colSpan={2} sx={styles.tableHeader} />
-              <TableCell align="center" colSpan={2} sx={styles.tableHeader} >
-                <Typography color={secondaryColor} fontWeight='bold'> 
-                  Делнични дни
-                </Typography>
-              </TableCell>
-              <TableCell align="center" colSpan={2} sx={styles.tableHeader} >
-                <Typography color={secondaryColor} fontWeight='bold'> 
-                  Почивни дни
-                </Typography>
-              </TableCell>
+              {firstRow}
             </TableRow>
             <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  sx={{backgroundColor: primaryColor}}
-                >
-                  <Typography color={secondaryColor}> {column.label} </Typography> 
-                </TableCell>
-              ))}
+              {columns.map((column) => 
+                createTableHeaderCell(column.label, 1, column.id)
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -95,11 +71,11 @@ export function FriendsTable({rows}: {rows: FriendData[]}) {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.username}>
+                  <TableRow key={row.username}>
                     {columns.map((column) => {
-                      const value = row[column.id];
+                      const value = row[column.id as keyof FriendData];
                       return (
-                        <TableCell key={column.id} align={column.align}>
+                        <TableCell key={column.id} align='center'>
                           {column.format
                             ? column.format(value)
                             : value}

@@ -13,6 +13,7 @@ User.create!([
         end_time: '18:00',
         weekend_start_time: '10:00',
         weekend_end_time: '19:00',
+        system: true
     },
     {
         username: 'ariolandi',
