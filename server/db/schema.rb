@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_27_135214) do
+ActiveRecord::Schema[7.1].define(version: 2026_05_30_165309) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -75,6 +75,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_27_135214) do
     t.time "weekend_start_time"
     t.time "weekend_end_time"
     t.text "token"
+    t.boolean "system", default: false
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
