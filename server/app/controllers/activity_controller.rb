@@ -7,10 +7,28 @@ class ActivityController < ApplicationController
     params[:activity][:user_id] = user.id
     activity = Activity.new(activity_params)
 
-    puts activity.inspect
-
     begin 
       ScheduleHelper.add(user, activity)
+
+      render json: {
+        status: { code: 200, message: 'Created successfully.' },
+        data: activity
+      }
+    rescue => error
+      render json: {
+        status: { message: "Activity couldn't be created successfully. " + error.message(), code: :conflict },
+      }, status: :conflict
+    end
+  end
+
+  def create_shared
+    user = User.find_by(token: user_token)
+
+    params[:activity][:user_id] = user.id
+    activity = Activity.new(activity_params)
+
+    begin 
+      ScheduleHelper.add_shared([user] + activity.guests.map { |guest_id| User.find(guest_id) }, activity)
 
       render json: {
         status: { code: 200, message: 'Created successfully.' },
@@ -101,6 +119,6 @@ class ActivityController < ApplicationController
   private
 
   def activity_params
-    params.require(:activity).permit(:user_id, :title, :description, :duration, :repeat, :start_time, :place, :date, days: [])
+    params.require(:activity).permit(:user_id, :title, :description, :duration, :repeat, :start_time, :place, :date, days: [], guests: [])
   end
 end

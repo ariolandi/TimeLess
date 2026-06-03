@@ -18,6 +18,6 @@ class TimeInterval
   end
 
   def duration
-    @end_time - @start_time
+    TimeService.duration(@start_time, @end_time).to_minutes
   end
 end

@@ -1,6 +1,7 @@
-FROM node as vite-app
+FROM node:24 as vite-app
 
 WORKDIR /app
+RUN npm install -g yarn
 
 COPY package.json yarn.lock ./
 RUN ["yarn", "install"]

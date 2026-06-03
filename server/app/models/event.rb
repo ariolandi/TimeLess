@@ -20,8 +20,8 @@ class Event < ApplicationRecord
   def copy
     params = {
       user_id: user_id,
-      activity: activity,
-      start_time: start_time&.duplicate,
+      activity: activity.dup,
+      start_time: start_time,
       event_type: event_type,
       fixed: fixed,
       day: day
@@ -37,7 +37,7 @@ class Event < ApplicationRecord
       title: activity&.title,
       start_time: TimeService.new(start_time || activity&.start_time).str,
       duration: activity&.duration,
-      end_time:  TimeService.new(end_time || "").str,
+      end_time: end_time.str,
       fixed: fixed,
       event_type: event_type || ""
     }
@@ -61,6 +61,22 @@ class Event < ApplicationRecord
 
   def after(other)
     self.start_time.present? && (other.is_a?(Event) ? other.end : other) <= self.start_time
+  end
+
+  def overlaps?(other)
+    self.start_time.present? && other.start_time.present? && self.start_time <= other.start_time && other.start_time <= self.end_time
+  end
+
+  def merge(other)
+    return nil unless self.overlaps?(other)
+
+    new_start_time = TimeService.min(self.start_time, other.start_time)
+    new_end_time = TimeService.max(self.end_time, other.end_time)
+
+    event = self.copy
+    event.start_time = new_start_time
+    event.activity.duration = TimeService.new(new_end_time) - TimeService.new(new_start_time)
+    event
   end
 
   def difference(other)

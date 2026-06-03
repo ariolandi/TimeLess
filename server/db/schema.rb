@@ -30,22 +30,22 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_30_165309) do
     t.index ["user_id"], name: "index_activities_on_user_id"
   end
 
-  create_table "activity_guests", id: :bigint, default: -> { "nextval('shared_activities_id_seq'::regclass)" }, force: :cascade do |t|
+  create_table "activity_guests", force: :cascade do |t|
     t.integer "activity_id", null: false
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["activity_id", "user_id"], name: "index_shared_activities_on_activity_id_and_user_id", unique: true
-    t.index ["activity_id"], name: "index_shared_activities_on_activity_id"
-    t.index ["user_id"], name: "index_shared_activities_on_user_id"
+    t.index ["activity_id", "user_id"], name: "index_activity_guests_on_activity_id_and_user_id", unique: true
+    t.index ["activity_id"], name: "index_activity_guests_on_activity_id"
+    t.index ["user_id"], name: "index_activity_guests_on_user_id"
   end
 
   create_table "connections", primary_key: ["sender", "recipient"], force: :cascade do |t|
     t.integer "sender", null: false
     t.integer "recipient", null: false
+    t.boolean "accepted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "accepted", default: false, null: false
   end
 
   create_table "events", force: :cascade do |t|
@@ -55,8 +55,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_30_165309) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "activity_id"
-    t.string "event_type"
     t.integer "day"
+    t.string "event_type"
     t.date "date"
     t.index ["activity_id"], name: "index_events_on_activity_id"
     t.index ["user_id"], name: "index_events_on_user_id"

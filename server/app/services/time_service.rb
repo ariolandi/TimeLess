@@ -7,7 +7,7 @@ class TimeService
   def initialize(time)
     time = "00:00" if time.nil? || (time.is_a?(String) && time.empty?)
 
-    if time.is_a?(Time)
+    if time.is_a?(Time) || time.is_a?(ActiveSupport::TimeWithZone)
         @hours = time.hour
         @minutes = time.min
         return
@@ -28,6 +28,10 @@ class TimeService
     "#{hours_str}:#{minutes_str}"
   end
 
+  def to_s
+    str
+  end
+
   def + (other)
     other = TimeService.from_minutes(other) if other.is_a?(Integer)
 
@@ -43,13 +47,13 @@ class TimeService
   end
 
   def > (other)
-    other = TimeService.new(other) if other.is_a?(String) || other.is_a?(Time)
+    other = TimeService.new(other) if other.is_a?(String) || other.is_a?(Time) || other.is_a?(ActiveSupport::TimeWithZone)
 
     hours > other.hours || (hours == other.hours && minutes > other.minutes)
   end
 
   def < (other)
-    other = TimeService.new(other) if other.is_a?(String) || other.is_a?(Time)
+    other = TimeService.new(other) if other.is_a?(String) || other.is_a?(Time) || other.is_a?(ActiveSupport::TimeWithZone)
 
     hours < other.hours || (hours == other.hours && minutes < other.minutes)
   end
@@ -63,6 +67,14 @@ class TimeService
 
   def <= (other)
     self < other || self == other
+  end
+
+  def self.max(first, other)
+    first > other ? first : other 
+  end
+
+  def self.min(first, other)
+    first < other ? first : other
   end
 
   def to_minutes

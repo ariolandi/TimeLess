@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get 'friend_requests' => 'sessions#get_friend_requests'
 
   post '/activity/create' => 'activity#create'
+  post '/activity/create/shared' => 'activity#create_shared'
   put '/activity/update/:id' => 'activity#update'
   delete '/activity/delete/:id' => 'activity#delete'
   get '/activity/:id' => 'activity#get_by_id'

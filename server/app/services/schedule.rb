@@ -5,14 +5,14 @@ class Schedule
     @day = day
     @preferred_times = TimeInterval.new(start_time, end_time)
 
-    activities.each do |activity| 
-      events.append(Event.create(activity: activity, day: @day))
+    activities.each do |activity|
+      events << Event.create(activity: activity, day: @day)
     end
 
-    fixed_events, nonfixed_events = events.partition{ |event| event.start_time.present? }
+    fixed_events, nonfixed_events = events.partition { |event| event.start_time.present? }
 
     @schedule = fixed_events.sort_by(&:start_time)
-    
+
     load_breakpoint(fixed_events)
 
     nonfixed_events.each { |event| add_nonfixed_event(event) }
@@ -31,32 +31,56 @@ class Schedule
     else
       add_nonfixed_event(event)
     end
+
+    event
   end
 
   def remove_activity(activity)
     @schedule.keep_if{ |event| event.activity_id != activity.id }
   end
 
-  private
+  protected
+  
+  # Detects the free time intervals in the schedule
+  def free_time_intervals(time_interval = @preferred_times, fixed = false)
+    return [time_interval] if @schedule.empty?
+
+    intervals = []
+    previous_time = time_interval.start_time
+
+    @schedule.each do |event|
+      if (!fixed || event.fixed) 
+        if event.start_time > previous_time && event.in_time_interval(time_interval)
+          intervals << TimeInterval.new(previous_time, event.start_time)
+        end
+
+        previous_time = TimeService.max(previous_time, event.end_time)
+      end
+    end
+
+    if previous_time < time_interval.end_time
+      intervals << TimeInterval.new(previous_time, time_interval.end_time)
+    end
+
+    intervals
+  end
 
   def add_fixed_event(event)
-    if event.before(@preferred_times.start_time)
-      @schedule = [event] + @schedule
-      return
-    elsif event.after(@preferred_times.end_time)
-      @schedule = @schedule + [event]
-      return
-    end
+    return @schedule.unshift(event) if event.before(@preferred_times.start_time) || @schedule.empty?
+    return @schedule.push(event) if event.after(@preferred_times.end_time)
 
     index = find_place(event)
 
-    if event.event_type.present?
-      @schedule.insert(index, event)
-      return
+    if index.nil? || (@schedule[index - 1] && event.before(@schedule[index - 1].end_time))
+      raise ArgumentError, "There is already other event at the same time: #{event.represent}"
     end
+
+    return @schedule.insert(index, event) if event.event_type.present?
 
     reorganize_schedule(event, index)
   end
+
+  private
 
   def add_repeated_event(event, repeat_times)
     create_breakpoint(repeat_times)
@@ -65,6 +89,7 @@ class Schedule
     intervals = [TimeInterval.new(@preferred_times.start_time, breakpoint_times.first)]
     previous_time = breakpoint_times.first
 
+    # the first breakpoint is the start of the day and already assigned to previous_time
     breakpoint_times.drop(1).each do |time|
       intervals.append(TimeInterval.new(previous_time, time))
       previous_time = time
@@ -78,140 +103,106 @@ class Schedule
   end
 
   def add_nonfixed_event(event, time_interval = @preferred_times)
-    possible_indexes = (0..@schedule.length).select do |index| 
-      element = @schedule[index]
-      element ? element.in_time_interval(time_interval) : true
+    return if insert_into_available_slot(event, time_interval)
+
+    fixed_events = fixed_events_in_interval(time_interval)
+
+    fixed_events.each_cons(2) do |previous_event, next_event|
+      next unless previous_event.difference(next_event) >= event.duration
+
+      schedule_index_previous = @schedule.find_index(previous_event)
+      index = schedule_index_previous + 1
+      event.set_time(previous_event.end_time)
+      reorganize_schedule(event, index, time_interval)
+      return
+    rescue ArgumentError
+      next
     end
 
-    possible_indexes.each do |index|
-      # maximum ending time for the index
-      ending_time = @schedule[index]&.start_time
-      ending_time = time_interval.end_time if ending_time.nil? || time_interval.end_time < ending_time
-
-      # starting time for the index
-      starting_time = index == 0 ? time_interval.start_time : @schedule[index - 1].end_time
-      starting_time = time_interval.start_time if time_interval.start_time > starting_time
-
-      if TimeService.duration(starting_time, ending_time).to_minutes >= event.duration
-        event.set_time(starting_time)
-        @schedule.insert(index, event)
-        return
-      end
-    end
-
-    fixed_events = @schedule.select do |event| 
-      event.fixed && event.event_type.nil? && event.in_time_interval(time_interval)
-    end
-
-    # trying to find a place between the fixed events 
-    for i in 1..fixed_events.length - 1 do
-      previous_event = fixed_events[i - 1]
-      next_event = fixed_events[i]
-
-      # if there is enough space 
-      if previous_event.difference(next_event) >= event.duration
-        schedule_index_previous = @schedule.find_index(previous_event)
-        begin
-          # trying to insert the event
-          index = schedule_index_previous + 1
-          event.set_time(previous_event.end_time)
-          reorganize_schedule(event, index, time_interval)
-          return
-        rescue
-          # in case of failure, continue searching for a place
-          next
-        end
-      end
-    end
-
-    # if there is not empty space
     raise ArgumentError, "There is no space for this event: #{event.represent}"
   end
 
-  def reorganize_schedule(event, index, time_interval = @preferred_times)
-    next_event = @schedule[index]
-    next_index = index
-    delete_events = 0
+  def insert_into_available_slot(event, time_interval)
+    possible_time_intervals = free_time_intervals(time_interval)
 
-    # if there are any non-fixed events in the same slot, 
-    # they are marked for rescheduling
-    while next_event.present? && 
-          !next_event.fixed && 
-          next_event.start_time <= event.end_time &&
+    for i in 0...possible_time_intervals.length
+      if event.duration <= possible_time_intervals[i].duration
+        index = @schedule.find_index { |e| possible_time_intervals[i].end_time <= e.start_time} || @schedule.length 
+        
+        starting_time = if index.zero?
+            time_interval.start_time
+          else
+            TimeService.max(@schedule[index - 1].end_time, time_interval.start_time)
+          end
+
+        event.set_time(starting_time)
+        return @schedule.insert(index, event)
+      end
+    end
+
+    false
+  end
+
+  def possible_indexes(time_interval)
+    (0..@schedule.length).select do |index|
+      element = @schedule[index]
+      element.nil? || element.in_time_interval(time_interval)
+    end
+  end
+
+  def fixed_events_in_interval(time_interval)
+    @schedule.select do |event|
+      event.fixed && event.event_type.nil? && event.in_time_interval(time_interval)
+    end
+  end
+
+  def reorganize_schedule(event, index, time_interval = @preferred_times)
+    next_index = index
+    next_event = @schedule[next_index]
+    reschedule = []
+
+    while next_event.present? && !next_event.fixed && next_event.start_time <= event.end_time &&
           (event.fixed || next_event.duration < event.duration)
-      delete_events += 1
-      next_index = next_index + 1
+      reschedule << next_event
+      next_index += 1
       next_event = next_index == @schedule.length ? nil : @schedule[next_index]
     end
 
-    # if there is a fixed event in the same slot
     if next_event.present? && next_event.fixed && next_event.start_time <= event.end_time
       raise ArgumentError, "There is already other event at the same time: #{event.represent}"
     end
 
-    reschedule = []
-
-    # removing overlapping events
-    for _ in 1 .. delete_events
-      reschedule.append(@schedule[index])
-      @schedule.delete_at(index)
-    end
-
-    # inserting the event at position
+    reschedule.each { @schedule.delete_at(index) }
     @schedule.insert(index, event)
 
-    # rescheduling the removed events if possible
-    reschedule.each do |event| 
-      begin
-        add_nonfixed_event(event, time_interval)
-      rescue
-        next
-      end
+    reschedule.each do |rescheduled_event|
+      add_nonfixed_event(rescheduled_event, time_interval)
+    rescue ArgumentError
+      next
     end
   end
 
-  # used only for fixed events, where binary search by time is possible
-  def find_place(event, start_index = 0, end_index = @schedule.length) 
-    return start_index if start_index == end_index
+  def find_place(event)
+    intervals = free_time_intervals(@preferred_times, true)
 
-    index = (start_index + end_index) / 2
-
-    current_event = @schedule[index]
-
-    # if the event is after the current
-    if current_event.nil? || current_event.before(event) 
-      next_event = index == end_index ? nil : @schedule[index + 1]
-      if next_event.present? && next_event.before(event)
-        return find_place(event, index + 1, end_index)
-      else
-        # if the event should be placed in the position after the current
-        return index + 1
-      end
-    else
-      # if the event is before the current
-      previous_event = index == 0 ? nil : @schedule[index - 1]
-
-      if previous_event.nil? || previous_event.before(event)
-        # if the event should be placed in the position before the current
-        return index
-      else
-        return find_place(event, start_index, index)
-      end
+    index = @schedule.length 
+    for i in 0...intervals.length
+      index = @schedule.find_index { |e| intervals[i].end_time <= e.start_time} || @schedule.length if intervals[i].duration >= event.duration && event.in_time_interval(intervals[i])
     end
+
+    index
   end
 
   def create_breakpoint(number_of_parts)
-    # if the same breakpoint is present
-    return if @breakpoints.keys.include?(number_of_parts)
+    return if @breakpoints.key?(number_of_parts)
 
-    day_duration = @preferred_times.duration.to_minutes
+    day_duration = @preferred_times.duration
     partition_duration = day_duration / number_of_parts
 
-    breakpoint_times = (1..number_of_parts - 1).to_a.map do |part_number| 
+    breakpoint_times = (1...number_of_parts).map do |part_number|
       @preferred_times.start_time + (part_number * partition_duration)
     end
 
-    # adding the system events
     breakpoint_times.each do |time|
       event = Event.create(start_time: time, event_type: "breakpoint #{number_of_parts}", day: @day)
       add_fixed_event(event)
@@ -221,15 +212,17 @@ class Schedule
   end
 
   def load_breakpoint(events)
-    breakpoints_events = events.select { |event| event.event_type.present? && event.event_type =~ /^breakpoint /}
-
     @breakpoints = {}
 
-    breakpoints_events.each do |event|
-      _, number_of_parts = event.event_type.split(' ')
+    events.each do |event|
+      next unless event.event_type.present?
 
-      @breakpoints[number_of_parts] = [] unless @breakpoints.keys.include?(number_of_parts)
-      @breakpoints[number_of_parts].append(event.start_time)
+      match = event.event_type.match(/^breakpoint (\d+)$/)
+      next unless match
+
+      number_of_parts = match[1].to_i
+      @breakpoints[number_of_parts] ||= []
+      @breakpoints[number_of_parts] << event.start_time
     end
   end
 end

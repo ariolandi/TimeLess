@@ -20,10 +20,10 @@ class User < ApplicationRecord
   end
 
   def friends()
-    flist_1 = self.friends_1.map { |f| { user: f.recipient, status: f.accepted } }
-    flist_2 = self.friends_2.map { |f| { user: f.sender, status: f.accepted } }
+    friends_list1 = self.friends_1.map { |f| { user: f.recipient, status: f.accepted } }
+    friends_list2 = self.friends_2.map { |f| { user: f.sender, status: f.accepted } }
 
-    flist_1.concat(flist_2)
+    friends_list1.concat(friends_list2)
   end
 
   def friends_requests()
