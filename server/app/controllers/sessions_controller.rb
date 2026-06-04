@@ -22,11 +22,6 @@ class SessionsController < ApplicationController
     user = User.find_by(token: user_token)
     if user&.update(update_params)
       user.save
-      place = Place.find_by(user_id: user.id)
-      unless place
-        place = Place.new(user_id: user.id, name: 'home')
-        place.save
-      end
 
       render json: {
         status: { code: 200, message: 'Signed in successfully.' },
