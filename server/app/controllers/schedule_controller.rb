@@ -27,9 +27,12 @@ class ScheduleController < ApplicationController
         status: { message: "No such user" }
       }, status: :unprocessable_entity
     else
-      day = params[:day]
-      events = Event
-        .where(user_id: user.id, day: day, event_type: nil)
+      date = params[:date]
+
+      day = Date.parse(date).wday
+      events = ((Event
+        .where(user_id: user.id, day: day, event_type: nil)) +
+        (Event.where(user_id: user.id, date: date, event_type: nil)))
         .map(&:represent)
         .sort_by { |event| event[:start_time] }
 
@@ -43,6 +46,6 @@ class ScheduleController < ApplicationController
   private
 
   def event_params
-    params.permit(:user_id, :activity_id, :start_time, :day)
+    params.permit(:user_id, :activity_id, :start_time, :date)
   end
 end

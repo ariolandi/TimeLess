@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   delete '/activity/delete/:id' => 'activity#delete'
   get '/activity/:id' => 'activity#get_by_id'
 
-  get '/schedule/:day' => 'schedule#get_schedule'
+  get '/schedule/:date' => 'schedule#get_schedule'
   post '/schedule' => 'schedule#create'
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

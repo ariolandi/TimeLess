@@ -1,4 +1,7 @@
 import dayjs, { Dayjs } from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 export const toDaysjs = (time: string | null): Dayjs | null => {
   const year = "2000-01-01";
@@ -6,8 +9,12 @@ export const toDaysjs = (time: string | null): Dayjs | null => {
 };
 
 export function fromDaysjs(datetime: Dayjs | null): string {
-  const hours = datetime?.hour() || "00";
-  const minutes = datetime?.minute() || "00";
+  if (!datetime) {
+    return "00:00";
+  }
+
+  const hours = datetime.hour().toString().padStart(2, "0");
+  const minutes = datetime.minute().toString().padStart(2, "0");
   return `${hours}:${minutes}`;
 }
 
@@ -16,6 +23,6 @@ export function formatTime(datetime: string | null): string | null {
     return null;
   }
 
-  const isoTimeDate = dayjs(datetime);
+  const isoTimeDate = dayjs.utc(datetime);
   return fromDaysjs(isoTimeDate);
 }

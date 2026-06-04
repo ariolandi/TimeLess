@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Checkbox from '@mui/material/Checkbox';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,17 +14,17 @@ import { Column } from './table';
 import { createTableHeaderCell } from './table';
 
 const columns: Column[] = [
-  { id: 'status', label: 'Статус', format: (value: boolean) => value ? '' : 'В изчакване'  },
+  { id: 'status', label: 'Статус' },
   { id: 'username', label: 'Потребител' },
   { id: 'name', label: 'Име' },
-  { id: 'start_time', label: 'Начален час', format: formatTime  },
+  { id: 'start_time', label: 'Начален час', format: formatTime },
   { id: 'end_time', label: 'Краен час', format: formatTime },
   { id: 'weekend_start_time', label: 'Начален час', format: formatTime },
   { id: 'weekend_end_time', label: 'Краен час', format: formatTime },
 ];
 
 export interface FriendData {
-  status: boolean,
+  status: boolean;
   username: string;
   name: string;
   start_time: string;
@@ -32,7 +33,13 @@ export interface FriendData {
   weekend_end_time: string;
 }
 
-export function FriendsTable({rows}: {rows: FriendData[]}) {
+export function FriendsTable({
+  rows,
+  onStatusToggle,
+}: {
+  rows: FriendData[];
+  onStatusToggle?: (row: FriendData, checked: boolean) => void;
+}) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -74,11 +81,28 @@ export function FriendsTable({rows}: {rows: FriendData[]}) {
                   <TableRow key={row.username}>
                     {columns.map((column) => {
                       const value = row[column.id as keyof FriendData];
+                      if (column.id === 'status' && typeof value === 'boolean') {
+                        return (
+                          <TableCell key={column.id} align='center'>
+                            {onStatusToggle ? (
+                              <Checkbox
+                                checked={value}
+                                onChange={(event) =>
+                                  onStatusToggle(row, event.target.checked)
+                                }
+                              />
+                            ) : (
+                              value ? 'Прието' : 'В изчакване'
+                            )}
+                          </TableCell>
+                        );
+                      }
+
                       return (
                         <TableCell key={column.id} align='center'>
                           {column.format
                             ? column.format(value)
-                            : value}
+                            : String(value)}
                         </TableCell>
                       );
                     })}

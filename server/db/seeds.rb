@@ -1,4 +1,3 @@
-Place.destroy_all
 Activity.destroy_all
 User.destroy_all
 
@@ -11,6 +10,18 @@ User.create!([
         last_name: 'Потребител',
         start_time: '09:00',
         end_time: '18:00',
+        weekend_start_time: '10:00',
+        weekend_end_time: '19:00',
+        system: true
+    },
+        {
+        username: 'test_user',
+        password_digest: '$2a$12$dPfumrX9SXrIMY1wrSIjY.uV4r22Tc29vZFyoAzqPSI.A5uuP2qEe', # testpass
+        email: 'test_user@example.com',
+        first_name: 'Тестов',
+        last_name: 'Потребител',
+        start_time: '09:00',
+        end_time: '20:00',
         weekend_start_time: '10:00',
         weekend_end_time: '19:00',
         system: true

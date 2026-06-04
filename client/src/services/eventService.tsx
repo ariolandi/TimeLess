@@ -20,7 +20,8 @@ export class EventService {
     return await this.httpService.authorizedRequest(this.endpoint, METHOD.POST, { activity_id });
   }
 
-  async fetch (day: number) {
-    return await this.httpService.authorizedRequest<{ data: Event[] }>(`${this.endpoint}/${day}`, METHOD.GET);
+  async fetch (date: Date) {
+    const dateString = date.toISOString().split('T')[0];
+    return await this.httpService.authorizedRequest<{ data: Event[] }>(`${this.endpoint}/${dateString}`, METHOD.GET);
   }
 }

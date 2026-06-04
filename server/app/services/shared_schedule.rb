@@ -1,11 +1,11 @@
 class SharedSchedule < Schedule
-  def initialize(schedules, day)
+  def initialize(schedules, day: nil, date: nil)
     @schedules = schedules
   
     start_time = SharedSchedule::get_start_time(@schedules)
     end_time = SharedSchedule::get_end_time(@schedules)
 
-    super(start_time, end_time, day)
+    super(start_time, end_time, day, date)
 
     fixed_events = @schedules.map { |schedule| schedule.schedule.select(&:fixed?) }.flatten.sort_by(&:start_time)
 
@@ -32,7 +32,11 @@ class SharedSchedule < Schedule
       event = add_activity(activity)
 
       event.fixed = true
-      @schedules.each { |schedule| schedule.add_fixed_event(event) }
+      puts event.represent
+      @schedules.each do |schedule| 
+        puts schedule.inspect
+        schedule.add_fixed_event(event) 
+      end
     rescue 
       raise ArgumentError, "Activity cannot be added to all schedules"
     end

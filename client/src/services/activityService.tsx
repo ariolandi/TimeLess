@@ -24,6 +24,18 @@ export interface Activity {
   date: string,
 }
 
+export interface SharedActivityInput {
+  title: string,
+  description: string,
+  duration: string | null,
+  place: string | null,
+  repeat: string,
+  start_time: string | null,
+  days: number[],
+  date: Date | null,
+  guests: string[],
+}
+
 export class ActivityService {
   private httpService = new HTTPService()
   private endpoint = "activity";
@@ -42,5 +54,9 @@ export class ActivityService {
 
   async fetch_activity (id: number) {
     return await this.httpService.authorizedRequest<{ data: Activity }>(`${this.endpoint}/${id}`, METHOD.GET);
+  }
+
+  async create_shared (activity: SharedActivityInput) {
+    return await this.httpService.authorizedRequest<{ data: Activity }>(`${this.endpoint}/create/shared`, METHOD.POST, activity);
   }
 }

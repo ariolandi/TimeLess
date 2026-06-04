@@ -1,12 +1,13 @@
 class Schedule
   attr_reader :schedule, :breakpoints, :preferred_times
 
-  def initialize(start_time, end_time, day, activities: [], events: [])
+  def initialize(start_time, end_time, day, date, activities: [], events: [])
     @day = day
+    @date = date
     @preferred_times = TimeInterval.new(start_time, end_time)
 
     activities.each do |activity|
-      events << Event.create(activity: activity, day: @day)
+      events << Event.create(activity: activity, day: @day, date: @date)
     end
 
     fixed_events, nonfixed_events = events.partition { |event| event.start_time.present? }
@@ -19,7 +20,7 @@ class Schedule
   end
 
   def add_activity(activity)
-    event = Event.create(activity: activity, day: @day)
+    event = Event.create(activity: activity, day: @day, date: @date)
 
     # repeated activity
     if activity.repeat && activity.repeat > 1
@@ -204,7 +205,7 @@ class Schedule
     end
 
     breakpoint_times.each do |time|
-      event = Event.create(start_time: time, event_type: "breakpoint #{number_of_parts}", day: @day)
+      event = Event.create(start_time: time, event_type: "breakpoint #{number_of_parts}", day: @day, date: @date)
       add_fixed_event(event)
     end
 

@@ -5,11 +5,12 @@ import { CreateActivity } from "../components/dialogs/createActivity";
 import { useEffect, useState } from "react";
 import Calendar from "../components/calendar/calendar";
 import { Event, EventService } from "../services/eventService";
-import { Days, small_screen_size } from "../components/constants";
+import { small_screen_size } from "../components/constants";
 import { UserService } from "../services/userService";
 import { FriendData } from "../components/table/friendsTable";
-import { startOfWeek, endOfWeek, subWeeks, addWeeks } from 'date-fns';
+import { startOfWeek, endOfWeek, subWeeks, addWeeks, addDays } from 'date-fns';
 import { createTableHeaderCell } from "../components/table/table";
+import { CreateSharedActivity } from "../components/dialogs/createSharedActivity";
 
 const eventService = new EventService();
 const userService = new UserService();
@@ -17,11 +18,14 @@ const userService = new UserService();
 export default function DashBoard() {
   const small_screen = useMediaQuery(small_screen_size);
 
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openActivityDialog, setOpenActivityDialog] = useState(false);
+  const [openSharedActivityDialog, setOpenSharedActivityDialog] = useState(false);
   const [events, setEvents] = useState<Array<Event[]>>(Array(7).fill([]));
   const [, setLoading] = useState(true);
   const [, setError] = useState<unknown>();
   const [friends, setFriends] = useState<FriendData[]>([]);
+  const [friendRequests, setFriendRequest] = useState<FriendData[]>([]);
+
 
   const [monday, setMonday] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [sunday, setSunday] = useState(endOfWeek(new Date(), { weekStartsOn: 1 }));
@@ -30,9 +34,26 @@ export default function DashBoard() {
     const result = await userService.friend_requests();
 
     if (result) {
-      setFriends(result.data.filter((connection) => connection.status === false).map((connection) => {
+      setFriendRequest(result.data.filter((connection) => connection.status === false).map((connection) => {
         return {
           status: connection.status,
+          username: connection.user.username,
+          name: `${connection.user.first_name} ${connection.user.last_name}`,
+          start_time: connection.user.start_time,
+          end_time: connection.user.end_time,
+          weekend_start_time: connection.user.weekend_start_time,
+          weekend_end_time: connection.user.weekend_end_time
+        } as FriendData}));
+    }
+  }
+
+  async function loadFriends() {
+    const result = await userService.friends();
+
+    if (result) {
+      setFriends(result.data.filter(connection => connection.status === true).map((connection) => {
+        return {
+          status: false,
           username: connection.user.username,
           name: `${connection.user.first_name} ${connection.user.last_name}`,
           start_time: connection.user.start_time,
@@ -51,14 +72,16 @@ export default function DashBoard() {
   async function loadEvents() {
     try {
       const schedule = [
-        (await eventService.fetch(Days.Monday)).data,
-        (await eventService.fetch(Days.Tuesday)).data,
-        (await eventService.fetch(Days.Wednesday)).data,
-        (await eventService.fetch(Days.Thursday)).data,
-        (await eventService.fetch(Days.Friday)).data,
-        (await eventService.fetch(Days.Saturday)).data,
-        (await eventService.fetch(Days.Sunday)).data
+        (await eventService.fetch(monday)).data,
+        (await eventService.fetch(addDays(monday, 1))).data,
+        (await eventService.fetch(addDays(monday, 2))).data,
+        (await eventService.fetch(addDays(monday, 3))).data,
+        (await eventService.fetch(addDays(monday, 4))).data,
+        (await eventService.fetch(addDays(monday, 5))).data,
+        (await eventService.fetch(addDays(monday, 6))).data
       ]
+
+      console.log(schedule);
 
       setEvents(schedule);
     } catch (error) {
@@ -70,6 +93,7 @@ export default function DashBoard() {
 
   useEffect(() => {loadEvents()}, [monday, sunday]);
   useEffect(() => {loadFriendsRequest()}, []);
+  useEffect(() => {loadFriends()}, []);
 
   const header = [
     createTableHeaderCell('Потребител'),
@@ -81,7 +105,7 @@ export default function DashBoard() {
     <Container maxWidth={false} disableGutters>
       <Header />
       <Container>
-        {friends.length > 0 && (
+        {friendRequests.length > 0 && (
           <TableContainer sx={{ maxHeight: 440, ...styles.table }}>
           <Table stickyHeader>
             <TableHead> 
@@ -90,7 +114,7 @@ export default function DashBoard() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {friends
+              {friendRequests
                 .map((row) => {
                   return (
                     <TableRow key={row.username}>
@@ -104,7 +128,7 @@ export default function DashBoard() {
                         <Button 
                           sx={{backgroundColor: "secondary.main"}} 
                           variant="contained" 
-                          disabled={row.status}
+                          disabled={row.status === true || row.status.valueOf() === true}
                           onClick={() => acceptFriend(row.username)}
                         >
                           {row.status ? 'Прието' : 'Приеми'}
@@ -136,7 +160,7 @@ export default function DashBoard() {
             ...styles.submitButton,
             ...(small_screen ? { width: "100%", marginBottom: "15px" } : {}),
           }}
-          onClick={() => setOpenDialog(true)}
+          onClick={() => setOpenActivityDialog(true)}
         >
           <b>Създай дейност</b>
         </Button>
@@ -148,7 +172,7 @@ export default function DashBoard() {
             ...styles.submitButton,
             ...(small_screen ? { width: "100%", marginBottom: "15px" } : {}),
           }}
-          onClick={() => setOpenDialog(true)}
+          onClick={() => setOpenSharedActivityDialog(true)}
         >
           <b>Създай споделена дейност</b>
         </Button>
@@ -180,8 +204,14 @@ export default function DashBoard() {
           </Button>
         </Box>
         <CreateActivity
-          open={openDialog}
-          setOpen={setOpenDialog}
+          open={openActivityDialog}
+          setOpen={setOpenActivityDialog}
+          onSaveChanges={loadEvents}
+        />
+        <CreateSharedActivity
+          friends={friends}
+          open={openSharedActivityDialog}
+          setOpen={setOpenSharedActivityDialog}
           onSaveChanges={loadEvents}
         />
       </Container>

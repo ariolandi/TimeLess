@@ -13,10 +13,12 @@ interface DayControl {
 }
 
 export function CreateActivity({
+  guests,
   open,
   setOpen,
   onSaveChanges
 }: {
+  guests?: string[],
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onSaveChanges: () => void
@@ -42,18 +44,32 @@ export function CreateActivity({
     const start_time = timeToggle.value === false ? null : startTime.value;
     const repeat = doRepeat.value === false ? "0" : repeatTimes.value;
 
-    console.log(date.value);
     try {
-      await activityService.create({
-        title: title.value,
-        description: description.value,
-        place: place.value,
-        duration: duration.value,
-        repeat,
-        start_time,
-        days: days.map((day: DayControl) => Boolean(day.state.value)).flatMap((day, index) => day ? index : []),
-        date: date.value
-      });
+      if (guests) {
+        await activityService.create_shared({
+          title: title.value,
+          description: description.value,
+          place: place.value,
+          duration: duration.value,
+          repeat,
+          start_time,
+          days: days.map((day: DayControl) => Boolean(day.state.value)).flatMap((day, index) => day ? index : []),
+          date: date.value,
+          guests
+        });
+      }
+      else {
+        await activityService.create({
+          title: title.value,
+          description: description.value,
+          place: place.value,
+          duration: duration.value,
+          repeat,
+          start_time,
+          days: days.map((day: DayControl) => Boolean(day.state.value)).flatMap((day, index) => day ? index : []),
+          date: date.value
+        });
+      }
 
       onSaveChanges();
       

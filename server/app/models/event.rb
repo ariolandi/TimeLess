@@ -1,7 +1,7 @@
 class Event < ApplicationRecord
   belongs_to :activity, optional: true
 
-  def self.create(activity: nil, start_time: nil, day: nil, fixed: nil, event_type: nil, user_id: nil)
+  def self.create(activity: nil, start_time: nil, day: nil, date: nil, fixed: nil, event_type: nil, user_id: nil)
     fixed ||= activity&.start_time.present? || event_type.present?
     start_time = activity&.start_time.presence || start_time
 
@@ -11,7 +11,8 @@ class Event < ApplicationRecord
       start_time: start_time.present? ? TimeService.new(start_time).to_datetime : nil,
       event_type: event_type,
       fixed: fixed,
-      day: day
+      day: day,
+      date: date
     }
 
     Event.new(params)
@@ -24,7 +25,8 @@ class Event < ApplicationRecord
       start_time: start_time,
       event_type: event_type,
       fixed: fixed,
-      day: day
+      day: day,
+      date: date
     }
 
     Event.new(params)
@@ -39,7 +41,9 @@ class Event < ApplicationRecord
       duration: activity&.duration,
       end_time: end_time.str,
       fixed: fixed,
-      event_type: event_type || ""
+      event_type: event_type || "",
+      day: day,
+      date: date
     }
   end
 

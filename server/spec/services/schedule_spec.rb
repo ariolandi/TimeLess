@@ -348,4 +348,27 @@ RSpec.describe Schedule do
 
     expect_equal(schedule, expected_schedule)
   end
+
+  context "date handling" do
+    it "assigns the provided date to events" do
+      date = Date.new(2026, 6, 4)
+      activities = setup_activities <<~ACTIVITIES
+        1 | fixed activity | 10:00 | 00:10
+      ACTIVITIES
+
+      schedule = Schedule.new("09:00", "18:00", nil, date, activities: activities)
+
+      expect(schedule.schedule.first.date).to eq(date)
+    end
+
+    it "assigns the schedule date to events added via add_activity" do
+      date = Date.new(2026, 6, 04)
+      activity = setup_activity("1 | nonfixed activity | | 00:10")
+
+      schedule = Schedule.new("09:00", "18:00", nil, date)
+      schedule.add_activity(activity)
+
+      expect(schedule.schedule.first.date).to eq(date)
+    end
+  end
 end

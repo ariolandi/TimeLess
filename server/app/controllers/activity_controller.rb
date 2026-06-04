@@ -25,10 +25,16 @@ class ActivityController < ApplicationController
     user = User.find_by(token: user_token)
 
     params[:activity][:user_id] = user.id
+    puts params.inspect
+    guests = params[:guests].map { |guest| User.find_by(username: guest) }.to_a || []
     activity = Activity.new(activity_params)
+    activity.guests = guests
 
     begin 
-      ScheduleHelper.add_shared([user] + activity.guests.map { |guest_id| User.find(guest_id) }, activity)
+      puts '----'
+      puts guests
+      puts '----'
+      ScheduleHelper.add_shared([user] + guests, activity)
 
       render json: {
         status: { code: 200, message: 'Created successfully.' },
