@@ -21,7 +21,7 @@ export default function SignUp() {
 
     const result = await userService.create({username, password, email});
 
-    if (result) {
+    if (result?.ok) {
       localStorage.setItem("current_user", result.data.token);
       navigate('/information');
     } else {
