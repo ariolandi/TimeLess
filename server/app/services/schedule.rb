@@ -72,7 +72,7 @@ class Schedule
 
     index = find_place(event)
 
-    if index.nil? || (@schedule[index - 1] && event.before(@schedule[index - 1].end_time))
+    if index.nil? || (@schedule[index - 1] && @schedule[index-1].fixed && event.before(@schedule[index - 1].end_time))
       raise ArgumentError, "There is already other event at the same time: #{event.represent}"
     end
 
@@ -191,7 +191,7 @@ class Schedule
       index = @schedule.find_index { |e| intervals[i].end_time <= e.start_time} || @schedule.length if intervals[i].duration >= event.duration && event.in_time_interval(intervals[i])
     end
 
-    index
+    index.zero? ? 0 : index - 1
   end
 
   def create_breakpoint(number_of_parts)
