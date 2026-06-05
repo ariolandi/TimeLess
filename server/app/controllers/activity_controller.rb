@@ -31,9 +31,6 @@ class ActivityController < ApplicationController
     activity.guests = guests
 
     begin 
-      puts '----'
-      puts guests
-      puts '----'
       ScheduleHelper.add_shared([user] + guests, activity)
 
       render json: {

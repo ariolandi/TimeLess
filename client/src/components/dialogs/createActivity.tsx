@@ -65,9 +65,9 @@ export function CreateActivity({
           place: place.value,
           duration: duration.value,
           repeat,
-          start_time,
+          start_time: timeToggle ? start_time : null,
           days: days.map((day: DayControl) => Boolean(day.state.value)).flatMap((day, index) => day ? index : []),
-          date: date.value
+          date: dateToggle ? date.value : null
         });
       }
 
