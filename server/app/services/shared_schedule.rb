@@ -32,9 +32,7 @@ class SharedSchedule < Schedule
       event = add_activity(activity)
 
       event.fixed = true
-      puts event.represent
       @schedules.each do |schedule| 
-        puts schedule.inspect
         schedule.add_fixed_event(event) 
       end
     rescue 
