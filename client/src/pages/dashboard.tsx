@@ -203,17 +203,17 @@ export default function DashBoard() {
             </Typography> 
           </Button>
         </Box>
-        <CreateActivity
+        {openActivityDialog && <CreateActivity
           open={openActivityDialog}
           setOpen={setOpenActivityDialog}
           onSaveChanges={loadEvents}
-        />
-        <CreateSharedActivity
+        />}
+        {openSharedActivityDialog && <CreateSharedActivity
           friends={friends}
           open={openSharedActivityDialog}
           setOpen={setOpenSharedActivityDialog}
           onSaveChanges={loadEvents}
-        />
+        />}
       </Container>
       <Calendar events={events} onSaveChanges={loadEvents} />
     </Container>
